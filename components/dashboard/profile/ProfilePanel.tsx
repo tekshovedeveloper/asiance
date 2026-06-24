@@ -1,0 +1,295 @@
+// "use client";
+
+// import { useState } from "react";
+// import styles from "./dashboard.module.css";
+// import type { DashboardUser } from "./types";
+// import { LibraryPickerModal, type LibraryAsset } from "./LibraryPickerModal";
+
+// export function ProfilePanel({
+//   user,
+//   onUserChange,
+// }: {
+//   user: DashboardUser;
+//   onUserChange: (u: DashboardUser) => void;
+// }) {
+//   const [form, setForm] = useState({
+//     name: user.name ?? "",
+//     username: user.username ?? "",
+//     email: user.email ?? "",
+//     bio: user.bio ?? "",
+//     avatarUrl: user.avatarUrl ?? "",
+//     coverImageUrl: user.coverImageUrl ?? "",
+//   });
+
+//   const [saving, setSaving] = useState(false);
+//   const [error, setError] = useState<string | null>(null);
+
+//   const [pickMode, setPickMode] = useState<null | "avatar" | "cover">(null);
+
+//   async function save() {
+//     setSaving(true);
+//     setError(null);
+
+//     try {
+//       const res = await fetch("/api/me", {
+//         method: "PATCH",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify(form),
+//       });
+
+//       if (!res.ok) {
+//         const msg = await res.text();
+//         throw new Error(msg || "Failed to update profile");
+//       }
+
+//       const updated: DashboardUser = await res.json();
+//       onUserChange(updated);
+//     } catch (e: any) {
+//       setError(e?.message ?? "Something went wrong");
+//     } finally {
+//       setSaving(false);
+//     }
+//   }
+
+//   function onPick(asset: LibraryAsset) {
+//     if (pickMode === "avatar") {
+//       setForm((p) => ({ ...p, avatarUrl: asset.url }));
+//     } else if (pickMode === "cover") {
+//       setForm((p) => ({ ...p, coverImageUrl: asset.url }));
+//     }
+//     setPickMode(null);
+//   }
+
+//   return (
+//     <div className={styles.profilePanel}>
+//       <div className={styles.profileGrid}>
+//         <div className={styles.profileField}>
+//           <label className={styles.profileLabel}>Name</label>
+//           <input
+//             className={styles.profileInput}
+//             value={form.name}
+//             onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
+//           />
+//         </div>
+
+//         <div className={styles.profileField}>
+//           <label className={styles.profileLabel}>Username</label>
+//           <input
+//             className={styles.profileInput}
+//             value={form.username}
+//             onChange={(e) => setForm((p) => ({ ...p, username: e.target.value }))}
+//           />
+//         </div>
+
+//         <div className={styles.profileField}>
+//           <label className={styles.profileLabel}>Email</label>
+//           <input
+//             className={styles.profileInput}
+//             value={form.email}
+//             onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
+//           />
+//         </div>
+
+//         <div className={styles.profileFieldFull}>
+//           <label className={styles.profileLabel}>Bio</label>
+//           <textarea
+//             className={styles.profileTextarea}
+//             value={form.bio}
+//             onChange={(e) => setForm((p) => ({ ...p, bio: e.target.value }))}
+//             rows={4}
+//           />
+//         </div>
+
+//         <div className={styles.profileActionsRow}>
+//           <button
+//             type="button"
+//             className={styles.profileBtn}
+//             onClick={() => setPickMode("avatar")}
+//           >
+//             Change profile photo
+//           </button>
+
+//           <button
+//             type="button"
+//             className={styles.profileBtn}
+//             onClick={() => setPickMode("cover")}
+//           >
+//             Change cover photo
+//           </button>
+
+//           <div className={styles.profileSaveWrap}>
+//             <button
+//               type="button"
+//               className={styles.profileSave}
+//               onClick={save}
+//               disabled={saving}
+//             >
+//               {saving ? "Saving..." : "Save changes"}
+//             </button>
+//           </div>
+//         </div>
+
+//         {error ? <div className={styles.profileError}>{error}</div> : null}
+//       </div>
+
+//       <LibraryPickerModal
+//         open={pickMode !== null}
+//         title={pickMode === "avatar" ? "Choose profile photo" : "Choose cover photo"}
+//         onClose={() => setPickMode(null)}
+//         onPick={onPick}
+//       />
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+"use client";
+
+import { useRef, useState } from "react";
+import styles from "../dashboard.module.css";
+import type { DashboardUser } from "../types";
+import { updateMe, uploadImage } from "@/lib/api";
+
+export function ProfilePanel({
+  user,
+  onUserChange,
+}: {
+  user: DashboardUser;
+  onUserChange: (u: DashboardUser) => void;
+}) {
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+
+  const [form, setForm] = useState({
+    name: user.name ?? "",
+    username: user.username ?? "",
+    email: user.email ?? "",
+    bio: user.bio ?? "",
+    avatarUrl: user.avatarUrl ?? "",
+    coverImageUrl: user.coverImageUrl ?? "",
+  });
+
+  const [busy, setBusy] = useState<null | "avatar" | "cover" | "save">(null);
+  const [error, setError] = useState<string | null>(null);
+
+  async function pickAndUpload(kind: "avatar" | "cover", file: File) {
+    setError(null);
+    setBusy(kind);
+    try {
+      const uploaded = await uploadImage(file); // => { url }
+      setForm((p) =>
+        kind === "avatar"
+          ? { ...p, avatarUrl: uploaded.url }
+          : { ...p, coverImageUrl: uploaded.url }
+      );
+    } catch (e: any) {
+      setError(e?.message ?? "Upload failed");
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  async function save() {
+    setError(null);
+    setBusy("save");
+    try {
+      const updated = await updateMe(form);
+      onUserChange(updated);
+    } catch (e: any) {
+      setError(e?.message ?? "Save failed");
+    } finally {
+      setBusy(null);
+    }
+  }
+
+  const inputStyle: React.CSSProperties = {
+    width: '100%',
+    border: '1px solid rgba(18, 59, 90, 0.08)',
+    borderRadius: 18,
+    background: 'rgba(18, 59, 90, 0.045)',
+    color: '#2B3A42',
+    padding: '10px 16px',
+    fontSize: '13px',
+    lineHeight: 1.45,
+    outline: 'none',
+    fontFamily: 'var(--mono)',
+    letterSpacing: '0.02em',
+    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.75)',
+  };
+
+  const labelStyle: React.CSSProperties = {
+    fontSize: '14px',
+    fontWeight: 300,
+    color: '#2B3A42',
+    fontFamily: 'var(--serif)',
+    letterSpacing: '-0.01em',
+    lineHeight: 1.08,
+    marginBottom: 6,
+    display: 'block',
+  };
+
+  return (
+    <div style={{ padding: '6px 2px' }}>
+      <input ref={avatarInputRef} type="file" accept="image/*" hidden
+        onChange={(e) => { const f = e.target.files?.[0]; if (f) pickAndUpload("avatar", f); e.currentTarget.value = ""; }}
+      />
+      <input ref={coverInputRef} type="file" accept="image/*" hidden
+        onChange={(e) => { const f = e.target.files?.[0]; if (f) pickAndUpload("cover", f); e.currentTarget.value = ""; }}
+      />
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+        <div>
+          <label style={labelStyle}>Name</label>
+          <input style={inputStyle} value={form.name}
+            onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} />
+        </div>
+
+        <div>
+          <label style={labelStyle}>Username</label>
+          <input style={inputStyle} value={form.username}
+            onChange={(e) => setForm((p) => ({ ...p, username: e.target.value }))} />
+        </div>
+
+        <div style={{ gridColumn: '1 / -1' }}>
+          <label style={labelStyle}>Email</label>
+          <input style={inputStyle} value={form.email}
+            onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} />
+        </div>
+
+        <div style={{ gridColumn: '1 / -1' }}>
+          <label style={labelStyle}>Bio</label>
+          <textarea
+            rows={5}
+            style={{ ...inputStyle, resize: 'vertical', minHeight: 110 }}
+            value={form.bio}
+            onChange={(e) => setForm((p) => ({ ...p, bio: e.target.value }))}
+          />
+        </div>
+
+        <div style={{ gridColumn: '1 / -1', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center', marginTop: 4 }}>
+          <button type="button" className="chip-btn" style={{ padding: '8px 16px', fontSize: '10px', fontFamily: 'var(--sans)', letterSpacing: '0.04em', textTransform: 'uppercase' }}
+            onClick={() => avatarInputRef.current?.click()} disabled={busy !== null}>
+            {busy === "avatar" ? "Uploading..." : "Change profile photo"}
+          </button>
+
+          <button type="button" className="chip-btn" style={{ padding: '8px 16px', fontSize: '10px', fontFamily: 'var(--sans)', letterSpacing: '0.04em', textTransform: 'uppercase' }}
+            onClick={() => coverInputRef.current?.click()} disabled={busy !== null}>
+            {busy === "cover" ? "Uploading..." : "Change cover photo"}
+          </button>
+
+          <button type="button" className="btn btn-dark" style={{ marginLeft: 'auto', width: 'auto', minWidth: 140, fontSize: '10px', fontFamily: 'var(--sans)', letterSpacing: '0.08em', textTransform: 'uppercase' }}
+            onClick={save} disabled={busy !== null}>
+            {busy === "save" ? "Saving..." : "Save changes"}
+          </button>
+        </div>
+
+        {error ? <p style={{ gridColumn: '1 / -1', color: '#b42318', fontSize: '1rem', margin: 0 }}>{error}</p> : null}
+      </div>
+    </div>
+  );
+}

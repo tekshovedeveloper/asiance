@@ -1,0 +1,438 @@
+.screen {
+    background: #f0f0f1;
+    min-height: 100vh;
+    padding: 20px 24px 60px;
+    color: #1d2327;
+    font-family: Arial, sans-serif;
+  }
+  
+  .pageHeader {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .pageHeader h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 400;
+  }
+  
+  .breadcrumb {
+    margin: 0 0 4px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  
+  .addButton,
+  .filters button,
+  .permissionsBox button,
+  .customFieldsBox button,
+  .noteActions button {
+    min-height: 30px;
+    border: 1px solid #3858e9;
+    background: #fff;
+    color: #3858e9;
+    border-radius: 2px;
+    padding: 4px 12px;
+    cursor: pointer;
+  }
+  
+  .noticeGreen {
+    background: #ecfff2;
+    border-left: 4px solid #46b450;
+    padding: 14px 18px;
+    margin: 14px 0;
+  }
+  
+  .noticeGreen strong {
+    font-size: 16px;
+  }
+  
+  .noticeGreen p,
+  .noticeWhite p {
+    margin: 6px 0 0;
+  }
+  
+  .noticeWhite {
+    background: #fff;
+    border-left: 4px solid #ffb900;
+    padding: 16px 18px;
+    margin: 14px 0;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+  }
+  
+  .statusLinks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 24px 0 10px;
+  }
+  
+  .statusLinks button {
+    border: 0;
+    background: transparent;
+    color: #2271b1;
+    padding: 0;
+    cursor: pointer;
+    font-size: 13px;
+  }
+  
+  .statusLinks button::after {
+    content: '|';
+    color: #8c8f94;
+    margin-left: 6px;
+  }
+  
+  .statusLinks button:last-child::after {
+    content: '';
+  }
+  
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  
+  .filters select,
+  .filters input {
+    min-height: 32px;
+    border: 1px solid #8c8f94;
+    background: #fff;
+    padding: 4px 8px;
+  }
+  
+  .filters input {
+    margin-left: auto;
+    min-width: 220px;
+  }
+  
+  .tableWrap {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+  }
+  
+  .ordersTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  
+  .ordersTable th,
+  .ordersTable td {
+    border-bottom: 1px solid #dcdcde;
+    padding: 12px 10px;
+    text-align: left;
+    vertical-align: middle;
+  }
+  
+  .ordersTable th {
+    color: #50575e;
+    font-weight: 600;
+  }
+  
+  .ordersTable tbody tr:nth-child(even) {
+    background: #f6f7f7;
+  }
+  
+  .orderLink {
+    border: 0;
+    background: transparent;
+    color: #2271b1;
+    cursor: pointer;
+    padding: 0;
+    font-weight: 600;
+  }
+  
+  .rowActions {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+    font-size: 12px;
+  }
+  
+  .rowActions button {
+    border: 0;
+    background: transparent;
+    color: #2271b1;
+    cursor: pointer;
+    padding: 0;
+  }
+  
+  .statusBadge {
+    min-width: 84px;
+    display: inline-flex;
+    justify-content: center;
+    padding: 6px 9px;
+    border-radius: 4px;
+    text-transform: capitalize;
+    font-weight: 600;
+  }
+  
+  .completed {
+    background: #c8d7e1;
+    color: #2e4453;
+  }
+  
+  .processing {
+    background: #c6e1c6;
+    color: #2c4700;
+  }
+
+  .shipped {
+    background: #dbeafe;
+    color: #1e40af;
+  }
+  
+  .failed,
+  .cancelled {
+    background: #eba3a3;
+    color: #761919;
+  }
+  
+  .refunded {
+    background: #e5e5e5;
+    color: #50575e;
+  }
+  
+  .pending {
+    background: #f8dda7;
+    color: #573b00;
+  }
+  
+  /* Edit order */
+  
+  .editGrid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 18px;
+    align-items: start;
+  }
+  
+  .editMain {
+    display: grid;
+    gap: 18px;
+  }
+  
+  .orderDetailsBox,
+  .itemsBox,
+  .permissionsBox,
+  .customFieldsBox,
+  .sideBox {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    padding: 16px;
+  }
+  
+  .orderDetailsBox h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 400;
+  }
+  
+  .orderMeta {
+    color: #646970;
+    margin: 6px 0 18px;
+  }
+  
+  .detailColumns {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+  }
+  
+  .detailColumns h3 {
+    margin: 0 0 12px;
+    font-size: 14px;
+  }
+  
+  .detailColumns p {
+    margin: 0 0 10px;
+    line-height: 1.5;
+  }
+  
+  .detailColumns label {
+    display: grid;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  
+  .detailColumns select {
+    min-height: 34px;
+    border: 1px solid #8c8f94;
+    padding: 4px 8px;
+  }
+  
+  .itemsHead {
+    display: grid;
+    grid-template-columns: 1fr 90px 70px 90px;
+    gap: 12px;
+    color: #646970;
+    font-size: 13px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #dcdcde;
+  }
+  
+  .itemRow {
+    display: grid;
+    grid-template-columns: 1fr 90px 70px 90px;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid #dcdcde;
+    align-items: start;
+  }
+  
+  .itemInfo {
+    display: flex;
+    gap: 12px;
+  }
+  
+  .itemInfo img,
+  .itemInfo > span {
+    width: 42px;
+    height: 42px;
+    background: #f0f0f1;
+    object-fit: cover;
+  }
+  
+  .itemInfo a {
+    color: #2271b1;
+    font-weight: 600;
+  }
+  
+  .itemInfo small {
+    display: block;
+    margin-top: 4px;
+    color: #646970;
+  }
+  
+  .totalLines {
+    margin-left: auto;
+    max-width: 320px;
+    padding: 16px 0;
+  }
+  
+  .totalLines p {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 18px;
+    margin: 0 0 10px;
+  }
+  
+  .refundButton {
+    border: 1px solid #3858e9;
+    background: #fff;
+    color: #3858e9;
+    padding: 6px 18px;
+  }
+  
+  .permissionsBox h2,
+  .customFieldsBox h2,
+  .sideBox h3 {
+    margin: 0 0 14px;
+    font-size: 14px;
+  }
+  
+  .permissionsBox div {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .permissionsBox input {
+    flex: 1;
+    min-height: 34px;
+    border: 1px solid #8c8f94;
+    padding: 4px 8px;
+  }
+  
+  .customFieldRow {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 14px;
+    margin-bottom: 12px;
+  }
+  
+  .customFieldRow input,
+  .customFieldRow textarea,
+  .sideBox select,
+  .sideBox textarea {
+    width: 100%;
+    border: 1px solid #8c8f94;
+    min-height: 34px;
+    padding: 6px 8px;
+  }
+  
+  .editSide {
+    display: grid;
+    gap: 14px;
+  }
+  
+  .sideBox {
+    padding: 12px;
+  }
+  
+  .updateButton {
+    width: 100%;
+    min-height: 36px;
+    margin-top: 10px;
+    border: 0;
+    background: #3858e9;
+    color: #fff;
+  }
+  
+  .trashLink {
+    margin-top: 10px;
+    border: 0;
+    background: transparent;
+    color: #b32d2e;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  
+  .noteActions {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  
+  .notesList {
+    margin-top: 14px;
+    display: grid;
+    gap: 10px;
+  }
+  
+  .note {
+    background: #f3e2e8;
+    padding: 10px;
+  }
+  
+  .note p {
+    margin: 0 0 8px;
+  }
+  
+  .note small {
+    color: #646970;
+  }
+  
+  @media (max-width: 1000px) {
+    .editGrid {
+      grid-template-columns: 1fr;
+    }
+  
+    .detailColumns {
+      grid-template-columns: 1fr;
+    }
+  
+    .itemsHead,
+    .itemRow {
+      grid-template-columns: 1fr;
+    }
+  
+    .filters input {
+      margin-left: 0;
+    }
+  }

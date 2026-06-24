@@ -1,0 +1,624 @@
+.checkoutWrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 22px 28px 72px;
+  color: #1d2939;
+  background: #fff;
+  font-family: var(--sans);
+}
+
+.checkoutTitle {
+  margin: 0 0 22px;
+  color: #1d2939;
+  font-size: 30px;
+  line-height: 1.1;
+  font-weight: 800;
+}
+
+.noticeBox {
+  min-height: 56px;
+  margin-bottom: 16px;
+  padding: 0 22px;
+  border-top: 3px solid #006ee6;
+  background: #f7f7f7;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #555;
+  font-size: 14px;
+}
+
+.noticeBox button,
+.privacyText button,
+.payLater button {
+  border: 0;
+  background: transparent;
+  color: #0069c9;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.blueSquareIcon {
+  width: 12px;
+  height: 12px;
+  border: 2px solid #006ee6;
+  display: inline-block;
+  flex-shrink: 0;
+  background: #fff;
+}
+
+.checkoutGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 460px;
+  gap: 58px;
+  align-items: start;
+}
+
+.billingPanel {
+  display: grid;
+  gap: 14px;
+}
+
+.zoneNotice {
+  grid-column: 1 / -1;
+  min-height: 56px;
+  border: 2px solid #006ee6;
+  border-radius: 3px;
+  background: #fff;
+  padding: 0 18px;
+  color: #555;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.checkCircle {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: #006ee6;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.billingPanel h2,
+.additionalInfo h2,
+.orderBox h2 {
+  margin: 10px 0 0;
+  color: #1d2939;
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.checkoutLine {
+  width: 100%;
+  height: 1px;
+  background: #cfd6df;
+  margin: 0 0 10px;
+}
+
+.twoCols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 44px;
+}
+
+.billingPanel label,
+.additionalInfo label {
+  display: grid;
+  gap: 8px;
+  color: #1d2939;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.billingPanel label span,
+.additionalInfo label span {
+  color: #d63638;
+}
+
+.billingPanel label small,
+.additionalInfo label small {
+  color: #1d2939;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.billingPanel input,
+.billingPanel select,
+.billingPanel textarea,
+.additionalInfo textarea {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid #c6cfd9;
+  background: #fff;
+  color: #1d2939;
+  padding: 8px 13px;
+  font-size: 14px;
+  border-radius: 0;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.billingPanel textarea,
+.additionalInfo textarea {
+  min-height: 66px;
+  resize: vertical;
+}
+
+.billingPanel input::placeholder,
+.billingPanel textarea::placeholder,
+.additionalInfo textarea::placeholder {
+  color: #9aa4b2;
+}
+
+.billingPanel input:focus,
+.billingPanel select:focus,
+.billingPanel textarea:focus,
+.additionalInfo textarea:focus {
+  border-color: #006ee6;
+  box-shadow: 0 0 0 1px #006ee6;
+}
+
+.checkboxLabel {
+  display: flex !important;
+  grid-template-columns: unset !important;
+  align-items: center;
+  gap: 8px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+}
+
+.checkboxLabel input {
+  width: 13px !important;
+  min-height: 13px !important;
+  height: 13px !important;
+  padding: 0 !important;
+  accent-color: #006ee6;
+}
+
+.checkboxLabel span {
+  color: #1d2939 !important;
+}
+
+.shippingBlock {
+  display: grid;
+  gap: 14px;
+}
+
+.additionalInfo {
+  margin-top: 2px;
+}
+
+.orderBox {
+  border: 1px solid #c6cfd9;
+  background: #fff;
+  padding: 36px 32px 32px;
+  display: grid;
+  gap: 20px;
+}
+
+.orderBox h2 {
+  margin: 0 0 14px;
+}
+
+.orderTable {
+  display: grid;
+}
+
+.orderHead,
+.orderRow {
+  min-height: 54px;
+  border-bottom: 1px solid #d7dde5;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: center;
+  color: #263548;
+  font-size: 14px;
+}
+
+.orderHead {
+  min-height: 40px;
+}
+
+.orderHead strong {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.orderRow span:first-child {
+  line-height: 1.45;
+}
+
+.orderRow span:last-child {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.totalRow {
+  font-weight: 800;
+}
+
+.payLater {
+  margin-top: 2px;
+  color: #1d2939;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.payLater strong {
+  color: #0070ba;
+  font-weight: 900;
+  font-style: italic;
+}
+
+.paymentMethods {
+  display: grid;
+  gap: 12px;
+  font-size: 13px;
+  color: #1d2939;
+}
+
+.paymentRadio {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+}
+
+.paymentRadio input {
+  width: 14px;
+  height: 14px;
+  accent-color: #006ee6;
+}
+
+.cardBadges {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+}
+
+.cardBadges b {
+  min-width: 28px;
+  min-height: 18px;
+  border-radius: 2px;
+  background: #f0f2f5;
+  border: 1px solid #d1d7df;
+  color: #243447;
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.cardBox {
+  position: relative;
+  background: #f2f3f4;
+  border: 1px solid #d7dde5;
+  padding: 18px 16px;
+  margin-left: 24px;
+  display: grid;
+  gap: 12px;
+}
+
+.cardBox::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 18px;
+  width: 16px;
+  height: 16px;
+  background: #f2f3f4;
+  border-left: 1px solid #d7dde5;
+  border-top: 1px solid #d7dde5;
+  transform: rotate(45deg);
+}
+
+.cardBox label {
+  display: grid;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #1d2939;
+}
+
+.cardBox input {
+  width: 100%;
+  min-height: 36px;
+  border: 1px solid #c6cfd9;
+  background: #fff;
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+.cardTwoCols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.privacyText {
+  margin: 0;
+  color: #344054;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.recaptchaMock {
+  width: 245px;
+  min-height: 64px;
+  border: 1px solid #d7dde5;
+  background: #fafafa;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+}
+
+.recaptchaMock label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #1d2939;
+}
+
+.recaptchaMock input {
+  width: 24px;
+  height: 24px;
+}
+
+.recaptchaMock strong {
+  color: #77808c;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.placeOrderButton {
+  width: 100%;
+  min-height: 46px;
+  border: 0;
+  border-radius: 3px;
+  background: #173a34;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.placeOrderButton:hover {
+  background: #102d28;
+}
+
+.placeOrderButton:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.statusText {
+  margin: 0;
+  color: #344054;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.errorNotice {
+  border-left: 4px solid #d63638;
+  background: #fff5f5;
+  color: #8a2424;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.successNotice {
+  border-left: 4px solid #008a20;
+  background: #f0fff4;
+  color: #006b1b;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.fieldError {
+  border-color: #d63638 !important;
+  box-shadow: 0 0 0 1px #d63638 !important;
+}
+
+.errorText {
+  color: #d63638 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  line-height: 1.4;
+}
+
+
+
+
+.thankYouWrap {
+  min-height: 70vh;
+  background: #faf7fb;
+  padding: 80px 24px;
+  display: grid;
+  place-items: center;
+}
+
+.thankYouCard {
+  width: min(100%, 820px);
+  background: #ffffff;
+  border: 1px solid #eadfed;
+  border-radius: 18px;
+  padding: 46px;
+  box-shadow: 0 22px 70px rgba(26, 11, 34, 0.08);
+}
+
+.thankYouEyebrow {
+  margin: 0 0 12px;
+  color: #7b2c8f;
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.thankYouCard h1 {
+  margin: 0;
+  color: #1d1422;
+  font-family: var(--serif);
+  font-size: clamp(38px, 5vw, 68px);
+  line-height: 0.95;
+  font-weight: 400;
+  letter-spacing: -0.04em;
+}
+
+.thankYouText {
+  max-width: 620px;
+  margin: 22px 0 0;
+  color: #5d5364;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.thankYouSummary {
+  margin-top: 34px;
+  border: 1px solid #eadfed;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.thankYouSummary div {
+  min-height: 58px;
+  padding: 0 18px;
+  border-bottom: 1px solid #eadfed;
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  align-items: center;
+  gap: 16px;
+}
+
+.thankYouSummary div:last-child {
+  border-bottom: 0;
+}
+
+.thankYouSummary span {
+  color: #7d7283;
+  font-size: 14px;
+}
+
+.thankYouSummary strong {
+  color: #1d1422;
+  font-size: 15px;
+  word-break: break-word;
+}
+
+.thankYouItems {
+  margin-top: 32px;
+}
+
+.thankYouItems h2 {
+  margin: 0 0 14px;
+  color: #1d1422;
+  font-size: 22px;
+}
+
+.thankYouItem {
+  min-height: 48px;
+  border-bottom: 1px solid #eadfed;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 18px;
+  align-items: center;
+  color: #1d1422;
+}
+
+.thankYouActions {
+  margin-top: 34px;
+}
+
+.thankYouActions a {
+  min-height: 44px;
+  width: fit-content;
+  padding: 0 28px;
+  border-radius: 999px;
+  background: #7b2c8f;
+  color: #ffffff;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+
+.thankYouSummaryFull {
+  grid-column: 1 / -1;
+}
+
+.thankYouTotals {
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.thankYouGrandTotal strong {
+  font-size: 1.05rem;
+}
+
+
+
+@media (max-width: 1000px) {
+  .checkoutGrid {
+    grid-template-columns: 1fr;
+    gap: 34px;
+  }
+
+  .orderBox {
+    max-width: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .checkoutWrap {
+    padding: 22px 18px 54px;
+  }
+
+  .checkoutTitle {
+    font-size: 28px;
+  }
+
+  .twoCols,
+  .cardTwoCols {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .orderBox {
+    padding: 26px 20px;
+  }
+
+  .noticeBox {
+    padding: 14px 16px;
+    align-items: flex-start;
+  }
+
+  .zoneNotice {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 16px;
+  }
+
+  .recaptchaMock {
+    width: 100%;
+  }
+}

@@ -1,0 +1,1125 @@
+/* components/dashboard/dashboard.module.css */
+
+.shell {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    min-height: 100vh;
+    background: #f4f6f8;
+  }
+  
+ 
+
+
+
+/* ===== Thrive-like LEFT SIDEBAR (white) ===== */
+
+.sidebar {
+    background: #f6f7f9;
+    border-right: 1px solid #e6e9ef;
+    padding: 0;
+  }
+  
+  /* Top profile card */
+ /* top card container */
+.sidebarTopCard {
+    position: relative;
+    height: 110px;
+    overflow: hidden;
+    border-bottom: 1px solid #e6e9ef;
+  }
+  
+  /* background image + dark overlay like thrive */
+  .sidebarTopBg {
+    position: absolute;
+    inset: 0;
+  
+    /* fallback (if inline css var not set) */
+    --sidebar-cover: linear-gradient(135deg, #222, #444);
+  
+    background-image:
+      linear-gradient(90deg, rgba(0,0,0,.65), rgba(0,0,0,.25)),
+      var(--sidebar-cover);
+  
+    background-size: cover;
+    background-position: center;
+  
+    /* makes it look like "photo behind dark glass" */
+    filter: saturate(1.05) contrast(1.05);
+    transform: scale(1.06);
+  }
+  
+  /* extra dark layer for better readability (optional but closer to thrive) */
+  .sidebarTopCard::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,.18);
+    pointer-events: none;
+  }
+  
+  /* inner layout */
+  .sidebarTopInner {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: grid;
+    grid-template-columns: 52px 1fr;
+    gap: 10px;
+    align-items: center;
+    padding: 12px 12px;
+    color: #fff;
+  }
+  
+  /* avatar */
+  .sidebarAvatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,.35);
+    background: rgba(255,255,255,.15);
+  }
+  
+  .sidebarAvatarImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  /* text */
+  .sidebarUserMeta {
+    display: grid;
+    gap: 6px;
+    line-height: 1.1;
+  }
+  
+  .sidebarName {
+    font-weight: 800;
+    font-size: 14px;
+    text-shadow: 0 2px 10px rgba(0,0,0,.45);
+  }
+  
+  .sidebarSignout {
+    display: inline-block;
+    margin-top: 2px;
+    font-size: 12px;
+    color: rgba(255,255,255,.9);
+    text-decoration: none;
+  }
+  
+  .sidebarSignout:hover {
+    text-decoration: underline;
+  }
+  
+  .sidebarEmail {
+    font-size: 12px;
+    color: rgba(255,255,255,.85);
+    text-shadow: 0 2px 10px rgba(0,0,0,.35);
+    word-break: break-all; /* so long email wraps like screenshot */
+  }
+  
+  /* Nav list */
+  .sideNav {
+    padding: 35px 0px;
+    display: grid;
+  }
+  
+  .navItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    color: #5b6775;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 600;
+    border-left: 3px solid transparent;
+  }
+  
+  .navItem:hover {
+    background: #eef2f7;
+    color: #27303a;
+  }
+  
+  .navLeft {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .icon {
+    width: 18px;
+    display: inline-flex;
+    justify-content: center;
+    opacity: 0.9;
+  }
+  
+  .navLabel {
+    display: inline-block;
+  }
+  
+  /* Dropdown group (optional) */
+  .navGroup {
+    border: 0;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .navGroup > summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  .navGroup > summary::-webkit-details-marker {
+    display: none;
+  }
+  
+  .chev {
+    opacity: 0.8;
+  }
+  
+  .navChildren {
+    display: grid;
+    padding: 6px 0 10px 44px;
+    gap: 6px;
+  }
+  
+  .navChildItem {
+    color: #6b7685;
+    text-decoration: none;
+    font-size: 12px;
+    padding: 6px 10px;
+    border-radius: 8px;
+  }
+  
+  .navChildItem:hover {
+    background: #eef2f7;
+    color: #27303a;
+  }
+
+
+
+
+
+  
+  /* Main */
+/* Main */
+.main {
+    display: block;
+  }
+  
+  /* Content */
+  .content {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 16px;
+    padding: 56px 16px 16px; /* keep this because hero avatar overlaps */
+  }
+  
+  /* Topbar */
+  .topbar {
+    background: #2bace2;
+    display: grid;
+    grid-template-columns: 360px 1fr 140px;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 14px;
+    color: #fff;
+  }
+  
+  .search input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+  }
+  
+  .toplinks {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .toplinks a {
+    color: #fff;
+    text-decoration: none;
+    opacity: 0.95;
+  }
+  
+  .icons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  
+  .iconBtn {
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  /* Hero */
+  
+
+
+
+
+
+  /* HERO */
+.hero {
+    position: relative;
+  }
+  
+  /* cover image */
+  .cover {
+    height: 350px;                /* similar to thrive */
+    background-size: cover;
+    background-position: center;
+  }
+  
+  /* dark overlay for readability */
+  .heroOverlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0,0,0,.65) 0%, rgba(0,0,0,.25) 55%, rgba(0,0,0,.10) 100%);
+  }
+  
+  /* content grid */
+  .heroGrid {
+    height: 100%;
+    max-width: 1100px;           /* optional: keeps content centered */
+    margin: 0 auto;
+    padding: 18px 18px;
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 88px;
+    align-items: center;
+  }
+  
+  /* left block */
+  .heroLeft {
+    display: grid;
+    justify-items: center;
+    gap: 10px;
+  }
+  
+  .heroAvatar {
+    width: 140px;
+    height: 140px;
+    border-radius: 999px;
+    background-size: cover;
+    background-position: center;
+    border: 4px solid rgba(255,255,255,.9);
+    box-shadow: 0 10px 25px rgba(0,0,0,.35);
+  }
+  
+  .heroLeftMeta {
+    text-align: center;
+    color: rgba(255,255,255,.92);
+    font-size: 13px;
+    line-height: 1.2;
+  }
+  
+  .heroUsername {
+    font-weight: 700;
+    opacity: .95;
+  }
+  
+  .heroLastActive {
+    opacity: .85;
+    margin-top: 4px;
+  }
+  
+  /* right block */
+  .heroRight {
+    color: #fff;
+    min-width: 0;
+  }
+  
+  .heroName {
+    margin: 0;
+    font-size: 34px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    text-shadow: 0 10px 30px rgba(0,0,0,.35);
+  }
+  
+  .heroBio {
+    margin: 10px 0 0;
+    max-width: 720px;
+    color: rgba(255,255,255,.9);
+    font-size: 14px;
+    line-height: 1.8;
+  
+    display: -webkit-box;
+    -webkit-line-clamp: 3;       /* like thrive: short bio lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .heroEmail {
+    margin-top: 10px;
+    color: rgba(255,255,255,.85);
+    font-size: 13px;
+    word-break: break-word;
+  }
+
+
+
+
+
+  
+  /* Content */
+  /* .content {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 16px;
+    padding: 56px 16px 16px; 
+  }
+   */
+  .center {
+    min-width: 0;
+  }
+  
+  .right {
+    min-width: 0;
+  }
+  
+  /* Tabs card */
+  .tabsCard {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #e6e9ef;
+  }
+  
+  .tabsBar {
+    display: flex;
+    gap: 6px;
+    padding: 10px;
+    border-bottom: 1px solid #e6e9ef;
+    background: #f7f9fc;
+  }
+  
+  .tab {
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: transparent;
+    cursor: pointer;
+    font-weight: 600;
+    color: #2b3a42;
+  }
+  
+  .tabActive {
+    background: #fff;
+    border-color: #d9e2ec;
+  }
+  
+  .tabsBody {
+    padding: 12px;
+  }
+  
+  .subhead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 4px 12px;
+  }
+  
+  .panel {
+    display: grid;
+    gap: 12px;
+  }
+  
+  /* Post box */
+  .postBox {
+    display: grid;
+    grid-template-columns: 1fr 140px;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .postInput {
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #e6e9ef;
+    outline: none;
+  }
+  
+  .postButton {
+    padding: 12px 12px;
+    border-radius: 10px;
+    border: none;
+    background: #2bace2;
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  
+  /* Right rail cards */
+  .rail {
+    display: grid;
+    gap: 12px;
+  }
+  
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e6e9ef;
+    overflow: hidden;
+  }
+  
+  .cardHead {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    background: #f7f9fc;
+    border-bottom: 1px solid #e6e9ef;
+    font-weight: 700;
+  }
+  
+  .featured {
+    padding: 14px;
+    display: grid;
+    gap: 10px;
+  }
+  
+  .featuredAvatar {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: #ddd;
+  }
+  
+  .featuredActions {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .featuredActions button {
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid #e6e9ef;
+    background: #fff;
+    cursor: pointer;
+  }
+  
+  /* Friends */
+  .friendsGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .friendCard {
+    border: 1px solid #e6e9ef;
+    border-radius: 12px;
+    padding: 12px;
+    display: grid;
+    grid-template-columns: 44px 1fr auto;
+    gap: 12px;
+    align-items: center;
+  }
+  
+  .friendAvatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #ddd;
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .friendActions {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .friendActions button {
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1px solid #e6e9ef;
+    background: #fff;
+    cursor: pointer;
+  }
+
+
+
+
+
+
+
+  /* ===== Friends Panel ===== */
+
+.friendsContainer {
+  display: grid;
+  gap: 0;
+}
+
+/* Sub-tab bar */
+.friendsSubTabBar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid rgba(18, 59, 90, 0.10);
+  margin-bottom: 0;
+  background: transparent;
+  border-radius: 10px 10px 0 0;
+  padding: 0 4px;
+}
+
+.friendsSubTab {
+  position: relative;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  color: #2B3A42;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -1px;
+  font-family: inherit;
+}
+
+.friendsSubTab:hover {
+  color: #5a1f68;
+}
+
+.friendsSubTabActive {
+  color: #5a1f68;
+  border-bottom-color: #5a1f68;
+}
+
+/* Badge for request count */
+.friendsBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: #5a1f68;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* Sort row */
+.friendsSortRow {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 0;
+}
+
+.friendsSort {
+  padding: 8px 16px;
+  border: 1px solid rgba(18, 59, 90, 0.12);
+  border-radius: 999px;
+  font-size: 13px;
+  color: #5a1f68;
+  background: rgba(255,255,255,0.95);
+  cursor: pointer;
+  outline: none;
+  min-width: 160px;
+  font-family: inherit;
+  appearance: auto;
+}
+
+/* Friend list */
+.friendsList {
+  display: grid;
+  gap: 10px;
+}
+
+/* Friend card */
+.friendCard {
+  border: 1px solid rgba(18, 59, 90, 0.08);
+  border-radius: 18px;
+  padding: 14px 18px;
+  display: grid;
+  grid-template-columns: 50px 1fr auto;
+  gap: 14px;
+  align-items: center;
+  background: rgba(18, 59, 90, 0.03);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.75);
+  transition: box-shadow 0.15s;
+}
+
+.friendCard:hover {
+  box-shadow: 0 2px 12px rgba(18, 59, 90, 0.10);
+}
+
+.friendAvatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(18, 59, 90, 0.08);
+  flex-shrink: 0;
+}
+
+.friendAvatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.friendInfo {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.friendName {
+  font-weight: 300;
+  font-size: 16px;
+  color: #2B3A42;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: var(--serif);
+  letter-spacing: -0.01em;
+  line-height: 1.08;
+}
+
+.friendHandle {
+  font-size: 11px;
+  color: #5a1f68;
+  font-family: var(--mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.friendStatus {
+  font-size: 11px;
+  color: #7a6f80;
+  font-family: var(--mono);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+}
+
+.friendActions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* Base button — matches chip-btn exactly */
+.friendBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(18, 59, 90, 0.12);
+  background: rgba(255,255,255,0.95);
+  color: #5a1f68;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  font-family: var(--sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.friendCard .friendBtn:hover {
+  background: #7a2c8a;
+  border-color: #7a2c8a;
+  color: #fff;
+}
+
+/* Shared base for action buttons */
+.friendBtnAccept,
+.friendBtnDanger,
+.friendBtnAdd,
+.friendBtnCancel,
+.friendBtnFriends,
+.friendBtnSelf {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  font-family: var(--sans);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+/* Accept — brand filled */
+.friendCard .friendBtnAccept {
+  background: #7a2c8a;
+  border-color: #7a2c8a;
+  color: #fff;
+  cursor: pointer;
+}
+.friendCard .friendBtnAccept:hover:not(:disabled) {
+  background: #5a1f68;
+  border-color: #5a1f68;
+  color: #fff;
+}
+
+/* Danger / Reject / Unfriend */
+.friendCard .friendBtnDanger {
+  background: rgba(255,255,255,0.95);
+  border-color: rgba(185, 28, 28, 0.30);
+  color: #b91c1c;
+  cursor: pointer;
+}
+.friendCard .friendBtnDanger:hover:not(:disabled) {
+  background: #fef2f2;
+  border-color: #f87171;
+  color: #b91c1c;
+}
+
+/* Add Friend — brand filled */
+.friendCard .friendBtnAdd {
+  background: #7a2c8a;
+  border-color: #7a2c8a;
+  color: #fff;
+  cursor: pointer;
+}
+.friendCard .friendBtnAdd:hover:not(:disabled) {
+  background: #5a1f68;
+  border-color: #5a1f68;
+  color: #fff;
+}
+.friendCard .friendBtnAdd:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* Cancel Request */
+.friendCard .friendBtnCancel {
+  background: rgba(255,255,255,0.95);
+  border-color: rgba(217, 119, 6, 0.35);
+  color: #92400e;
+  cursor: pointer;
+}
+.friendCard .friendBtnCancel:hover:not(:disabled) {
+  background: #fef3c7;
+  border-color: #d97706;
+  color: #92400e;
+}
+
+/* Friends badge */
+.friendCard .friendBtnFriends {
+  background: rgba(255,255,255,0.95);
+  border-color: rgba(21, 128, 61, 0.30);
+  color: #15803d;
+  cursor: default;
+}
+
+/* You badge */
+.friendCard .friendBtnSelf {
+  background: rgba(18, 59, 90, 0.04);
+  border-color: rgba(18, 59, 90, 0.10);
+  color: #7a6f80;
+  cursor: default;
+}
+
+/* Empty state */
+.friendsEmptyBox {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(18, 59, 90, 0.08);
+  margin-top: 4px;
+  background: rgba(18, 59, 90, 0.03);
+}
+
+.friendsEmptyIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  min-height: 56px;
+  background: #5a1f68;
+  flex-shrink: 0;
+  font-size: 20px;
+  font-weight: 900;
+  color: #fff;
+  align-self: stretch;
+}
+
+.friendsEmptyBox > span {
+  padding: 14px 16px;
+  font-size: 13px;
+  color: #2B3A42;
+  flex: 1;
+  font-family: inherit;
+}
+
+/* Loading state */
+.friendsLoading {
+  padding: 20px 0;
+  text-align: center;
+  color: #7a6f80;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+/* Groups panel */
+.groupsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  padding: 8px 0;
+}
+
+/* Scale down font sizes only — font families are untouched */
+.groupsGrid :global(.group-body) h3 {
+  font-size: 20px;
+  font-weight: 400;
+  margin: 6px 0;
+  letter-spacing: 0;
+  line-height: 1.3;
+}
+
+.groupsGrid :global(.group-body) p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #7a6f80;
+}
+
+.groupsGrid :global(.group-topline) {
+  font-size: 11px;
+  letter-spacing: 0.10em;
+}
+
+.groupsGrid :global(.group-body) {
+  padding: 14px;
+}
+
+.groupsGrid :global(.small-link) {
+  font-size: 11px;
+}
+
+.groupsGrid :global(.small-button) {
+  font-size: 11px !important;
+  padding: 0 12px;
+  min-height: 28px;
+}
+
+/* Profile panel */
+.profilePanel {
+  padding: 6px 2px;
+}
+
+.profileGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.profileField {
+  display: grid;
+  gap: 7px;
+}
+
+.profileFieldFull {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 7px;
+}
+
+.profileLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #3a2f44;
+  font-family: inherit;
+}
+
+.profileInput {
+  height: 44px;
+  border: 1px solid rgba(18, 59, 90, 0.15);
+  border-radius: 999px;
+  padding: 0 16px;
+  outline: none;
+  font: inherit;
+  font-size: 14px;
+  color: #1a1320;
+  background: rgba(255,255,255,0.98);
+  box-shadow: inset 0 0 0 1px rgba(18, 59, 90, 0.06);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.profileInput:focus {
+  border-color: #7a2c8a;
+  box-shadow: 0 0 0 3px rgba(122, 44, 138, 0.12);
+}
+
+.profileTextarea {
+  border: 1px solid rgba(18, 59, 90, 0.15);
+  border-radius: 14px;
+  padding: 12px 16px;
+  outline: none;
+  resize: vertical;
+  font: inherit;
+  font-size: 14px;
+  color: #1a1320;
+  background: rgba(255,255,255,0.98);
+  box-shadow: inset 0 0 0 1px rgba(18, 59, 90, 0.06);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  min-height: 110px;
+}
+
+.profileTextarea:focus {
+  border-color: #7a2c8a;
+  box-shadow: 0 0 0 3px rgba(122, 44, 138, 0.12);
+}
+
+.profileActionsRow {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.profileBtn {
+  height: 40px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(18, 59, 90, 0.12);
+  background: rgba(255,255,255,0.95);
+  color: #5a1f68;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.profileBtn:hover:not(:disabled) {
+  background: #7a2c8a;
+  border-color: #7a2c8a;
+  color: #fff;
+}
+
+.profileBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.profileSaveWrap {
+  margin-left: auto;
+}
+
+.profileSave {
+  height: 40px;
+  padding: 0 24px;
+  border-radius: 999px;
+  border: none;
+  background: #7a2c8a;
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: background 0.15s;
+}
+
+.profileSave:hover:not(:disabled) {
+  background: #5a1f68;
+}
+
+.profileSave:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
+.profileError {
+  grid-column: 1 / -1;
+  color: #b42318;
+  font-size: 13px;
+}
+
+/* Modal */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: grid;
+  place-items: center;
+  z-index: 9999;
+}
+
+.modal {
+  width: min(860px, 92vw);
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e6e9ef;
+}
+
+.modalHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 12px;
+  background: #f7f9fc;
+  border-bottom: 1px solid #e6e9ef;
+}
+
+.modalTitle {
+  font-weight: 900;
+}
+
+.modalClose {
+  border: 1px solid #d9e2ec;
+  background: #fff;
+  border-radius: 8px;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.modalGrid {
+  padding: 12px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.assetCard {
+  border: 1px solid #e6e9ef;
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  padding: 10px;
+  text-align: left;
+}
+
+.assetThumb {
+  width: 100%;
+  height: 110px;
+  border-radius: 8px;
+  background-size: cover;
+  background-position: center;
+  background-color: #eee;
+}
+
+.assetTitle {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #52606d;
+}
