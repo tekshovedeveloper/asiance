@@ -9,7 +9,7 @@ export default function LoginPage() {
       <SiteHeader />
       <section className="auth-page">
         <div>
-          <Suspense>
+          <Suspense fallback={<div style={{ padding: 20 }}>Loading…</div>}>
             <AuthPanel mode="login" />
           </Suspense>
           <p style={{ textAlign: 'center' }}>
