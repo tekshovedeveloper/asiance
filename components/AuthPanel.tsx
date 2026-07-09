@@ -131,7 +131,7 @@ export function AuthPanel({ mode }: { mode: 'login' | 'register' }) {
     <form className="auth-panel" onSubmit={submit}>
       <h1>join the circle.</h1>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+      <div className="auth-name-grid">
         <label>
           First Name
           <input name="firstName" required minLength={2} autoComplete="given-name" />
@@ -159,7 +159,7 @@ export function AuthPanel({ mode }: { mode: 'login' | 'register' }) {
 
       <label>
         Country
-        <select name="country" required defaultValue="">
+        <select className="auth-select" name="country" required defaultValue="">
           <option value="" disabled>Select your country</option>
           {COUNTRIES.map((c) => (
             <option key={c} value={c}>{c}</option>

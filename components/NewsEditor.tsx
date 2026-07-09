@@ -3,6 +3,7 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Image from '@tiptap/extension-image';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
 
 export interface NewsEditorProps {
   value: string;
@@ -26,7 +27,7 @@ export function NewsEditor({ value, onChange }: NewsEditorProps) {
   });
 
   if (!editor) {
-    return <div>Loading editor...</div>;
+    return <LoadingIndicator compact label="Loading editor..." />;
   }
 
   return (

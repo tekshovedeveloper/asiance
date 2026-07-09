@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
 import {
   API_URL,
   commentOnActivity,
@@ -316,7 +317,7 @@ export function ActivityPanel() {
       {/* Feed */}
       <section className="dash-card activity-wall-card activity-feed-shell">
         {loading ? (
-          <p style={{ color: '#9ca3af', padding: '24px 0', textAlign: 'center' }}>Loading…</p>
+          <LoadingIndicator compact label="Loading activity..." />
         ) : feedItems.length === 0 ? (
           <p style={{ color: '#9ca3af', padding: '24px 0', textAlign: 'center' }}>No posts yet. Share your first update above!</p>
         ) : (

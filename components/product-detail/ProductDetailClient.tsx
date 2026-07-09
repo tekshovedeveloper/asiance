@@ -303,10 +303,6 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
 
   const selectedImage = selectedVariation?.image || product.image;
 
-  console.log('SELECTED VALUES:', selectedValues);
-  console.log('SELECTED VARIATION:', selectedVariation);
-  console.log('SELECTED PRICE:', selectedPrice);
-
   return (
     <>
       <section className={styles.wrapper}>
@@ -329,7 +325,6 @@ export function ProductDetailClient({ product }: ProductDetailClientProps) {
     </>
   );
 }
-
 
 
 

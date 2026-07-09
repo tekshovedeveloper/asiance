@@ -3,6 +3,7 @@
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
 import {
   BarChart3,
   FileText,
@@ -1858,7 +1859,7 @@ if (!authChecked) {
                     Group Posts <span className="wp-count-badge">{groupActivityItems.length}</span>
                   </h3>
                   {groupActivityLoading ? (
-                    <p style={{ color: '#999', fontSize: 14, padding: '16px 0' }}>Loading posts…</p>
+                    <LoadingIndicator compact label="Loading posts..." />
                   ) : groupActivityItems.length === 0 ? (
                     <p style={{ color: '#999', fontSize: 14, padding: '16px 0' }}>No posts in this group yet.</p>
                   ) : (
@@ -1969,7 +1970,7 @@ if (!authChecked) {
               </div>
             ) : (
               adminGroupsLoading ? (
-                <p style={{ color: '#999', padding: 24 }}>Loading groups…</p>
+                <LoadingIndicator compact label="Loading groups..." />
               ) : adminGroups.length === 0 ? (
                 <p style={{ color: '#999', padding: 24 }}>No groups found. Create one first.</p>
               ) : (

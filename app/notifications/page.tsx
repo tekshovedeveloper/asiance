@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Bell, MessageCircle, UserPlus, Heart } from 'lucide-react';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
 import { getNotifications, markAllNotificationsRead } from '@/lib/api';
 
 type NotifItem = {
@@ -52,7 +53,7 @@ export default function NotificationsPage() {
         <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 24 }}>All Notifications</h1>
 
         {loading ? (
-          <p style={{ color: 'var(--ink-muted)', textAlign: 'center', paddingTop: 40 }}>Loading…</p>
+          <LoadingIndicator compact label="Loading notifications..." />
         ) : notifications.length === 0 ? (
           <p style={{ color: 'var(--ink-muted)', textAlign: 'center', paddingTop: 40 }}>No notifications yet.</p>
         ) : (

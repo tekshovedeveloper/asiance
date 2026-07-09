@@ -117,18 +117,7 @@ export const articles: Article[] = [
     discussionCount: 22,
     featured: true,
   },
-  {
-    title: 'Five transportive novels that will take you somewhere else',
-    slug: 'transportive-novels',
-    category: 'Entertainment',
-    excerpt: 'A reading list for long flights, quiet weekends, and the soft hour before sleep.',
-    content:
-      'The best travel reading does not always involve a map. These novels move by mood: humid kitchens, train platforms, islands, hotels, and the private weather inside a person deciding who to become.',
-    image: 'https://picsum.photos/seed/asiance-books-1/1200/760',
-    authorName: 'Noor Aziz',
-    tags: ['books', 'culture'],
-    discussionCount: 16,
-  },
+
   {
     title: 'Meet fashion’s new it sneaker',
     slug: 'fashion-new-it-sneaker',
@@ -180,7 +169,7 @@ export const newsItems: NewsItem[] = [
     content:
       'The best travel reading does not always involve a map. These novels move by mood: humid kitchens, train platforms, islands, hotels, and private weather.',
     image: 'https://picsum.photos/seed/asiance-books-news/1200/760',
-    authorName: 'Noor Aziz',
+    authorName: 'jack',
     tags: ['books', 'culture'],
     featured: false,
     breaking: false,
@@ -306,7 +295,7 @@ export const groups: Group[] = [
     tags: ['health', 'ritual'],
   },
   {
-    name: 'Karachi Rituals',
+    name: 'newyork Rituals',
     slug: 'karachi-rituals',
     category: 'Local',
     privacy: 'public',
@@ -329,9 +318,9 @@ export const members: Member[] = [
     interests: ['objects', 'travel', 'ritual'],
   },
   {
-    name: 'Noor Aziz',
+    name: 'jack',
     email: 'noor@asiance.co',
-    handle: 'nooraziz',
+    handle: 'jack',
     avatar: 'https://api.dicebear.com/9.x/initials/svg?seed=Noor%20Aziz',
     bio: 'Karachi-based reader, event host, and collector of excellent cotton.',
     location: 'Karachi, Pakistan',
@@ -404,8 +393,8 @@ export const activity: Activity[] = [
     media: [{ type: 'image', url: 'https://picsum.photos/seed/asiance-activity-2/900/600', caption: 'Countertop ferments' }],
   },
   {
-    actorName: 'Noor Aziz',
-    actorHandle: 'nooraziz',
+    actorName: 'jack',
+    actorHandle: 'jack',
     type: 'comment',
     text: 'left a note on gentle contrast therapy: start softer than you think.',
     targetName: 'Gentle Contrast Therapy',
@@ -440,7 +429,7 @@ export const threads: ForumThread[] = [
     slug: 'karachi-fabric-market-route',
     category: 'Local',
     groupSlug: 'karachi-rituals',
-    authorName: 'Noor Aziz',
+    authorName: 'jack',
     excerpt: 'A gentle half-day route with tea stops and trusted shops.',
     replies: 11,
   },

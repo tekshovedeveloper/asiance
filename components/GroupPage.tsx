@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
 import {
   API_URL,
   commentOnActivity,
@@ -464,7 +465,7 @@ export function GroupPage({ group: initialGroup }: { group: Group }) {
                   <p>This is a private group. {memberStatus === 'pending' ? 'Your request is pending admin approval.' : 'Join to see posts.'}</p>
                 </div>
               ) : feedLoading ? (
-                <p className="form-status">Loading posts…</p>
+                <LoadingIndicator compact label="Loading posts..." />
               ) : feedError ? (
                 <p className="form-status">{feedError}</p>
               ) : feedItems.length === 0 ? (
@@ -624,7 +625,7 @@ export function GroupPage({ group: initialGroup }: { group: Group }) {
                 <p>Members list is only visible to group members.</p>
               </div>
             ) : membersLoading ? (
-              <p className="form-status">Loading members…</p>
+              <LoadingIndicator compact label="Loading members..." />
             ) : members.length === 0 ? (
               <p className="form-status" style={{ color: '#999' }}>No members yet.</p>
             ) : (

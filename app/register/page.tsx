@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { AuthPanel } from '@/components/AuthPanel';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
 import { SiteHeader } from '@/components/SiteHeader';
 
 export default function RegisterPage() {
@@ -9,7 +10,7 @@ export default function RegisterPage() {
       <SiteHeader />
       <section className="auth-page">
         <div>
-          <Suspense fallback={<div style={{ padding: 20 }}>Loading…</div>}>
+          <Suspense fallback={<LoadingIndicator compact />}>
             <AuthPanel mode="register" />
           </Suspense>
 

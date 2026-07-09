@@ -41,7 +41,6 @@ export default async function ProductPage({
 }) {
   const { slug } = await params;
   const product = await getProduct(slug);
-  console.log('PRODUCT API RESPONSE FROM /shop/[slug]/page.tsx:', JSON.stringify(product, null, 2));
 
   if (!product) {
     notFound();

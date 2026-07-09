@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
 import {
   Bell, MessageCircle, Search, ShoppingBag, ChevronDown,
   User, LogOut, Settings, UserPlus, Heart, X,
@@ -175,7 +176,9 @@ export function SiteHeader({ active }: { active?: string }) {
                 </div>
                 <div className="notif-panel-list">
                   {notifLoading ? (
-                    <div className="notif-panel-empty">Loading…</div>
+                    <div className="notif-panel-empty">
+                      <LoadingIndicator compact />
+                    </div>
                   ) : notifications.length === 0 ? (
                     <div className="notif-panel-empty">No notifications yet</div>
                   ) : (

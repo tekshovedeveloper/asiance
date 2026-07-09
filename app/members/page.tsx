@@ -4,7 +4,7 @@ import { getMembers } from '@/lib/api';
 import { MembersGrid } from '@/components/members/MembersGrid';
 
 export default async function MembersPage() {
-  const members = await getMembers();
+  const members = await getMembers({ cache: 'no-store' });
 
   return (
     <main>

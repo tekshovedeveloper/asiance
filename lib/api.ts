@@ -26,26 +26,60 @@ import type { DashboardUser } from "@/components/dashboard/types";
 
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000/api';
+const SERVER_API_URL = process.env.API_INTERNAL_URL ?? API_URL;
+const DEFAULT_FETCH_TIMEOUT_MS = 3000;
+const PUBLIC_API_ORIGIN = API_URL.replace(/\/api\/?$/, '');
+
+function apiUrl(path: string) {
+  const baseUrl = typeof window === 'undefined' ? SERVER_API_URL : API_URL;
+  return `${baseUrl}${path}`;
+}
+
+function normalizeApiData<T>(value: T): T {
+  if (typeof value === 'string') {
+    if (value.startsWith('/api/uploads/')) {
+      return `${PUBLIC_API_ORIGIN}${value}` as T;
+    }
+
+    return value.replace(/^https?:\/\/(?:localhost|127\.0\.0\.1):4000/i, PUBLIC_API_ORIGIN) as T;
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((item) => normalizeApiData(item)) as T;
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, item]) => [key, normalizeApiData(item)]),
+    ) as T;
+  }
+
+  return value;
+}
 
 async function fetchJson<T>(path: string, fallback: T, init?: RequestInit): Promise<T> {
-  const deadline = new Promise<T>((resolve) => setTimeout(() => resolve(fallback), 4000));
-  const request = (async () => {
-    try {
-      const response = await fetch(`${API_URL}${path}`, {
-        ...init,
-        next: init?.method || init?.cache === 'no-store' ? undefined : { revalidate: 60 },
-        headers: {
-          'Content-Type': 'application/json',
-          ...(init?.headers ?? {}),
-        },
-      });
-      if (!response.ok) return fallback;
-      return response.json() as Promise<T>;
-    } catch {
-      return fallback;
-    }
-  })();
-  return Promise.race([request, deadline]);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), DEFAULT_FETCH_TIMEOUT_MS);
+
+  try {
+    const response = await fetch(apiUrl(path), {
+      ...init,
+      cache: init?.cache ?? (init?.method ? undefined : 'no-store'),
+      signal: init?.signal ?? controller.signal,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(init?.headers ?? {}),
+      },
+    });
+
+    if (!response.ok) return fallback;
+    const data = await response.json() as T;
+    return normalizeApiData(data);
+  } catch {
+    return fallback;
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 export function getProducts() {
@@ -54,7 +88,6 @@ export function getProducts() {
 
 export async function getProduct(slug: string) {
   const fallback = products.find((product) => product.slug === slug) ?? products[0];
-  console.log("the fallback",fallback )
   return fetchJson<Product>(`/shop/products/${slug}`, fallback);
 }
 
@@ -204,8 +237,8 @@ export async function getGroupActivity(slug: string) {
   return res.json() as Promise<Activity[]>;
 }
 
-export function getMembers() {
-  return fetchJson<Member[]>('/members', members);
+export function getMembers(init?: RequestInit) {
+  return fetchJson<Member[]>('/members', members, init);
 }
 
 export async function getMember(handle: string) {
@@ -244,7 +277,7 @@ function authHeaders(init?: RequestInit) {
 
 async function requestJson<T>(path: string, init?: RequestInit, fallback?: T): Promise<T> {
   try {
-    const response = await fetch(`${API_URL}${path}`, {
+    const response = await fetch(apiUrl(path), {
       ...init,
       headers: {
         'Content-Type': 'application/json',
@@ -273,13 +306,14 @@ async function requestJson<T>(path: string, init?: RequestInit, fallback?: T): P
       throw new Error(text || 'Request failed.');
     }
 
-    return response.json() as Promise<T>;
+    const data = await response.json() as T;
+    return normalizeApiData(data);
   } catch (error) {
-    if (error instanceof Error) {
-      throw error;
-    }
     if (fallback !== undefined) {
       return fallback;
+    }
+    if (error instanceof Error) {
+      throw error;
     }
     throw new Error('Request failed.');
   }
@@ -424,8 +458,8 @@ export async function cancelFriendRequest(userId: string) {
   return requestJson<{ ok: boolean }>(`/friends/${userId}/cancel`, { method: 'POST' });
 }
 
-export function getThreads() {
-  return fetchJson<ForumThread[]>('/forums/threads', threads);
+export function getThreads(init?: RequestInit) {
+  return fetchJson<ForumThread[]>('/forums/threads', threads, init);
 }
 
 export function getFiles() {
@@ -561,6 +595,3 @@ export async function uploadChatMedia(file: File): Promise<string> {
   const data = (await res.json()) as { url: string };
   return data.url.startsWith('http') ? data.url : `${API_URL.replace(/\/api$/, '')}${data.url}`;
 }
-
-
-

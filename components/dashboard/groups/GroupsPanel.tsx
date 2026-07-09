@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { getMyGroups } from '@/lib/api';
 import { GroupCard } from '@/components/GroupCard';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
 import type { Group } from '@/lib/types';
 import styles from '../dashboard.module.css';
 
@@ -18,11 +19,7 @@ export function GroupsPanel() {
   }, []);
 
   if (loading) {
-    return (
-      <div style={{ padding: '40px 0', textAlign: 'center', color: '#9ca3af' }}>
-        Loading groups…
-      </div>
-    );
+    return <LoadingIndicator compact label="Loading groups..." />;
   }
 
   if (groups.length === 0) {

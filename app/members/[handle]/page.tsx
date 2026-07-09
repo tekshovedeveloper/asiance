@@ -6,6 +6,7 @@ import { MessageCircle, UserPlus, UserCheck, UserX, X } from 'lucide-react';
 import { MemberActivityFeed } from '@/components/MemberActivityFeed';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
 import {
   getMemberActivity,
   getMe,
@@ -152,9 +153,7 @@ export default function MemberProfilePage({
     return (
       <main>
         <SiteHeader active="Members" />
-        <div style={{ padding: '80px 20px', textAlign: 'center', color: 'var(--ink-muted)' }}>
-          Loading profile…
-        </div>
+        <LoadingIndicator label="Loading profile..." />
       </main>
     );
   }

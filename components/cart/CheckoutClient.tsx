@@ -202,10 +202,6 @@ const total = subtotal + shipping;
         return;
       }
 
-      console.log('subtotal:', subtotal);
-console.log('billingCountry:', billingCountry);
-console.log('regionName:', regionName);
-  
       const res = await fetch(
         `${API_URL}/shop/shipping/options?total=${encodeURIComponent(String(subtotal))}&region=${encodeURIComponent(regionName)}`,
       );

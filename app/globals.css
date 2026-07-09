@@ -79,6 +79,66 @@ button {
   cursor: pointer;
 }
 
+.loader-panel,
+.loader-inline,
+.api-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--ink-muted);
+  font-family: var(--sans);
+  font-size: 13px;
+  letter-spacing: 0;
+}
+
+.loader-panel {
+  min-height: 220px;
+  padding: 56px 20px;
+  text-align: center;
+}
+
+.loader-inline {
+  min-height: 40px;
+  padding: 8px 0;
+}
+
+.loader-spinner {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  border: 2px solid var(--line);
+  border-top-color: var(--brand);
+  border-radius: 50%;
+  animation: loader-spin 0.75s linear infinite;
+}
+
+.api-loader {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 90;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(250, 247, 251, 0.96);
+  box-shadow: var(--shadow);
+  color: var(--ink);
+}
+
+@keyframes loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader-spinner {
+    animation-duration: 1.5s;
+  }
+}
+
 .site-nav-promo {
   position: sticky;
   top: 0;
@@ -2160,6 +2220,7 @@ em {
 }
 
 .auth-panel input,
+.auth-panel select,
 .panel-form input,
 .panel-form textarea,
 .panel-form select,
@@ -2173,8 +2234,51 @@ em {
   color: var(--ink);
 }
 
+.auth-name-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+}
+
+.auth-panel select {
+  appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--ink) 50%),
+    linear-gradient(135deg, var(--ink) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) calc(50% - 3px),
+    calc(100% - 12px) calc(50% - 3px);
+  background-size: 6px 6px, 6px 6px;
+  background-repeat: no-repeat;
+  padding-right: 42px;
+}
+
+.auth-panel select:required:invalid {
+  color: var(--ink-muted);
+}
+
+.auth-panel option {
+  color: var(--ink);
+}
+
+.auth-panel input:focus,
+.auth-panel select:focus,
+.panel-form input:focus,
+.panel-form textarea:focus,
+.panel-form select:focus {
+  border-color: var(--brand-soft);
+  box-shadow: 0 0 0 4px rgba(122, 44, 138, 0.1);
+  outline: none;
+}
+
 .panel-form textarea {
   resize: vertical;
+}
+
+@media (max-width: 640px) {
+  .auth-name-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .form-status {
@@ -7418,4 +7522,3 @@ em {
   transition: color 0.15s;
 }
 .orders-toast-close:hover { color: #fff; }
-

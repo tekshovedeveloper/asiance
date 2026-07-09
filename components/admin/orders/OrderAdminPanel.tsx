@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
 import { API_URL } from '@/lib/api';
 import styles from './Orders.module.css';
 import type { AdminOrder, AdminOrderStatus } from './types';
@@ -622,13 +623,15 @@ export function OrderAdminPanel({ token, onChanged }: Props) {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={6}>Loading orders...</td>
+                <td colSpan={7}>
+                  <LoadingIndicator compact label="Loading orders..." />
+                </td>
               </tr>
             ) : null}
 
             {!loading && orders.length === 0 ? (
               <tr>
-                <td colSpan={6}>No orders found.</td>
+                <td colSpan={7}>No orders found.</td>
               </tr>
             ) : null}
 

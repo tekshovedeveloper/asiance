@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { ChevronDown, ChevronUp, Package, X } from 'lucide-react';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
 import { getMyOrders, cancelMyOrder } from '@/lib/api';
 
 type OrderStatus = 'processing' | 'shipped' | 'completed' | 'cancelled' | 'refunded' | 'failed' | 'pending' | 'trash';
@@ -116,11 +117,7 @@ export function OrdersPanel() {
   const visible = filter === 'all' ? orders : orders.filter((o) => o.status === filter);
 
   if (loading) {
-    return (
-      <div style={{ padding: '40px 0', textAlign: 'center', color: '#9ca3af' }}>
-        Loading orders…
-      </div>
-    );
+    return <LoadingIndicator compact label="Loading orders..." />;
   }
 
   if (fetchError) {

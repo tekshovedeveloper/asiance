@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { LoadingIndicator } from "@/components/LoadingIndicator";
 import styles from "../dashboard.module.css";
 import {
   getFriendsList,
@@ -363,7 +364,9 @@ export function FriendsPanel() {
 
       {/* Content */}
       {loading ? (
-        <div className={styles.friendsLoading}>Loading…</div>
+        <div className={styles.friendsLoading}>
+          <LoadingIndicator compact label="Loading friends..." />
+        </div>
       ) : isEmpty ? (
         <EmptyState />
       ) : subTab === "friendships" ? (

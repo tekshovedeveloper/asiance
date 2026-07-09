@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import type { CSSProperties } from 'react';
 import { Ban, CheckCircle, Eye, Pencil, Search, Trash2 } from 'lucide-react';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
 import { API_URL } from '@/lib/api';
 import { PasswordInput } from '@/components/PasswordInput';
 
@@ -168,7 +169,7 @@ export function UserAdminPanel({ token, onChanged }: Props) {
       )}
 
       {loading ? (
-        <p style={{ padding: 20 }}>Loading users...</p>
+        <LoadingIndicator compact label="Loading users..." />
       ) : (
         <div className="wp-table-wrap">
           <table className="wp-news-table">

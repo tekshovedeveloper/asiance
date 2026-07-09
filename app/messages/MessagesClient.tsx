@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
 import { useSocketContext } from '@/components/SocketProvider';
 import {
   getMe,
@@ -510,9 +511,7 @@ export default function MessagesPage() {
     return (
       <main>
         <SiteHeader active="Activity" />
-        <div style={{ padding: '80px 20px', textAlign: 'center', color: 'var(--ink-muted)' }}>
-          Loading conversations…
-        </div>
+        <LoadingIndicator label="Loading conversations..." />
       </main>
     );
   }

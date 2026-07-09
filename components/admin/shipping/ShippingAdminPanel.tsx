@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
 import { API_URL } from '@/lib/api';
 import styles from './Shipping.module.css';
 import { ShippingMethodModal } from './ShippingMethodModal';
@@ -233,7 +234,11 @@ export function ShippingAdminPanel({ token, onChanged }: Props) {
           <span>Actions</span>
         </div>
 
-        {loading ? <div className={styles.zoneRow}>Loading...</div> : null}
+        {loading ? (
+          <div className={styles.zoneRow}>
+            <LoadingIndicator compact label="Loading shipping zones..." />
+          </div>
+        ) : null}
 
         {!loading &&
           zones.map((zone) => (

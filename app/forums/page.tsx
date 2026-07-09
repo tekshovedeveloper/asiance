@@ -3,7 +3,7 @@ import { SiteHeader } from '@/components/SiteHeader';
 import { getThreads } from '@/lib/api';
 
 export default async function ForumsPage() {
-  const threads = await getThreads();
+  const threads = await getThreads({ cache: 'no-store' });
 
   return (
     <main>
