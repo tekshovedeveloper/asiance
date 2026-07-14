@@ -20,6 +20,8 @@ import {
   type ChatThread,
   type ChatMessage,
 } from '@/lib/api';
+import { showAppToast } from '@/lib/app-toast';
+import { isUploadFileTooLargeError, uploadErrorMessage } from '@/lib/upload-validation';
 import type { DashboardUser } from '@/components/dashboard/types';
 import { Paperclip, Send, Smile, X, Trash2, Trash, Maximize2 } from 'lucide-react';
 
@@ -492,8 +494,10 @@ export default function MessagesPage() {
       else if (file.type.startsWith('video/')) type = 'video';
       else if (file.type.startsWith('audio/')) type = 'audio';
       setPendingMedia({ url, type, name: file.name });
-    } catch {
-      alert('Upload failed. Please try again.');
+    } catch (error) {
+      if (!isUploadFileTooLargeError(error)) {
+        showAppToast(uploadErrorMessage(error), 'error');
+      }
     } finally {
       setUploadingMedia(false);
       if (fileInputRef.current) fileInputRef.current.value = '';

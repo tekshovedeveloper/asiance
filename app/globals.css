@@ -6771,6 +6771,26 @@ em {
   background: rgba(0,0,0,0.08);
 }
 
+.app-toast {
+  cursor: default;
+}
+
+.app-toast-stack {
+  bottom: 96px;
+}
+
+.app-toast-error .notif-toast-icon {
+  background: #b42318;
+}
+
+.app-toast-success .notif-toast-icon {
+  background: #067647;
+}
+
+.app-toast-info .notif-toast-icon {
+  background: var(--brand-soft, #7c3aed);
+}
+
 /* ─── Notification bell panel ─────────────────────────────────── */
 
 .notif-bell-wrap {

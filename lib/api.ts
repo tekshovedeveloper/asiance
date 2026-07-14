@@ -23,12 +23,57 @@ import type {
   Product,
 } from './types';
 import type { DashboardUser } from "@/components/dashboard/types";
+import { showAppToast } from './app-toast';
+import { assertUploadFileSize } from './upload-validation';
 
 
 export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000/api';
 const SERVER_API_URL = process.env.API_INTERNAL_URL ?? API_URL;
 const DEFAULT_FETCH_TIMEOUT_MS = 3000;
 const PUBLIC_API_ORIGIN = API_URL.replace(/\/api\/?$/, '');
+
+function absoluteUploadUrl(url: string) {
+  return url.startsWith('http') ? url : `${API_URL.replace(/\/api$/, '')}${url}`;
+}
+
+async function readUploadErrorMessage(response: Response) {
+  try {
+    const data = await response.clone().json();
+    const message = Array.isArray(data?.message) ? data.message.join(' ') : data?.message;
+
+    if (typeof message === 'string' && message.trim()) {
+      return message;
+    }
+  } catch {}
+
+  return 'Upload failed. Please try again.';
+}
+
+export async function uploadApiFile(path: string, file: File, tokenOverride?: string | null) {
+  assertUploadFileSize(file);
+
+  const token = tokenOverride ?? (typeof window !== 'undefined' ? localStorage.getItem('asiance_token') : null);
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const response = await fetch(`${API_URL}${path}`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const message = await readUploadErrorMessage(response);
+
+    if (response.status === 413 || message.toLowerCase().includes('too large')) {
+      showAppToast(message, 'error');
+    }
+
+    throw new Error(message);
+  }
+
+  return response.json() as Promise<{ url: string; publicId?: string; resourceType?: string }>;
+}
 
 function apiUrl(path: string) {
   const baseUrl = typeof window === 'undefined' ? SERVER_API_URL : API_URL;
@@ -428,18 +473,9 @@ export async function getFriendRequests(): Promise<FriendRequest[]> {
   return requestJson<FriendRequest[]>('/friends/requests', { method: 'GET' }, []);
 }
 
-export async function uploadMedia(file: File): Promise<string> {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('asiance_token') : null;
-  const formData = new FormData();
-  formData.append('file', file);
-  const response = await fetch(`${API_URL}/uploads`, {
-    method: 'POST',
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-    body: formData,
-  });
-  if (!response.ok) throw new Error('Upload failed');
-  const data = await response.json();
-  return data.url as string;
+export async function uploadMedia(file: File, tokenOverride?: string | null): Promise<string> {
+  const data = await uploadApiFile('/uploads', file, tokenOverride);
+  return data.url;
 }
 
 export async function acceptFriendRequest(friendshipId: string) {
@@ -469,27 +505,13 @@ export function getFiles() {
 
 
 export async function uploadImage(file: File) {
-  const token = typeof window !== "undefined" ? localStorage.getItem("asiance_token") : null;
+  const data = await uploadApiFile('/uploads', file);
+  return { url: absoluteUploadUrl(data.url) };
+}
 
-  const fd = new FormData();
-  fd.append("file", file);
-
-  const res = await fetch(`${API_URL}/uploads`, {
-    method: "POST",
-    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    body: fd,
-  });
-
-  if (!res.ok) throw new Error("Upload failed");
-
-  const data = (await res.json()) as { url: string };
-
-  // ✅ convert "/api/uploads/xxx.jpg" into "http://localhost:4000/api/uploads/xxx.jpg"
-  const absoluteUrl = data.url.startsWith("http")
-    ? data.url
-    : `${API_URL.replace(/\/api$/, "")}${data.url}`;
-
-  return { url: absoluteUrl };
+export async function uploadLibraryMedia(file: File, tokenOverride?: string | null): Promise<string> {
+  const data = await uploadApiFile('/library/upload', file, tokenOverride);
+  return data.url;
 }
 
 
@@ -583,15 +605,6 @@ export async function deleteChatThread(threadId: string) {
 }
 
 export async function uploadChatMedia(file: File): Promise<string> {
-  const token = typeof window !== 'undefined' ? localStorage.getItem('asiance_token') : null;
-  const fd = new FormData();
-  fd.append('file', file);
-  const res = await fetch(`${API_URL}/uploads`, {
-    method: 'POST',
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-    body: fd,
-  });
-  if (!res.ok) throw new Error('Upload failed');
-  const data = (await res.json()) as { url: string };
-  return data.url.startsWith('http') ? data.url : `${API_URL.replace(/\/api$/, '')}${data.url}`;
+  const data = await uploadApiFile('/uploads', file);
+  return absoluteUploadUrl(data.url);
 }

@@ -1,9 +1,10 @@
 'use client';
 
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
-import { API_URL } from '@/lib/api';
+import { API_URL, uploadLibraryMedia } from '@/lib/api';
 import { products as fallbackProducts } from '@/lib/mock-data';
 import type { Product } from '@/lib/types';
+import { uploadErrorMessage } from '@/lib/upload-validation';
 import { AttributeScreen } from './AttributeScreen';
 import { ProductAdminNotices } from './ProductAdminNotices';
 import { ProductEditScreen } from './ProductEditScreen';
@@ -134,20 +135,9 @@ if (trashCountResponse.ok) {
 
     setUploadingImage(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch(`${API_URL}/library/upload`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-
-      if (!response.ok) throw new Error('Upload failed');
-      const data = await response.json();
-      if (!data?.url) throw new Error('Invalid upload response');
+      const url = await uploadLibraryMedia(file, token);
       setStatus('Image uploaded successfully.');
-      return data.url as string;
+      return url;
     } finally {
       setUploadingImage(false);
     }
@@ -161,8 +151,8 @@ if (trashCountResponse.ok) {
       const url = await uploadImageFile(file);
       setProductForm((current) => ({ ...current, image: url }));
       setTaxonomyForm((current) => ({ ...current, image: url }));
-    } catch {
-      setStatus('Image upload failed. Check backend and admin login.');
+    } catch (error) {
+      setStatus(uploadErrorMessage(error, 'Image upload failed. Check backend and admin login.'));
     }
   }
 
@@ -197,8 +187,8 @@ if (trashCountResponse.ok) {
       });
   
       setStatus('Gallery images uploaded successfully.');
-    } catch {
-      setStatus('Gallery images could not be uploaded.');
+    } catch (error) {
+      setStatus(uploadErrorMessage(error, 'Gallery images could not be uploaded.'));
     } finally {
       setUploadingGallery(false);
       input.value = '';

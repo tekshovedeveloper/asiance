@@ -38,8 +38,10 @@ import {
   unblockGroupMember,
   updateActivity,
   updateGroup,
+  uploadLibraryMedia,
   uploadMedia,
 } from '@/lib/api';
+import { uploadErrorMessage } from '@/lib/upload-validation';
 import { NewsEditor } from '@/components/NewsEditor';
 import { ProductAdminPanel } from '@/components/admin/products';
 import { OrderAdminPanel } from '@/components/admin/orders/OrderAdminPanel';
@@ -430,29 +432,13 @@ useEffect(() => {
 
     setUploadingImage(true);
     try {
-      const formData = new FormData();
-      formData.append('file', file);
-
-      const response = await fetch(`${API_URL}/library/upload`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error('Upload failed');
-      }
-
-      const data = await response.json();
-      if (!data?.url) {
-        throw new Error('Invalid upload response');
-      }
-
+      const url = await uploadLibraryMedia(file, token);
       setStatus('Image uploaded successfully.');
-      return data.url as string;
-    } catch {
-      setStatus('Image upload failed. Check admin login and API connection.');
-      throw new Error('Upload failed');
+      return url;
+    } catch (error) {
+      const message = uploadErrorMessage(error, 'Image upload failed. Check admin login and API connection.');
+      setStatus(message);
+      throw error instanceof Error ? error : new Error(message);
     } finally {
       setUploadingImage(false);
     }
@@ -948,16 +934,7 @@ setStatus('Admin connected.');
   }
 
   async function uploadGroupPhoto(file: File): Promise<string> {
-    const formData = new FormData();
-    formData.append('file', file);
-    const res = await fetch(`${API_URL}/uploads`, {
-      method: 'POST',
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-      body: formData,
-    });
-    if (!res.ok) throw new Error('Upload failed');
-    const data = await res.json();
-    return data.url as string;
+    return uploadMedia(file, token);
   }
 
   async function handleGroupProfilePicUpload(event: ChangeEvent<HTMLInputElement>) {
@@ -967,8 +944,8 @@ setStatus('Admin connected.');
     try {
       const url = await uploadGroupPhoto(file);
       setGroupForm((prev) => ({ ...prev, profilePicture: url, image: url }));
-    } catch {
-      setStatus('Profile picture upload failed.');
+    } catch (error) {
+      setStatus(uploadErrorMessage(error, 'Profile picture upload failed.'));
     } finally {
       setGroupFormUploading(null);
       event.currentTarget.value = '';
@@ -982,8 +959,8 @@ setStatus('Admin connected.');
     try {
       const url = await uploadGroupPhoto(file);
       setGroupForm((prev) => ({ ...prev, coverPhoto: url }));
-    } catch {
-      setStatus('Cover photo upload failed.');
+    } catch (error) {
+      setStatus(uploadErrorMessage(error, 'Cover photo upload failed.'));
     } finally {
       setGroupFormUploading(null);
       event.currentTarget.value = '';
