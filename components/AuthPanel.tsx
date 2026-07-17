@@ -24,6 +24,11 @@ const COUNTRIES = [
   'Uzbekistan','Venezuela','Vietnam','Yemen','Zimbabwe',
 ];
 
+function safeRedirectTarget(value: string | null) {
+  if (!value || !value.startsWith('/') || value.startsWith('//')) return null;
+  return value;
+}
+
 export function AuthPanel({ mode }: { mode: 'login' | 'register' }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -92,7 +97,7 @@ export function AuthPanel({ mode }: { mode: 'login' | 'register' }) {
       } else {
         localStorage.setItem('asiance_token', data.accessToken);
         localStorage.setItem('asiance_user', JSON.stringify(data.user));
-        const redirect = searchParams.get('redirect');
+        const redirect = safeRedirectTarget(searchParams.get('redirect') ?? searchParams.get('next'));
         router.push(redirect ?? (data.user.role === 'admin' ? '/admin' : '/dashboard'));
       }
     } catch {

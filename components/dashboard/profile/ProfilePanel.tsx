@@ -155,6 +155,20 @@ import styles from "../dashboard.module.css";
 import type { DashboardUser } from "../types";
 import { updateMe, uploadImage } from "@/lib/api";
 
+const BIO_LETTER_LIMIT = 250;
+
+function limitBioLetters(value: string) {
+  return value.slice(0, BIO_LETTER_LIMIT);
+}
+
+function parseProfileTags(value: string) {
+  return value
+    .split(',')
+    .map((tag) => tag.trim())
+    .filter(Boolean)
+    .slice(0, 6);
+}
+
 export function ProfilePanel({
   user,
   onUserChange,
@@ -169,13 +183,20 @@ export function ProfilePanel({
     name: user.name ?? "",
     username: user.username ?? "",
     email: user.email ?? "",
-    bio: user.bio ?? "",
+    bio: limitBioLetters(user.bio ?? ""),
     avatarUrl: user.avatarUrl ?? "",
     coverImageUrl: user.coverImageUrl ?? "",
+    facebookUrl: user.facebookUrl ?? "",
+    instagramUrl: user.instagramUrl ?? "",
+    tiktokUrl: user.tiktokUrl ?? "",
+    snapchatUrl: user.snapchatUrl ?? "",
+    emailLink: user.emailLink ?? "",
   });
+  const [tagText, setTagText] = useState((user.interests ?? []).join(', '));
 
   const [busy, setBusy] = useState<null | "avatar" | "cover" | "save">(null);
   const [error, setError] = useState<string | null>(null);
+  const bioLetterCount = form.bio.length;
 
   async function pickAndUpload(kind: "avatar" | "cover", file: File) {
     setError(null);
@@ -198,7 +219,11 @@ export function ProfilePanel({
     setError(null);
     setBusy("save");
     try {
-      const updated = await updateMe(form);
+      const updated = await updateMe({
+        ...form,
+        bio: limitBioLetters(form.bio),
+        interests: parseProfileTags(tagText),
+      });
       onUserChange(updated);
     } catch (e: any) {
       setError(e?.message ?? "Save failed");
@@ -233,6 +258,14 @@ export function ProfilePanel({
     display: 'block',
   };
 
+  const socialFields = [
+    { key: 'facebookUrl', label: 'Facebook link', placeholder: 'https://facebook.com/your-profile' },
+    { key: 'instagramUrl', label: 'Instagram link', placeholder: 'https://instagram.com/your-profile' },
+    { key: 'tiktokUrl', label: 'TikTok link', placeholder: 'https://tiktok.com/@your-profile' },
+    { key: 'snapchatUrl', label: 'Snapchat link', placeholder: 'https://snapchat.com/add/your-profile' },
+    { key: 'emailLink', label: 'Email link', placeholder: 'hello@example.com or mailto:hello@example.com' },
+  ] as const;
+
   return (
     <div style={{ padding: '6px 2px' }}>
       <input ref={avatarInputRef} type="file" accept="image/*" hidden
@@ -256,20 +289,51 @@ export function ProfilePanel({
         </div>
 
         <div style={{ gridColumn: '1 / -1' }}>
+          <label style={labelStyle}>Profile tags</label>
+          <input
+            style={inputStyle}
+            value={tagText}
+            placeholder="Wellness, Mindset, Self-Care"
+            onChange={(e) => setTagText(e.target.value)}
+          />
+        </div>
+
+        <div style={{ gridColumn: '1 / -1' }}>
           <label style={labelStyle}>Email</label>
           <input style={inputStyle} value={form.email}
             onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} />
         </div>
 
         <div style={{ gridColumn: '1 / -1' }}>
-          <label style={labelStyle}>Bio</label>
+          <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12, marginBottom: 6 }}>
+            <label style={{ ...labelStyle, marginBottom: 0 }}>Bio</label>
+            <span style={{ color: bioLetterCount >= BIO_LETTER_LIMIT ? '#9c2eb3' : '#6d7780', fontSize: 12, fontFamily: 'var(--mono)' }}>
+              {bioLetterCount}/{BIO_LETTER_LIMIT} letters
+            </span>
+          </div>
           <textarea
             rows={5}
             style={{ ...inputStyle, resize: 'vertical', minHeight: 110 }}
             value={form.bio}
-            onChange={(e) => setForm((p) => ({ ...p, bio: e.target.value }))}
+            maxLength={BIO_LETTER_LIMIT}
+            onChange={(e) => setForm((p) => ({ ...p, bio: limitBioLetters(e.target.value) }))}
           />
         </div>
+
+        {socialFields.map((field) => (
+          <div
+            key={field.key}
+            style={{ gridColumn: field.key === 'emailLink' ? '1 / -1' : undefined }}
+          >
+            <label style={labelStyle}>{field.label}</label>
+            <input
+              style={inputStyle}
+              value={form[field.key]}
+              placeholder={field.placeholder}
+              onChange={(e) => setForm((p) => ({ ...p, [field.key]: e.target.value }))}
+            />
+          </div>
+        ))}
 
         <div style={{ gridColumn: '1 / -1', display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center', marginTop: 4 }}>
           <button type="button" className="chip-btn" style={{ padding: '8px 16px', fontSize: '10px', fontFamily: 'var(--sans)', letterSpacing: '0.04em', textTransform: 'uppercase' }}

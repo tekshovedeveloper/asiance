@@ -2,8 +2,8 @@
 import styles from "../dashboard.module.css";
 import type { DashboardUser } from "../types";
 
-const FALLBACK_COVER = "/assets/profile/dummy-cover.jpg";
-const FALLBACK_AVATAR = "/assets/profile/dymmy-profile.jpeg";
+const FALLBACK_COVER = "/assets/profile/dummy-cover.png";
+const FALLBACK_AVATAR = "/assets/profile/dummy-profile.png";
 
 const isValid = (v?: string | null) => typeof v === "string" && v.trim().length > 0;
 

@@ -1,5 +1,6 @@
 import {
   activity,
+  articleCategories,
   articles,
   files,
   groups,
@@ -12,6 +13,7 @@ import {
 import type {
   Activity,
   Article,
+  ArticleCategory,
   FileAsset,
   ForumThread,
   Group,
@@ -21,6 +23,7 @@ import type {
   NewsCategory,
   NewsItem,
   Product,
+  ProductCategory,
 } from './types';
 import type { DashboardUser } from "@/components/dashboard/types";
 import { showAppToast } from './app-toast';
@@ -127,8 +130,79 @@ async function fetchJson<T>(path: string, fallback: T, init?: RequestInit): Prom
   }
 }
 
-export function getProducts() {
-  return fetchJson<Product[]>('/shop/products', products);
+export type ProductSortOption =
+  | 'default'
+  | 'popularity'
+  | 'rating'
+  | 'latest'
+  | 'price-asc'
+  | 'price-desc';
+
+export type ProductQuery = {
+  category?: string;
+  sort?: ProductSortOption;
+};
+
+function productSlug(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+
+function filterProductsFallback(options: ProductQuery = {}) {
+  const category = options.category?.toLowerCase();
+  const filtered = category
+    ? products.filter((product) => {
+        const slug = product.categorySlug || productSlug(product.category);
+        return slug === category || product.category.toLowerCase() === category;
+      })
+    : products;
+
+  return [...filtered].sort((left, right) => {
+    const leftPrice = left.salePrice ?? left.price;
+    const rightPrice = right.salePrice ?? right.price;
+
+    if (options.sort === 'price-asc') return leftPrice - rightPrice;
+    if (options.sort === 'price-desc') return rightPrice - leftPrice;
+    if (options.sort === 'latest') {
+      return new Date(right.createdAt ?? 0).getTime() - new Date(left.createdAt ?? 0).getTime();
+    }
+
+    return (left.menuOrder ?? 0) - (right.menuOrder ?? 0);
+  });
+}
+
+function productCategoryFallback() {
+  const categories = new Map<string, ProductCategory>();
+
+  products.forEach((product) => {
+    const slug = product.categorySlug || productSlug(product.category);
+    const existing = categories.get(slug);
+
+    categories.set(slug, {
+      name: existing?.name ?? product.category,
+      slug,
+      count: (existing?.count ?? 0) + 1,
+    });
+  });
+
+  return Array.from(categories.values()).sort((left, right) => left.name.localeCompare(right.name));
+}
+
+export function getProducts(options: ProductQuery = {}) {
+  const params = new URLSearchParams();
+
+  if (options.category) params.set('category', options.category);
+  if (options.sort && options.sort !== 'default') params.set('sort', options.sort);
+
+  const query = params.toString() ? `?${params.toString()}` : '';
+  return fetchJson<Product[]>(`/shop/products${query}`, filterProductsFallback(options));
+}
+
+export function getProductCategories() {
+  return fetchJson<ProductCategory[]>('/shop/categories', productCategoryFallback());
 }
 
 export async function getProduct(slug: string) {
@@ -142,6 +216,32 @@ export function getArticles(category?: string) {
     : articles;
   const query = category ? `?category=${encodeURIComponent(category)}` : '';
   return fetchJson<Article[]>(`/articles${query}`, fallback);
+}
+
+export type ArticleSubmitPayload = {
+  title: string;
+  category: string;
+  excerpt?: string;
+  content?: string;
+  image?: string;
+  tags?: string[];
+  featured?: boolean;
+};
+
+export function getMyArticles(status?: Article['status']) {
+  const query = status ? `?status=${encodeURIComponent(status)}` : '';
+  return requestJson<Article[]>(`/articles/me${query}`, { method: 'GET' }, []);
+}
+
+export async function submitArticle(payload: ArticleSubmitPayload) {
+  return requestJson<Article>('/articles/submit', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+}
+
+export function getArticleCategories() {
+  return fetchJson<ArticleCategory[]>('/articles/categories', articleCategories);
 }
 
 export async function getArticle(slug: string) {
@@ -296,6 +396,10 @@ export function getActivity() {
   return fetchJson<Activity[]>('/activity', [], { cache: 'no-store' });
 }
 
+export function getActivityItem(activityId: string) {
+  return requestJson<Activity>(`/activity/${activityId}`, { method: 'GET' });
+}
+
 export function getMyActivity() {
   return requestJson<Activity[]>('/activity/mine');
 }
@@ -368,6 +472,7 @@ export type ActivityCreatePayload = {
   text: string;
   type?: Activity['type'];
   privacy?: 'public' | 'friends' | 'group' | 'private';
+  featured?: boolean;
   groupSlug?: string;
   linkPreview?: string;
   quote?: string;
@@ -463,6 +568,28 @@ export async function getFriendsList(): Promise<FriendUser[]> {
   return requestJson<FriendUser[]>('/friends', { method: 'GET' }, []);
 }
 
+export async function getMemberFriends(handle: string): Promise<FriendUser[]> {
+  return fetchJson<FriendUser[]>(`/members/${handle}/friends`, [], { cache: 'no-store' });
+}
+
+export type PublicPurchasedProduct = {
+  key: string;
+  name: string;
+  slug?: string;
+  image?: string;
+  quantity: number;
+  variationName?: string;
+  lastPurchasedAt?: string;
+};
+
+export async function getMemberPurchasedProducts(handle: string): Promise<PublicPurchasedProduct[]> {
+  return fetchJson<PublicPurchasedProduct[]>(
+    `/shop/members/${handle}/purchased-products`,
+    [],
+    { cache: 'no-store' },
+  );
+}
+
 export type OutgoingRequest = { userId: string; friendshipId: string };
 
 export async function getOutgoingRequests(): Promise<OutgoingRequest[]> {
@@ -530,13 +657,42 @@ export async function cancelMyOrder(id: string) {
 
 export type UpdateMePayload = Partial<Pick<
   DashboardUser,
-  "name" | "username" | "email" | "bio" | "avatarUrl" | "coverImageUrl"
+  | "name"
+  | "username"
+  | "email"
+  | "bio"
+  | "interests"
+  | "avatarUrl"
+  | "coverImageUrl"
+  | "facebookUrl"
+  | "instagramUrl"
+  | "tiktokUrl"
+  | "snapchatUrl"
+  | "emailLink"
+  | "showFriends"
+  | "showProducts"
 >>;
 
 export async function updateMe(payload: UpdateMePayload) {
   // PATCH /api/members/me
   return requestJson<DashboardUser>("/members/me", {
     method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+}
+
+export type ContactInquiryPayload = {
+  name: string;
+  email: string;
+  phone?: string;
+  topic?: string;
+  subject: string;
+  message: string;
+};
+
+export async function submitContactInquiry(payload: ContactInquiryPayload) {
+  return requestJson<{ ok: boolean; message: string }>('/contact', {
+    method: 'POST',
     body: JSON.stringify(payload),
   });
 }

@@ -22,33 +22,32 @@ export function SiteFooter() {
         <div className="footer-col">
           <h4>Explore</h4>
           <Link href="/">Home</Link>
-          <Link href="/community-news">Community News</Link>
           <Link href="/activity">Activity</Link>
           <Link href="/members">Members</Link>
         </div>
 
         <div className="footer-col">
-          <h4>Community</h4>
+          <h4>Community & Read</h4>
+          <Link href="/community-news">Community News</Link>
           <Link href="/circles">Groups</Link>
-          <Link href="/forums">Forums</Link>
-          <Link href="/activity">Events</Link>
-          <Link href="/members">Become a member</Link>
+           <Link href="/blog">Blog</Link>
         </div>
 
         <div className="footer-col">
           <h4>Shop & Read</h4>
           <Link href="/shop">Shop</Link>
-          <Link href="/blog">Blog</Link>
-          <Link href="/account">My account</Link>
+           <Link href="/cart">Cart</Link>
+            <Link href="/shipping">Shipping</Link>
           <Link href="/checkout">Checkout</Link>
         </div>
 
         <div className="footer-col">
           <h4>Help</h4>
           <Link href="/contact">Contact</Link>
-          <Link href="/shipping">Shipping</Link>
           <Link href="/returns">Returns</Link>
           <Link href="/faq">FAQ</Link>
+          <Link href="/privacy-policy">Privacy Policy</Link>
+          <Link href="/terms-and-conditions">Terms & Conditions</Link>
         </div>
       </div>
 

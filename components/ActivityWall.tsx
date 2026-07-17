@@ -78,6 +78,7 @@ export function ActivityWall({ items, members, groups }: { items: Activity[]; me
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>('All Activity');
   const [draft, setDraft] = useState('');
   const [privacy, setPrivacy] = useState<'public' | 'friends' | 'group' | 'private'>('public');
+  const [postKind, setPostKind] = useState<'normal' | 'featured'>('normal');
   const [composerMedia, setComposerMedia] = useState<Activity['media']>([]);
   const [uploadingMedia, setUploadingMedia] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -190,12 +191,14 @@ export function ActivityWall({ items, members, groups }: { items: Activity[]; me
         text: text || 'Shared media',
         type: 'post',
         privacy,
+        featured: postKind === 'featured',
         media: allMedia.length > 0 ? allMedia : undefined,
       });
       await refreshFeed(created);
       setFilter('All Activity');
       setDraft('');
       setPrivacy('public');
+      setPostKind('normal');
       setComposerMedia([]);
       setStatus('Your post is live.');
     } catch (error) {
@@ -351,6 +354,15 @@ export function ActivityWall({ items, members, groups }: { items: Activity[]; me
                 <option value="friends">Friends</option>
                 <option value="group">Group</option>
                 <option value="private">Private</option>
+              </select>
+              <select
+                className="pill-select"
+                value={postKind}
+                onChange={(event) => setPostKind(event.target.value as 'normal' | 'featured')}
+                aria-label="Post type"
+              >
+                <option value="normal">Normal post</option>
+                <option value="featured">Featured post</option>
               </select>
               <button type="submit" className="btn btn-dark">Post</button>
             </div>

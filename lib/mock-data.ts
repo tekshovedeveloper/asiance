@@ -132,6 +132,14 @@ export const articles: Article[] = [
   },
 ];
 
+export const articleCategories = [
+  { name: 'Lifestyle', slug: 'lifestyle', sortOrder: 0 },
+  { name: 'Fashion and Beauty', slug: 'fashion-beauty', sortOrder: 1 },
+  { name: 'Sex and Health', slug: 'sex-health', sortOrder: 2 },
+  { name: 'Interiors', slug: 'interiors', sortOrder: 3 },
+  { name: 'Travel', slug: 'travel', sortOrder: 4 },
+];
+
 export const newsCategories: NewsCategory[] = [
   { name: 'News', slug: 'news', sortOrder: 0 },
   { name: 'Entertainment', slug: 'entertainment', sortOrder: 1 },

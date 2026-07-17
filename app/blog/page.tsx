@@ -1,10 +1,19 @@
+import Link from 'next/link';
 import { ArticleCard } from '@/components/ArticleCard';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
-import { getArticles } from '@/lib/api';
+import { getArticleCategories, getArticles } from '@/lib/api';
 
-export default async function BlogPage() {
-  const articles = await getArticles();
+export default async function BlogPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ category?: string }>;
+}) {
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const selectedCategory = resolvedSearchParams.category ?? '';
+  const categories = await getArticleCategories();
+  const selectedCategoryName = categories.find((category) => category.slug === selectedCategory)?.name;
+  const articles = await getArticles(selectedCategoryName);
 
   return (
     <main>
@@ -19,6 +28,20 @@ export default async function BlogPage() {
           quieter community mechanic.
         </p>
       </section>
+      <div className="shop-toolbar">
+        <Link className={`pill ${!selectedCategory ? 'active' : ''}`} href="/blog">
+          All
+        </Link>
+        {categories.map((category) => (
+          <Link
+            className={`pill ${selectedCategory === category.slug ? 'active' : ''}`}
+            href={`/blog?category=${category.slug}`}
+            key={category.slug}
+          >
+            {category.name}
+          </Link>
+        ))}
+      </div>
       <section className="section" style={{ paddingTop: 0 }}>
         <div className="story-grid">
           {articles.map((article, index) => (

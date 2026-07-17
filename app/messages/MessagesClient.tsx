@@ -514,7 +514,7 @@ export default function MessagesPage() {
   if (loading) {
     return (
       <main>
-        <SiteHeader active="Activity" />
+        <SiteHeader />
         <LoadingIndicator label="Loading conversations..." />
       </main>
     );
@@ -523,7 +523,7 @@ export default function MessagesPage() {
   if (!me) {
     return (
       <main>
-        <SiteHeader active="Activity" />
+        <SiteHeader />
         <div style={{ padding: '80px 20px', textAlign: 'center' }}>
           <p>Please <a href="/login" style={{ color: 'var(--brand)' }}>log in</a> to view messages.</p>
         </div>
@@ -533,8 +533,8 @@ export default function MessagesPage() {
   }
 
   return (
-    <main style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <SiteHeader active="Activity" />
+    <main className="messages-page">
+      <SiteHeader />
 
       <div className="messenger-layout">
         {/* ── Sidebar ── */}
@@ -723,7 +723,6 @@ export default function MessagesPage() {
         </div>
       </div>
 
-      <SiteFooter />
     </main>
   );
 }

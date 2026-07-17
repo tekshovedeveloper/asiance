@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { ChevronDown, ChevronUp, Package, X } from 'lucide-react';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
 import { getMyOrders, cancelMyOrder } from '@/lib/api';
+import type { OrderStatusFilter } from '../types';
 
 type OrderStatus = 'processing' | 'shipped' | 'completed' | 'cancelled' | 'refunded' | 'failed' | 'pending' | 'trash';
 
@@ -37,7 +38,7 @@ type Order = {
   createdAt: string;
 };
 
-const STATUS_FILTER: { key: 'all' | OrderStatus; label: string }[] = [
+const STATUS_FILTER: { key: OrderStatusFilter; label: string }[] = [
   { key: 'all', label: 'All' },
   { key: 'processing', label: 'Processing' },
   { key: 'shipped', label: 'Shipped' },
@@ -69,14 +70,18 @@ function within24h(createdAt: string) {
 
 type ToastMsg = { id: number; text: string };
 
-export function OrdersPanel() {
+export function OrdersPanel({ initialStatus = 'all' }: { initialStatus?: OrderStatusFilter }) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
-  const [filter, setFilter] = useState<'all' | OrderStatus>('all');
+  const [filter, setFilter] = useState<OrderStatusFilter>(initialStatus);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [cancelling, setCancelling] = useState<string | null>(null);
   const [toasts, setToasts] = useState<ToastMsg[]>([]);
+
+  useEffect(() => {
+    setFilter(initialStatus);
+  }, [initialStatus]);
 
   useEffect(() => {
     getMyOrders()

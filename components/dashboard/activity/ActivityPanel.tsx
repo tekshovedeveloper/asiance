@@ -69,6 +69,7 @@ export function ActivityPanel() {
   const [loading, setLoading] = useState(true);
   const [draft, setDraft] = useState('');
   const [privacy, setPrivacy] = useState<'public' | 'friends' | 'group' | 'private'>('public');
+  const [postKind, setPostKind] = useState<'normal' | 'featured'>('normal');
   const [composerMedia, setComposerMedia] = useState<Activity['media']>([]);
   const [uploadingMedia, setUploadingMedia] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -157,10 +158,17 @@ export function ActivityPanel() {
     const allMedia = [...(composerMedia ?? [])];
     if (!text && !allMedia.length) { setStatus('Write something or add media before posting.'); return; }
     try {
-      await createActivity({ text: text || 'Shared media', type: 'post', privacy, media: allMedia.length > 0 ? allMedia : undefined });
+      await createActivity({
+        text: text || 'Shared media',
+        type: 'post',
+        privacy,
+        featured: postKind === 'featured',
+        media: allMedia.length > 0 ? allMedia : undefined,
+      });
       await refreshFeed();
       setDraft('');
       setPrivacy('public');
+      setPostKind('normal');
       setComposerMedia([]);
       setStatus('Your post is live.');
     } catch (error) {
@@ -307,6 +315,15 @@ export function ActivityPanel() {
               <option value="friends">Friends</option>
               <option value="group">Group</option>
               <option value="private">Private</option>
+            </select>
+            <select
+              className="pill-select"
+              value={postKind}
+              onChange={(e) => setPostKind(e.target.value as 'normal' | 'featured')}
+              aria-label="Post type"
+            >
+              <option value="normal">Normal post</option>
+              <option value="featured">Featured post</option>
             </select>
             <button type="submit" className="btn btn-dark">Post</button>
           </div>

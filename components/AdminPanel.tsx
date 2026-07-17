@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
 import {
   BarChart3,
+  ChevronDown,
   FileText,
   FolderPlus,
   LayoutDashboard,
@@ -43,6 +44,8 @@ import {
 } from '@/lib/api';
 import { uploadErrorMessage } from '@/lib/upload-validation';
 import { NewsEditor } from '@/components/NewsEditor';
+import { ArticleAdminPanel } from '@/components/admin/articles/ArticleAdminPanel';
+import type { ArticleAdminView } from '@/components/admin/articles/ArticleAdminPanel';
 import { ProductAdminPanel } from '@/components/admin/products';
 import { OrderAdminPanel } from '@/components/admin/orders/OrderAdminPanel';
 import { ShippingAdminPanel } from '@/components/admin/shipping/ShippingAdminPanel';
@@ -106,10 +109,10 @@ type AdminView =
   | 'news-list'
   | 'news-add'
   | 'news-categories'
+  | ArticleAdminView
   | 'products'
   | 'orders'
   | 'shipping'
-  | 'articles'
   | 'circles'
   | 'group-types'
   | 'groups-list'
@@ -456,21 +459,6 @@ useEffect(() => {
     }
   }
 
-  async function handleFormImageUpload(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.currentTarget.files?.[0];
-    if (!file) return;
-
-    try {
-      const url = await uploadImageFile(file);
-      const urlInput = event.currentTarget.form?.querySelector<HTMLInputElement>('input[name="image"]');
-      if (urlInput) {
-        urlInput.value = url;
-      }
-    } catch {
-      // upload error already handled in uploadImageFile
-    }
-  }
-
   async function loadStats(authToken = token) {
     if (!authToken) {
       setStats(fallbackStats);
@@ -778,33 +766,6 @@ setStatus('Admin connected.');
     }
   }
 
-  async function createArticle(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const payload = {
-      title: String(form.get('title')),
-      category: String(form.get('category')),
-      excerpt: String(form.get('excerpt')),
-      content: String(form.get('content')),
-      image: String(form.get('image')),
-      authorName: String(form.get('authorName')),
-    };
-
-    try {
-      const response = await fetch(`${API_URL}/articles`, {
-        method: 'POST',
-        headers: authHeaders(),
-        body: JSON.stringify(payload),
-      });
-      if (!response.ok) throw new Error('create failed');
-      setStatus('Article published.');
-      event.currentTarget.reset();
-      await loadStats();
-    } catch {
-      setStatus('Article was not saved. Check admin login and API connection.');
-    }
-  }
-
   // ─── Group Types ────────────────────────────────────────────────────────────
 
   async function loadGroupTypes() {
@@ -1034,13 +995,16 @@ setStatus('Admin connected.');
       setStatus(editingGroupSlug ? 'Group was not updated. Check admin login.' : 'Group was not saved. Check admin login and API connection.');
     }
   }
-if (!authChecked) {
-  return (
-    <main className="wp-admin-main">
-      <p>Checking admin access...</p>
-    </main>
-  );
-}
+  const isArticleView = activeView === 'article-categories' || activeView.startsWith('articles');
+
+  if (!authChecked) {
+    return (
+      <main className="wp-admin-main">
+        <p>Checking admin access...</p>
+      </main>
+    );
+  }
+
   return (
     <div className="wp-admin-shell">
       <aside className="wp-admin-side">
@@ -1102,13 +1066,28 @@ if (!authChecked) {
 
 
           <button
-            className={`wp-menu-item ${activeView === 'articles' ? 'active' : ''}`}
-            onClick={() => setActiveView('articles')}
+            className={`wp-menu-item ${isArticleView ? 'active' : ''}`}
+            onClick={() => setActiveView('articles-list')}
             type="button"
           >
             <FileText size={18} />
             <span>Articles</span>
+            <ChevronDown className="wp-menu-caret" size={16} />
           </button>
+          <div className="wp-submenu">
+            <button onClick={() => setActiveView('articles-list')} type="button">
+              All Articles
+            </button>
+            <button onClick={() => setActiveView('articles-pending')} type="button">
+              Pending Articles
+            </button>
+            <button onClick={() => setActiveView('articles-add')} type="button">
+              Add New Article
+            </button>
+            <button onClick={() => setActiveView('article-categories')} type="button">
+              Article Categories
+            </button>
+          </div>
           <button
             className={`wp-menu-item ${['circles', 'group-types', 'groups-list'].includes(activeView) ? 'active' : ''}`}
             onClick={() => { setActiveView('circles'); if (groupTypesList.length === 0) void loadGroupTypes(); if (adminGroups.length === 0) void loadAdminGroups(); }}
@@ -1521,22 +1500,15 @@ if (!authChecked) {
         {activeView === 'shipping' ? ( <ShippingAdminPanel token={token} onChanged={() => loadStats()} /> ) : null}
         
         
-        {activeView === 'articles' ? (
-          <section className="admin-forms wp-simple-form">
-            <form className="panel-form" onSubmit={createArticle}>
-              <h2>New article</h2>
-              <input name="title" placeholder="Title" required />
-              <input name="category" placeholder="Category" required />
-              <input name="authorName" placeholder="Author" defaultValue="Asiance Editors" />
-              <input type="file" accept="image/*" onChange={handleFormImageUpload} disabled={uploadingImage} />
-              <input name="image" placeholder="Image URL" required />
-              <textarea name="excerpt" placeholder="Excerpt" rows={3} required />
-              <textarea name="content" placeholder="Body" rows={5} required />
-              <button className="btn btn-dark" type="submit">
-                Publish
-              </button>
-            </form>
-          </section>
+        {isArticleView ? (
+          <ArticleAdminPanel
+            token={token}
+            view={activeView as ArticleAdminView}
+            onNavigate={(nextView) => setActiveView(nextView)}
+            onChanged={() => loadStats()}
+            uploadImageFile={uploadImageFile}
+            uploadingImage={uploadingImage}
+          />
         ) : null}
 
         {activeView === 'circles' ? (

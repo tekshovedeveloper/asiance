@@ -1,9 +1,9 @@
 
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styles from "../dashboard.module.css";
-import type { DashboardData, DashboardTab, DashboardUser } from "../types";
+import type { DashboardData, DashboardTab, DashboardUser, OrderStatusFilter } from "../types";
 import { TabPanel } from "../TabPanel";
 import { ActivityPanel } from "../activity/ActivityPanel";
 import { FriendsPanel } from "../friends/FriendsPanel";
@@ -23,16 +23,22 @@ const tabs: { key: DashboardTab; label: string }[] = [
 
 export function ProfileTabs({
   initialTab,
+  initialOrderStatus = "all",
   data,
   user,
   onUserChange,
 }: {
   initialTab: DashboardTab;
+  initialOrderStatus?: OrderStatusFilter;
   data: DashboardData;
   user: DashboardUser;
   onUserChange: (u: DashboardUser) => void;
 }) {
   const [active, setActive] = useState<DashboardTab>(initialTab);
+
+  useEffect(() => {
+    setActive(initialTab);
+  }, [initialTab]);
 
   const activeLabel = useMemo(
     () => tabs.find((t) => t.key === active)?.label ?? "Activity",
@@ -94,7 +100,7 @@ export function ProfileTabs({
         </TabPanel> */}
 
         <TabPanel when={active === "orders"}>
-          <OrdersPanel />
+          <OrdersPanel initialStatus={initialOrderStatus} />
         </TabPanel>
       </div>
     </div>

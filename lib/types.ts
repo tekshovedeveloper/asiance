@@ -68,6 +68,17 @@ export type Product = {
   }>;
 };
 
+export type ProductCategory = {
+  _id?: string;
+  name: string;
+  slug: string;
+  description?: string;
+  parentSlug?: string;
+  image?: string;
+  displayType?: string;
+  count?: number;
+};
+
 export type Article = {
   _id?: string;
   title: string;
@@ -80,7 +91,20 @@ export type Article = {
   tags?: string[];
   discussionCount?: number;
   featured?: boolean;
+  status?: 'draft' | 'pending' | 'published';
+  authorId?: string;
+  authorHandle?: string;
+  submittedAt?: string;
+  approvedAt?: string;
   publishedAt?: string;
+};
+
+export type ArticleCategory = {
+  _id?: string;
+  name: string;
+  slug: string;
+  description?: string;
+  sortOrder?: number;
 };
 
 export type NewsCategory = {
@@ -156,10 +180,21 @@ export type Member = {
   handle: string;
   role?: 'admin' | 'member';
   avatar?: string;
+  cover?: string;
   bio: string;
   location: string;
   status: string;
   interests?: string[];
+  friendCount?: number;
+  following?: string[];
+  groups?: string[];
+  facebookUrl?: string;
+  instagramUrl?: string;
+  tiktokUrl?: string;
+  snapchatUrl?: string;
+  emailLink?: string;
+  showFriends?: boolean;
+  showProducts?: boolean;
 };
 
 export type ActivityComment = {
@@ -185,6 +220,7 @@ export type Activity = {
   actorName: string;
   actorHandle: string;
   type: 'post' | 'comment' | 'join' | 'thread' | 'product';
+  featured?: boolean;
   text: string;
   targetName: string;
   targetSlug: string;

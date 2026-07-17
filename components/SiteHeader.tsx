@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
 import {
-  Bell, MessageCircle, Search, ShoppingBag, ChevronDown,
+  Bell, MessageCircle, ShoppingBag, ChevronDown,
   User, LogOut, Settings, UserPlus, Heart, X,
 } from 'lucide-react';
 import {
@@ -146,10 +146,6 @@ export function SiteHeader({ active }: { active?: string }) {
         </nav>
 
         <div className="nav-actions">
-          <Link className="nav-icon-link" href="/blog" aria-label="Search">
-            <Search size={15} />
-          </Link>
-
           {/* Bell — opens notification panel */}
           <div className="notif-bell-wrap" ref={notifRef}>
             <button
