@@ -25,7 +25,8 @@ export async function connectChatSocket(token: string): Promise<Socket> {
 
   socket = io(`${baseUrl}/chat`, {
     auth: { token },
-    transports: ['websocket', 'polling'],
+    transports: ['polling', 'websocket'],
+    tryAllTransports: true,
     reconnection: true,
     reconnectionAttempts: 5,
     reconnectionDelay: 1000,

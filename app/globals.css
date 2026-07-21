@@ -8289,8 +8289,8 @@ em {
 .member-app-avatar {
   position: relative;
   z-index: 3;
-  width: 220px;
-  height: 220px;
+  width: 180px;
+  height: 180px;
   margin-top: -110px;
   border: 7px solid #fff;
   border-radius: 50%;
