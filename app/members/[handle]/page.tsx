@@ -5,6 +5,7 @@ import { use, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
+import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import {
   acceptFriendRequest,
@@ -26,6 +27,7 @@ import {
   type FriendRequest,
   type FriendUser,
 } from '@/lib/api';
+import { showAppToast } from '@/lib/app-toast';
 import type { Activity, Article, Group, Member } from '@/lib/types';
 
 type FriendStatus = 'none' | 'pending-out' | 'pending-in' | 'accepted' | 'me';
@@ -423,7 +425,7 @@ export default function MemberProfilePage({
       setIncomingReqId(null);
     } catch (err) {
       console.error('Accept request failed:', err);
-      alert((err as Error)?.message ?? 'Failed to accept request. Please try again.');
+      showAppToast((err as Error)?.message ?? 'Failed to accept request. Please try again.', 'error');
     } finally {
       setBusy(false);
     }
@@ -437,7 +439,7 @@ export default function MemberProfilePage({
       const thread = await createOrGetChatThread(memberId);
       router.push(`/messages?thread=${thread._id}`);
     } catch (err) {
-      alert((err as Error)?.message ?? 'Could not open chat.');
+      showAppToast((err as Error)?.message ?? 'Could not open chat.', 'error');
     } finally {
       setBusy(false);
     }
@@ -457,6 +459,7 @@ export default function MemberProfilePage({
         <main className="member-app-page">
           <LoadingIndicator label="Loading profile..." />
         </main>
+        <SiteFooter />
       </>
     );
   }
@@ -776,6 +779,7 @@ export default function MemberProfilePage({
           </section>
         </div>
       </main>
+      <SiteFooter />
     </>
   );
 }

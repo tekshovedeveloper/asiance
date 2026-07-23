@@ -170,6 +170,13 @@ function formatLabel(value: string) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
+function selectedOptionLabel(values: Record<string, string>) {
+  return Object.entries(values)
+    .filter(([, value]) => value)
+    .map(([name, value]) => `${formatLabel(name)}: ${value}`)
+    .join(', ');
+}
+
 export function ProductPurchasePanel({
   product,
   attributes,
@@ -187,9 +194,15 @@ export function ProductPurchasePanel({
     attributes.find((attribute) => attribute.name === activeAttributeName) ??
     attributes[0];
 
-  const isOutOfStock =
-    selectedVariation?.stockStatus === 'outofstock' ||
-    product.stockStatus === 'outofstock';
+  const hasVariations = Boolean(product.variations?.some((variation) => variation.enabled !== false));
+  const needsVariation = product.type === 'variable' || hasVariations;
+  const missingVariation = needsVariation && !selectedVariation;
+
+  const isOutOfStock = selectedVariation
+    ? selectedVariation.stockStatus === 'outofstock'
+    : product.stockStatus === 'outofstock';
+
+  const selectedLabel = selectedOptionLabel(selectedValues);
 
   function handleValueClick(attributeName: string, value: string) {
     setSelectedValues((current) => ({
@@ -210,7 +223,8 @@ export function ProductPurchasePanel({
     image: selectedImage || product.image,
     price: selectedPrice,
     salePrice: selectedPrice,
-    stockStatus: product.stockStatus ?? 'instock',
+    sku: selectedVariation?.sku ?? product.sku ?? '',
+    stockStatus: selectedVariation?.stockStatus ?? product.stockStatus ?? 'instock',
     details: product.details,
     variations: product.variations as Product['variations'],
     attributes: product.attributes as Product['attributes'],
@@ -262,6 +276,10 @@ export function ProductPurchasePanel({
             </p>
           ) : null}
 
+          {missingVariation ? (
+            <p className={styles.stockOut}>Choose an available option combination.</p>
+          ) : null}
+
           <div className={styles.divider} />
         </>
       ) : null}
@@ -272,7 +290,14 @@ export function ProductPurchasePanel({
             out of stock
           </button>
         ) : (
-          <AddToCartButton product={cartProduct} selectedValues={selectedValues} />
+          <AddToCartButton
+            product={cartProduct}
+            selectedValues={selectedValues}
+            selectedVariationId={selectedVariation?.id ? String(selectedVariation.id) : undefined}
+            selectedVariationName={selectedVariation?.name || selectedLabel || undefined}
+            disabled={missingVariation}
+            disabledLabel="choose options"
+          />
         )}
 
         <button type="button" className={styles.wishlistButton}>

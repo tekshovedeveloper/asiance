@@ -29,6 +29,7 @@ export type ProductDetailProduct = {
   shortDescription?: string;
   image: string;
   images?: string[];
+  sku?: string;
   price: number;
   salePrice?: number | null;
   color?: string;
@@ -38,6 +39,7 @@ export type ProductDetailProduct = {
 
   attributes?: ProductAttribute[];
   variations?: ProductVariation[];
+  type?: 'simple' | 'variable' | 'grouped' | 'external';
 
   /* old fallback support */
   variants?: Array<{

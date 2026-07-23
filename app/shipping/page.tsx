@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
+import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 
 const SHIPPING_DASHBOARD_URL = '/dashboard?tab=orders&status=shipped';
@@ -27,6 +28,7 @@ export default function ShippingPage() {
       <section className="auth-page">
         <LoadingIndicator label="Opening your shipped orders..." />
       </section>
+      <SiteFooter />
     </main>
   );
 }

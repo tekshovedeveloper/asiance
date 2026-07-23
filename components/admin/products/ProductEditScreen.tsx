@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
-import type { ProductDataTab, ProductForm, ProductView, Taxonomy } from './types';
+import type { Attribute, ProductDataTab, ProductForm, ProductView, Taxonomy } from './types';
 import { EditorBox } from './EditorBox';
 import { ProductDataBox } from './ProductDataBox';
 import { ProductSideBoxes } from './ProductSideBoxes';
@@ -12,6 +12,7 @@ type Props = {
   setForm: (value: ProductForm | ((current: ProductForm) => ProductForm)) => void;
   categories: Taxonomy[];
   brands: Taxonomy[];
+  attributes: Attribute[];
   uploadingImage: boolean;
   uploadingGallery: boolean;
   saveProduct: (event: FormEvent<HTMLFormElement>) => void;
@@ -26,6 +27,7 @@ export function ProductEditScreen({
   setForm,
   categories,
   brands,
+  attributes,
   uploadingImage,
   uploadingGallery,
   saveProduct,
@@ -69,6 +71,7 @@ export function ProductEditScreen({
             setProductForm={setForm}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
+            availableAttributes={attributes}
           />
 
 <ProductDetailsBox form={form} setForm={setForm} />

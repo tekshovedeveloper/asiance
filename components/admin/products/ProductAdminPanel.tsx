@@ -11,7 +11,6 @@ import { ProductEditScreen } from './ProductEditScreen';
 import { ProductListScreen } from './ProductListScreen';
 import { ProductModuleNav } from './ProductModuleNav';
 import { TaxonomyScreen } from './TaxonomyScreen';
-import type { ProductDataTab } from './types';
 import type { Attribute, AttributeForm, ProductForm, ProductListMode, ProductView, Taxonomy, TaxonomyForm } from './types';
 import { commaList, emptyAttributeForm, emptyProductForm, emptyTaxonomyForm, fallbackCategories } from './utils';
 
@@ -19,6 +18,37 @@ type Props = {
   token: string;
   onChanged?: () => Promise<void> | void;
 };
+
+function splitProductAttributeValues(values: string) {
+  return values
+    .split('|')
+    .map((value) => value.trim())
+    .filter(Boolean);
+}
+
+function numberFromForm(value: string, fallback = 0) {
+  const trimmed = String(value ?? '').trim();
+  if (!trimmed) return fallback;
+
+  const parsed = Number(trimmed);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function optionalNumberFromForm(value: string) {
+  const trimmed = String(value ?? '').trim();
+  if (!trimmed) return undefined;
+
+  const parsed = Number(trimmed);
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+function cleanVariationAttributes(attributes: Record<string, string>) {
+  return Object.fromEntries(
+    Object.entries(attributes ?? {})
+      .map(([key, value]) => [key.trim(), String(value ?? '').trim()])
+      .filter(([key, value]) => key && value),
+  );
+}
 
 export function ProductAdminPanel({ token, onChanged }: Props) {
   const [activeView, setActiveView] = useState<ProductView>('product-list');
@@ -43,10 +73,9 @@ export function ProductAdminPanel({ token, onChanged }: Props) {
   const [attributeForm, setAttributeForm] = useState<AttributeForm>(emptyAttributeForm);
   const [editingAttributeSlug, setEditingAttributeSlug] = useState('');
   const [listMode, setListMode] = useState<ProductListMode>('all');
-  const [allCount, setAllCount] = useState(0);
+const [allCount, setAllCount] = useState(0);
 const [publishedCount, setPublishedCount] = useState(0);
 const [trashCount, setTrashCount] = useState(0);
-const [activeTab, setActiveTab] = useState<ProductDataTab>('general');
 
   useEffect(() => {
     void loadProducts(token);
@@ -316,14 +345,66 @@ if (trashCountResponse.ok) {
     .filter(Boolean);
 
     const category = categories.find((item) => item.slug === productForm.categorySlug);
+    const isVariableProduct = productForm.type === 'variable';
+
+    const attributes = productForm.productAttributes
+      .map((attribute) => ({
+        name: attribute.name.trim(),
+        values: splitProductAttributeValues(attribute.values),
+        visible: Boolean(attribute.visible),
+        variation: isVariableProduct ? Boolean(attribute.variation) : false,
+      }))
+      .filter((attribute) => attribute.name && attribute.values.length);
+
+    const variations = isVariableProduct
+      ? productForm.productVariations
+          .map((variation, index) => {
+            const variationAttributes = cleanVariationAttributes(variation.attributes);
+            const variationLabel = Object.values(variationAttributes).join(' / ');
+            const price = numberFromForm(variation.regularPrice);
+            const salePrice = optionalNumberFromForm(variation.salePrice);
+
+            return {
+              id: variation.id,
+              name: variation.name.trim() || variationLabel || `Variation ${index + 1}`,
+              attributes: variationAttributes,
+              sku: variation.sku.trim(),
+              price,
+              salePrice,
+              stock: numberFromForm(variation.stock),
+              stockStatus: variation.stockStatus,
+              image: variation.image.trim(),
+              enabled: variation.enabled,
+            };
+          })
+          .filter((variation) => {
+            return (
+              variation.name ||
+              variation.sku ||
+              Object.keys(variation.attributes).length ||
+              variation.price > 0 ||
+              Number(variation.salePrice ?? 0) > 0
+            );
+          })
+      : [];
+
+    const activeVariationPrices = variations
+      .filter((variation) => variation.enabled !== false)
+      .map((variation) => Number(variation.salePrice ?? variation.price ?? 0))
+      .filter((price) => Number.isFinite(price) && price > 0);
+
+    const basePrice = isVariableProduct && activeVariationPrices.length
+      ? Math.min(...activeVariationPrices)
+      : numberFromForm(productForm.regularPrice);
+
     const payload = {
       name: productForm.name,
       slug: productForm.slug || undefined,
       sku: productForm.sku,
       category: category?.name || productForm.categorySlug || 'Uncategorized',
       categorySlug: productForm.categorySlug || category?.slug,
-      price: Number(productForm.regularPrice) || 0,
-      salePrice: productForm.salePrice ? Number(productForm.salePrice) : undefined,
+      price: basePrice,
+      salePrice: isVariableProduct ? undefined : optionalNumberFromForm(productForm.salePrice),
       stock: Number(productForm.stock) || 0,
       stockManagement: productForm.stockManagement,
       stockStatus: productForm.stockStatus,
@@ -353,28 +434,9 @@ if (trashCountResponse.ok) {
       shortDescription: productForm.shortDescription,
       status: productForm.status,
 
-      attributes: productForm.productAttributes.map((attribute) => ({
-        name: attribute.name,
-        values: attribute.values
-          .split('|')
-          .map((value) => value.trim())
-          .filter(Boolean),
-        visible: attribute.visible,
-        variation: attribute.variation,
-      })),
+      attributes,
 
-      variations: productForm.productVariations.map((variation) => ({
-        id: variation.id,
-        name: variation.name,
-        attributes: variation.attributes,
-        sku: variation.sku,
-        price: Number(variation.regularPrice) || 0,
-        salePrice: variation.salePrice ? Number(variation.salePrice) : undefined,
-        stock: Number(variation.stock) || 0,
-        stockStatus: variation.stockStatus,
-        image: variation.image,
-        enabled: variation.enabled,
-      })),
+      variations,
 
 
       details: productForm.details
@@ -670,6 +732,7 @@ trashCount={trashCount}
   setForm={setProductForm}
   categories={categories}
   brands={brands}
+  attributes={attributes}
   uploadingImage={uploadingImage}
   uploadingGallery={uploadingGallery}
   saveProduct={saveProduct}

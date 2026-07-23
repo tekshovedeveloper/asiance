@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { API_URL } from '@/lib/api';
+import { showAppToast } from '@/lib/app-toast';
 import styles from './Shipping.module.css';
 import { ShippingMethodModal } from './ShippingMethodModal';
 
@@ -70,11 +71,13 @@ export function ShippingZoneEditor({ onCancel, onSaved }: Props) {
     });
   }
 
-  async function createZone() {
+  async function saveZone(openMethod: boolean) {
     if (!name.trim()) {
-      alert('Please enter zone name');
+      showAppToast('Please enter zone name', 'info');
       return;
     }
+
+    if (saving) return;
 
     setSaving(true);
 
@@ -88,15 +91,21 @@ export function ShippingZoneEditor({ onCancel, onSaved }: Props) {
         }),
       });
 
+      const data = await response.json().catch(() => null);
+
       if (!response.ok) {
-        throw new Error('Shipping zone save failed');
+        throw new Error(data?.message || 'Shipping zone save failed');
       }
 
-      const data = await response.json();
-      setCreatedZoneId(data._id);
-      setMethodModalOpen(true);
+      if (openMethod) {
+        setCreatedZoneId(data._id);
+        setMethodModalOpen(true);
+      } else {
+        showAppToast('Shipping zone saved', 'success');
+        onSaved();
+      }
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Something went wrong');
+      showAppToast(error instanceof Error ? error.message : 'Something went wrong', 'error');
     } finally {
       setSaving(false);
     }
@@ -159,7 +168,7 @@ export function ShippingZoneEditor({ onCancel, onSaved }: Props) {
           <button
             className={styles.primaryButton}
             type="button"
-            onClick={createZone}
+            onClick={() => saveZone(true)}
             disabled={saving}
           >
             {saving ? 'Saving...' : 'Add shipping method'}
@@ -171,7 +180,7 @@ export function ShippingZoneEditor({ onCancel, onSaved }: Props) {
         className={styles.primaryButton}
         type="button"
         disabled={saving}
-        onClick={createZone}
+        onClick={() => saveZone(false)}
       >
         {saving ? 'Saving...' : 'Save changes'}
       </button>

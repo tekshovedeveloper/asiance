@@ -75,7 +75,7 @@ export function formatDate(value?: string) {
 }
 
 export function money(value?: number) {
-  return `Rs ${Number(value ?? 0).toLocaleString()}`;
+  return `$${Number(value ?? 0).toLocaleString()}`;
 }
 
 export function commaList(value: string) {

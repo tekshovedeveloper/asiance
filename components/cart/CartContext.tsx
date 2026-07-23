@@ -12,6 +12,9 @@ export type CartItem = {
   quantity: number;
   size?: string;
   sku?: string;
+  variationId?: string;
+  selectedVariationName?: string;
+  selectedAttributes?: Record<string, string>;
 };
 
 type CartContextValue = {
@@ -37,6 +40,16 @@ function writeCart(items: CartItem[]) {
   window.dispatchEvent(new Event('asiance-cart'));
 }
 
+function selectedAttributesKey(attributes?: Record<string, string>) {
+  if (!attributes) return '';
+
+  return Object.entries(attributes)
+    .filter(([, value]) => String(value ?? '').trim())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, value]) => `${key}:${value}`)
+    .join('|');
+}
+
 const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
@@ -59,7 +72,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const closeDrawer = useCallback(() => setDrawerOpen(false), []);
 
   const addItem = useCallback((incoming: Omit<CartItem, 'cartKey' | 'quantity'>) => {
-    const cartKey = `${incoming.slug}::${incoming.size ?? ''}`;
+    const optionKey =
+      incoming.variationId ||
+      selectedAttributesKey(incoming.selectedAttributes) ||
+      incoming.size ||
+      '';
+    const cartKey = `${incoming.slug}::${optionKey}`;
     const current = readCart();
     const existing = current.find((i) => i.cartKey === cartKey);
     const next = existing

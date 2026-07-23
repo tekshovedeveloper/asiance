@@ -4,38 +4,6 @@
     min-height: 100vh;
   }
   
-  .tabs {
-    display: flex;
-    gap: 22px;
-    border-bottom: 1px solid #ddd;
-    margin: 20px 0;
-  }
-  
-  .tabs button {
-    border: 0;
-    background: transparent;
-    padding: 12px 0;
-    cursor: pointer;
-  }
-  
-  .activeTab {
-    border-bottom: 2px solid #3858e9 !important;
-    font-weight: 700;
-  }
-  
-  .subLinks {
-    display: flex;
-    gap: 8px;
-    margin: 18px 0;
-  }
-  
-  .subLinks button {
-    border: 0;
-    background: transparent;
-    color: #3858e9;
-    cursor: pointer;
-  }
-  
   .headingRow {
     display: flex;
     align-items: center;

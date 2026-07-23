@@ -19,6 +19,7 @@ export function DashboardShell({
   user,
   initialTab = "activity",
   initialOrderStatus = "all",
+  initialOrderId,
   data,
   articleView,
   dashboardView,
@@ -29,6 +30,7 @@ export function DashboardShell({
   user: DashboardUser;
   initialTab?: DashboardTab;
   initialOrderStatus?: OrderStatusFilter;
+  initialOrderId?: string;
   data: DashboardData;
   articleView?: ArticleDashboardView | null;
   dashboardView?: DashboardSidebarView | null;
@@ -59,6 +61,7 @@ export function DashboardShell({
               <ProfileTabs
                 initialTab={initialTab}
                 initialOrderStatus={initialOrderStatus}
+                initialOrderId={initialOrderId}
                 data={data}
                 user={user}
                 onUserChange={onUserChange}

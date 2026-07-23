@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
 import { API_URL } from '@/lib/api';
+import { showAppToast } from '@/lib/app-toast';
 import styles from './Orders.module.css';
 import type { AdminOrder, AdminOrderStatus } from './types';
 
@@ -63,7 +64,11 @@ export function OrderAdminPanel({ token, onChanged }: Props) {
   const [activeStatus, setActiveStatus] = useState<'all' | AdminOrderStatus>('all');
   const [search, setSearch] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<AdminOrder | null>(null);
+  const [draftStatus, setDraftStatus] = useState<AdminOrderStatus>('processing');
+  const [draftNote, setDraftNote] = useState('');
+  const [draftNoteType, setDraftNoteType] = useState<'private' | 'customer'>('private');
   const [orderAction, setOrderAction] = useState('');
+  const [orderSaving, setOrderSaving] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [bulkAction, setBulkAction] = useState('');
@@ -121,18 +126,59 @@ export function OrderAdminPanel({ token, onChanged }: Props) {
 
     const data = await response.json();
     setSelectedOrder(data);
+    setDraftStatus(data.status);
+    setDraftNote('');
+    setDraftNoteType('private');
+    setOrderAction('');
   }
 
-  async function updateStatus(id: string, status: AdminOrderStatus) {
-    const response = await fetch(`${API_URL}/shop/orders/${id}`, {
-      method: 'PATCH',
-      headers: authHeaders(),
-      body: JSON.stringify({ status }),
-    });
+  async function saveOrderChanges() {
+    if (!selectedOrder) return;
 
-    const data = await response.json();
-    setSelectedOrder(data);
-    await loadOrders();
+    const noteMessage = draftNote.trim();
+    const statusChanged = draftStatus !== selectedOrder.status;
+
+    if (!statusChanged && !noteMessage) {
+      showAppToast('No order changes to update', 'info');
+      return;
+    }
+
+    setOrderSaving(true);
+
+    try {
+      const response = await fetch(`${API_URL}/shop/orders/${selectedOrder._id}`, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify({
+          status: draftStatus,
+          ...(noteMessage
+            ? {
+                note: {
+                  message: noteMessage,
+                  type: draftNoteType,
+                },
+              }
+            : {}),
+        }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => null);
+        showAppToast(error?.message || 'Order was not updated', 'error');
+        return;
+      }
+
+      const data = await response.json();
+      setSelectedOrder(data);
+      setDraftStatus(data.status);
+      setDraftNote('');
+      setDraftNoteType('private');
+      await loadOrders();
+      onChanged();
+      showAppToast('Order updated', 'success');
+    } finally {
+      setOrderSaving(false);
+    }
   }
 
   async function moveToTrash(id: string) {
@@ -165,44 +211,35 @@ export function OrderAdminPanel({ token, onChanged }: Props) {
 
   async function runOrderAction() {
     if (!selectedOrder) return;
+    if (!orderAction) {
+      showAppToast('Please choose an order action', 'info');
+      return;
+    }
   
     setActionLoading(true);
   
     try {
-      if (orderAction === 'send_invoice') {
-        const response = await fetch(`${API_URL}/shop/orders/${selectedOrder._id}/send-invoice`, {
-          method: 'POST',
-          headers: authHeaders(),
-        });
-  
-        if (!response.ok) {
-          const error = await response.json().catch(() => null);
-          throw new Error(error?.message || 'Invoice email failed');
-        }
-  
-        alert('Invoice email sent to customer');
-        return;
+      const response = await fetch(`${API_URL}/shop/orders/${selectedOrder._id}/send-customer-email`, {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ type: orderAction }),
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(data?.message || 'Order email failed');
       }
   
-      if (orderAction === 'resend_order_notification') {
-        const response = await fetch(`${API_URL}/shop/orders/${selectedOrder._id}/resend-notification`, {
-          method: 'POST',
-          headers: authHeaders(),
-        });
-  
-        if (!response.ok) {
-          const error = await response.json().catch(() => null);
-          throw new Error(error?.message || 'Order notification failed');
-        }
-  
-        alert('Order notification resent');
-        return;
+      if (data?.order) {
+        setSelectedOrder(data.order);
+        setDraftStatus(data.order.status);
       }
-  
+      setOrderAction('');
       await loadOrders();
-      alert('Order updated');
+      showAppToast(data?.message || 'Order email sent', 'success');
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Something went wrong');
+      showAppToast(error instanceof Error ? error.message : 'Something went wrong', 'error');
     } finally {
       setActionLoading(false);
     }
@@ -211,12 +248,12 @@ export function OrderAdminPanel({ token, onChanged }: Props) {
 
   async function applyBulkAction() {
     if (!bulkAction) {
-      alert('Please select bulk action');
+      showAppToast('Please select bulk action', 'info');
       return;
     }
   
     if (selectedOrders.length === 0) {
-      alert('Please select orders');
+      showAppToast('Please select orders', 'info');
       return;
     }
   
@@ -234,7 +271,7 @@ export function OrderAdminPanel({ token, onChanged }: Props) {
       setBulkAction('');
       await loadOrders();
   
-      alert('Selected orders moved to trash');
+      showAppToast('Selected orders moved to trash', 'success');
     }
   }
 
@@ -290,10 +327,8 @@ export function OrderAdminPanel({ token, onChanged }: Props) {
                   <label>
                     Status:
                     <select
-                      value={selectedOrder.status}
-                      onChange={(event) =>
-                        updateStatus(selectedOrder._id, event.target.value as AdminOrderStatus)
-                      }
+                      value={draftStatus}
+                      onChange={(event) => setDraftStatus(event.target.value as AdminOrderStatus)}
                     >
                       <option value="pending">Pending payment</option>
                       <option value="processing">Processing</option>
@@ -304,6 +339,15 @@ export function OrderAdminPanel({ token, onChanged }: Props) {
                       <option value="failed">Failed</option>
                     </select>
                   </label>
+
+                  <button
+                    className={styles.orderSaveButton}
+                    type="button"
+                    onClick={saveOrderChanges}
+                    disabled={orderSaving}
+                  >
+                    {orderSaving ? 'Updating...' : 'Update order'}
+                  </button>
 
                   <div>
                     <span style={{ fontWeight: 500 }}>Customer:</span>
@@ -436,8 +480,15 @@ export function OrderAdminPanel({ token, onChanged }: Props) {
     onChange={(event) => setOrderAction(event.target.value)}
   >
     <option value="">Choose an action...</option>
-    <option value="send_invoice">Email invoice / order details to customer</option>
-    {/* <option value="resend_order_notification">Resend new order notification</option> */}
+    <option value="received">Order received - send details</option>
+    <option value="packed">Order packed email</option>
+    <option value="pending">Pending payment email</option>
+    <option value="processing">Processing email</option>
+    <option value="shipped">Order shipped email</option>
+    <option value="completed">Completed email</option>
+    <option value="cancelled">Cancelled email</option>
+    <option value="refunded">Refunded email</option>
+    <option value="failed">Failed email</option>
   </select>
 
   <button
@@ -446,7 +497,7 @@ export function OrderAdminPanel({ token, onChanged }: Props) {
     onClick={runOrderAction}
     disabled={actionLoading}
   >
-    {actionLoading ? 'Updating...' : 'Update'}
+    {actionLoading ? 'Sending...' : 'Send'}
   </button>
 
   <button
@@ -488,13 +539,19 @@ export function OrderAdminPanel({ token, onChanged }: Props) {
             <div className={styles.sideBox}>
               <h3>Order notes</h3>
 
-              <textarea placeholder="Add note" />
+              <textarea
+                placeholder="Add note"
+                value={draftNote}
+                onChange={(event) => setDraftNote(event.target.value)}
+              />
               <div className={styles.noteActions}>
-                <select defaultValue="private">
+                <select value={draftNoteType} onChange={(event) => setDraftNoteType(event.target.value as 'private' | 'customer')}>
                   <option value="private">Private note</option>
                   <option value="customer">Note to customer</option>
                 </select>
-                <button type="button">Add</button>
+                <button type="button" onClick={saveOrderChanges} disabled={orderSaving}>
+                  {orderSaving ? 'Updating...' : 'Add'}
+                </button>
               </div>
 
               <div className={styles.notesList}>

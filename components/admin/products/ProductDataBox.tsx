@@ -1,11 +1,13 @@
-import { ChevronDown, ChevronUp, GripVertical, X } from 'lucide-react';
-import type { ProductAttributeRow, ProductDataTab, ProductForm, ProductVariationRow } from './types';
+import { ChevronDown, ChevronUp, GripVertical } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import type { Attribute, ProductAttributeRow, ProductDataTab, ProductForm, ProductVariationRow } from './types';
 
 type Props = {
   productForm: ProductForm;
-  setProductForm: (value: ProductForm) => void;
+  setProductForm: (value: ProductForm | ((current: ProductForm) => ProductForm)) => void;
   activeTab: ProductDataTab;
   setActiveTab: (value: ProductDataTab) => void;
+  availableAttributes?: Attribute[];
 };
 
 function makeId() {
@@ -41,12 +43,55 @@ function makeCombinations(attributes: ProductAttributeRow[]) {
   );
 }
 
-export function ProductDataBox({ productForm, setProductForm, activeTab, setActiveTab }: Props) {
-  if (!productForm) {
-    return null;
-  }
+function variationKey(attributes: Record<string, string>) {
+  return Object.entries(attributes)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([key, value]) => `${key}:${value}`)
+    .join('|');
+}
+
+export function ProductDataBox({
+  productForm,
+  setProductForm,
+  activeTab,
+  setActiveTab,
+  availableAttributes = [],
+}: Props) {
+  const [variationBulkAction, setVariationBulkAction] = useState('');
+  const [variationBulkValue, setVariationBulkValue] = useState('');
 
   const isVariable = productForm.type === 'variable';
+  const productTabs = useMemo<Array<{ key: ProductDataTab; label: string }>>(
+    () => [
+      { key: 'general', label: 'General' },
+      { key: 'inventory', label: 'Inventory' },
+      { key: 'shipping', label: 'Shipping' },
+      { key: 'linked', label: 'Linked Products' },
+      { key: 'attributes', label: 'Attributes' },
+      ...(isVariable ? [{ key: 'variations' as ProductDataTab, label: 'Variations' }] : []),
+      { key: 'advanced', label: 'Advanced' },
+    ],
+    [isVariable],
+  );
+
+  function updateForm(patch: Partial<ProductForm>) {
+    setProductForm((current) => ({ ...current, ...patch }));
+  }
+
+  function handleProductTypeChange(type: ProductForm['type']) {
+    updateForm({
+      type,
+      productAttributes: productForm.productAttributes.map((attribute) => ({
+        ...attribute,
+        variation: type === 'variable' ? attribute.variation : false,
+      })),
+      ...(type === 'simple' ? { productVariations: [] } : {}),
+    });
+
+    if (type === 'simple' && activeTab === 'variations') {
+      setActiveTab('general');
+    }
+  }
 
   function addAttribute() {
     const attribute: ProductAttributeRow = {
@@ -58,15 +103,48 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
       open: true,
     };
 
-    setProductForm({
-      ...productForm,
+    updateForm({
       productAttributes: [...productForm.productAttributes, attribute],
     });
   }
 
+  function addExistingAttribute(slug: string) {
+    const existing = availableAttributes.find((attribute) => attribute.slug === slug);
+    if (!existing) return;
+
+    const name = existing.name.trim();
+    const alreadyAdded = productForm.productAttributes.some(
+      (attribute) => attribute.name.trim().toLowerCase() === name.toLowerCase(),
+    );
+
+    if (alreadyAdded) {
+      updateForm({
+        productAttributes: productForm.productAttributes.map((attribute) =>
+          attribute.name.trim().toLowerCase() === name.toLowerCase()
+            ? { ...attribute, open: true }
+            : attribute,
+        ),
+      });
+      return;
+    }
+
+    updateForm({
+      productAttributes: [
+        ...productForm.productAttributes,
+        {
+          id: makeId(),
+          name,
+          values: (existing.terms ?? []).join(' | '),
+          visible: true,
+          variation: isVariable,
+          open: true,
+        },
+      ],
+    });
+  }
+
   function updateAttribute(id: string, patch: Partial<ProductAttributeRow>) {
-    setProductForm({
-      ...productForm,
+    updateForm({
       productAttributes: productForm.productAttributes.map((attribute) =>
         attribute.id === id ? { ...attribute, ...patch } : attribute,
       ),
@@ -74,15 +152,13 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
   }
 
   function removeAttribute(id: string) {
-    setProductForm({
-      ...productForm,
+    updateForm({
       productAttributes: productForm.productAttributes.filter((attribute) => attribute.id !== id),
     });
   }
 
   function saveAttributes() {
-    setProductForm({
-      ...productForm,
+    updateForm({
       productAttributes: productForm.productAttributes.map((attribute) => ({
         ...attribute,
         open: false,
@@ -92,34 +168,65 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
 
   function generateVariations() {
     const combinations = makeCombinations(productForm.productAttributes);
+    const existingByKey = new Map(
+      productForm.productVariations.map((variation) => [variationKey(variation.attributes), variation]),
+    );
 
     const variations: ProductVariationRow[] = combinations.map((attributes, index) => {
       const name = Object.values(attributes).join(' / ');
+      const existing = existingByKey.get(variationKey(attributes));
 
       return {
-        id: makeId(),
-        name: `#${index + 1} ${name}`,
+        id: existing?.id ?? makeId(),
+        name: existing?.name ?? `#${index + 1} ${name}`,
         attributes,
-        sku: '',
-        regularPrice: '',
-        salePrice: '',
-        stock: '0',
-        stockStatus: 'instock',
-        image: '',
-        enabled: true,
-        open: index === 0,
+        sku: existing?.sku ?? '',
+        regularPrice: existing?.regularPrice ?? '',
+        salePrice: existing?.salePrice ?? '',
+        stock: existing?.stock ?? '0',
+        stockStatus: existing?.stockStatus ?? 'instock',
+        image: existing?.image ?? '',
+        enabled: existing?.enabled ?? true,
+        open: existing?.open ?? index === 0,
       };
     });
 
-    setProductForm({
-      ...productForm,
+    updateForm({
       productVariations: variations,
     });
   }
 
+  function addManualVariation() {
+    const variationAttributes = productForm.productAttributes
+      .filter((attribute) => attribute.variation && attribute.name.trim())
+      .reduce<Record<string, string>>((result, attribute) => {
+        result[attribute.name.trim()] = splitValues(attribute.values)[0] ?? '';
+        return result;
+      }, {});
+
+    updateForm({
+      productVariations: [
+        ...productForm.productVariations,
+        {
+          id: makeId(),
+          name: Object.values(variationAttributes).filter(Boolean).join(' / ') || 'Custom variation',
+          attributes: variationAttributes,
+          sku: '',
+          regularPrice: '',
+          salePrice: '',
+          stock: '0',
+          stockStatus: 'instock',
+          image: '',
+          enabled: true,
+          open: true,
+        },
+      ],
+    });
+    setActiveTab('variations');
+  }
+
   function updateVariation(id: string, patch: Partial<ProductVariationRow>) {
-    setProductForm({
-      ...productForm,
+    updateForm({
       productVariations: productForm.productVariations.map((variation) =>
         variation.id === id ? { ...variation, ...patch } : variation,
       ),
@@ -127,10 +234,52 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
   }
 
   function removeVariation(id: string) {
-    setProductForm({
-      ...productForm,
+    updateForm({
       productVariations: productForm.productVariations.filter((variation) => variation.id !== id),
     });
+  }
+
+  function updateVariationAttribute(id: string, name: string, value: string) {
+    setProductForm((current) => ({
+      ...current,
+      productVariations: current.productVariations.map((variation) =>
+        variation.id === id
+          ? {
+              ...variation,
+              attributes: {
+                ...variation.attributes,
+                [name]: value,
+              },
+              name: Object.entries({ ...variation.attributes, [name]: value })
+                .map(([, attributeValue]) => attributeValue)
+                .filter(Boolean)
+                .join(' / ') || variation.name,
+            }
+          : variation,
+      ),
+    }));
+  }
+
+  function applyVariationBulkAction() {
+    const value = variationBulkValue.trim();
+
+    if (!variationBulkAction) return;
+
+    setProductForm((current) => ({
+      ...current,
+      productVariations: current.productVariations.map((variation) => {
+        if (variationBulkAction === 'regularPrice') return { ...variation, regularPrice: value };
+        if (variationBulkAction === 'salePrice') return { ...variation, salePrice: value };
+        if (variationBulkAction === 'stock') return { ...variation, stock: value };
+        if (variationBulkAction === 'stockStatus') {
+          return {
+            ...variation,
+            stockStatus: (value || 'instock') as ProductVariationRow['stockStatus'],
+          };
+        }
+        return variation;
+      }),
+    }));
   }
 
   return (
@@ -140,23 +289,16 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
 
         <select
           value={productForm.type}
-          onChange={(event) =>
-            setProductForm({
-              ...productForm,
-              type: event.target.value as ProductForm['type'],
-            })
-          }
+          onChange={(event) => handleProductTypeChange(event.target.value as ProductForm['type'])}
         >
           <option value="simple">Simple product</option>
           <option value="variable">Variable product</option>
-          <option value="grouped">Grouped product</option>
-          <option value="external">External/Affiliate product</option>
         </select>
 
         <label>
           <input
             checked={productForm.virtual}
-            onChange={(event) => setProductForm({ ...productForm, virtual: event.target.checked })}
+            onChange={(event) => updateForm({ virtual: event.target.checked })}
             type="checkbox"
           />{' '}
           Virtual
@@ -165,7 +307,7 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
         <label>
           <input
             checked={productForm.downloadable}
-            onChange={(event) => setProductForm({ ...productForm, downloadable: event.target.checked })}
+            onChange={(event) => updateForm({ downloadable: event.target.checked })}
             type="checkbox"
           />{' '}
           Downloadable
@@ -174,20 +316,11 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
 
       <div className="product-data-body">
         <nav>
-          {[
-            ['general', 'General'],
-            ['inventory', 'Inventory'],
-            ['shipping', 'Shipping'],
-            ['linked', 'Linked Products'],
-            ['attributes', 'Attributes'],
-            ...(isVariable ? [['variations', 'Variations']] : []),
-            ['advanced', 'Advanced'],
-            ['more', 'Get more options'],
-          ].map(([key, label]) => (
+          {productTabs.map(({ key, label }) => (
             <button
               key={key}
               className={activeTab === key ? 'active' : ''}
-              onClick={() => setActiveTab(key as ProductDataTab)}
+              onClick={() => setActiveTab(key)}
               type="button"
             >
               {label}
@@ -196,25 +329,33 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
         </nav>
 
         <div className="product-data-fields product-data-panel">
-          {activeTab === 'general' ? (
+          {activeTab === 'general' && !isVariable ? (
             <div className="woo-fields">
               <label>
-                Regular price (Rs)
+                Regular price ($)
                 <input
                   value={productForm.regularPrice}
-                  onChange={(event) => setProductForm({ ...productForm, regularPrice: event.target.value })}
+                  onChange={(event) => updateForm({ regularPrice: event.target.value })}
                   type="number"
                 />
               </label>
 
               <label>
-                Sale price (Rs)
+                Sale price ($)
                 <input
                   value={productForm.salePrice}
-                  onChange={(event) => setProductForm({ ...productForm, salePrice: event.target.value })}
+                  onChange={(event) => updateForm({ salePrice: event.target.value })}
                   type="number"
                 />
               </label>
+            </div>
+          ) : null}
+
+          {activeTab === 'general' && isVariable ? (
+            <div className="woo-fields">
+              <p className="woo-empty-variation">
+                Variable product prices are controlled by each variation. Add attributes, generate variations, then enter prices in the Variations tab.
+              </p>
             </div>
           ) : null}
 
@@ -224,7 +365,7 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
                 SKU
                 <input
                   value={productForm.sku}
-                  onChange={(event) => setProductForm({ ...productForm, sku: event.target.value })}
+                  onChange={(event) => updateForm({ sku: event.target.value })}
                 />
               </label>
 
@@ -234,10 +375,7 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
                   <input
                     checked={productForm.stockManagement}
                     onChange={(event) =>
-                      setProductForm({
-                        ...productForm,
-                        stockManagement: event.target.checked,
-                      })
+                      updateForm({ stockManagement: event.target.checked })
                     }
                     type="checkbox"
                   />{' '}
@@ -250,7 +388,7 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
                   Stock quantity
                   <input
                     value={productForm.stock}
-                    onChange={(event) => setProductForm({ ...productForm, stock: event.target.value })}
+                    onChange={(event) => updateForm({ stock: event.target.value })}
                     type="number"
                   />
                 </label>
@@ -261,10 +399,7 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
                 <select
                   value={productForm.stockStatus}
                   onChange={(event) =>
-                    setProductForm({
-                      ...productForm,
-                      stockStatus: event.target.value as ProductForm['stockStatus'],
-                    })
+                    updateForm({ stockStatus: event.target.value as ProductForm['stockStatus'] })
                   }
                 >
                   <option value="instock">In stock</option>
@@ -279,10 +414,7 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
                   <input
                     checked={productForm.soldIndividually}
                     onChange={(event) =>
-                      setProductForm({
-                        ...productForm,
-                        soldIndividually: event.target.checked,
-                      })
+                      updateForm({ soldIndividually: event.target.checked })
                     }
                     type="checkbox"
                   />{' '}
@@ -298,7 +430,7 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
                 Weight (kg)
                 <input
                   value={productForm.weight}
-                  onChange={(event) => setProductForm({ ...productForm, weight: event.target.value })}
+                  onChange={(event) => updateForm({ weight: event.target.value })}
                 />
               </label>
 
@@ -307,17 +439,17 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
                 <div className="dimension-row">
                   <input
                     value={productForm.length}
-                    onChange={(event) => setProductForm({ ...productForm, length: event.target.value })}
+                    onChange={(event) => updateForm({ length: event.target.value })}
                     placeholder="Length"
                   />
                   <input
                     value={productForm.width}
-                    onChange={(event) => setProductForm({ ...productForm, width: event.target.value })}
+                    onChange={(event) => updateForm({ width: event.target.value })}
                     placeholder="Width"
                   />
                   <input
                     value={productForm.height}
-                    onChange={(event) => setProductForm({ ...productForm, height: event.target.value })}
+                    onChange={(event) => updateForm({ height: event.target.value })}
                     placeholder="Height"
                   />
                 </div>
@@ -327,7 +459,7 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
                 Shipping class
                 <select
                   value={productForm.shippingClass}
-                  onChange={(event) => setProductForm({ ...productForm, shippingClass: event.target.value })}
+                  onChange={(event) => updateForm({ shippingClass: event.target.value })}
                 >
                   <option value="">No shipping class</option>
                 </select>
@@ -341,7 +473,7 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
                 Upsells
                 <input
                   value={productForm.upsells}
-                  onChange={(event) => setProductForm({ ...productForm, upsells: event.target.value })}
+                  onChange={(event) => updateForm({ upsells: event.target.value })}
                   placeholder="Search for a product..."
                 />
               </label>
@@ -350,7 +482,7 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
                 Cross-sells
                 <input
                   value={productForm.crossSells}
-                  onChange={(event) => setProductForm({ ...productForm, crossSells: event.target.value })}
+                  onChange={(event) => updateForm({ crossSells: event.target.value })}
                   placeholder="Search for a product..."
                 />
               </label>
@@ -369,8 +501,19 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
                   Add new
                 </button>
 
-                <select>
-                  <option>Add existing</option>
+                <select
+                  value=""
+                  onChange={(event) => addExistingAttribute(event.target.value)}
+                  disabled={!availableAttributes.length}
+                >
+                  <option value="">
+                    {availableAttributes.length ? 'Add existing' : 'No saved attributes'}
+                  </option>
+                  {availableAttributes.map((attribute) => (
+                    <option key={attribute.slug} value={attribute.slug}>
+                      {attribute.name}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -459,15 +602,51 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
               ) : (
                 <>
                   <div className="woo-variation-toolbar">
-                    <select>
-                      <option>Bulk actions</option>
-                      <option>Set regular prices</option>
-                      <option>Set sale prices</option>
-                      <option>Set stock</option>
+                    <select
+                      value={variationBulkAction}
+                      onChange={(event) => {
+                        setVariationBulkAction(event.target.value);
+                        setVariationBulkValue(event.target.value === 'stockStatus' ? 'instock' : '');
+                      }}
+                    >
+                      <option value="">Bulk actions</option>
+                      <option value="regularPrice">Set regular prices</option>
+                      <option value="salePrice">Set sale prices</option>
+                      <option value="stock">Set stock</option>
+                      <option value="stockStatus">Set stock status</option>
                     </select>
+
+                    {variationBulkAction === 'stockStatus' ? (
+                      <select
+                        value={variationBulkValue}
+                        onChange={(event) => setVariationBulkValue(event.target.value)}
+                      >
+                        <option value="instock">In stock</option>
+                        <option value="outofstock">Out of stock</option>
+                        <option value="onbackorder">On backorder</option>
+                      </select>
+                    ) : variationBulkAction ? (
+                      <input
+                        className="woo-variation-bulk-input"
+                        value={variationBulkValue}
+                        onChange={(event) => setVariationBulkValue(event.target.value)}
+                        placeholder="Value"
+                        type={variationBulkAction === 'salePrice' || variationBulkAction === 'regularPrice' || variationBulkAction === 'stock' ? 'number' : 'text'}
+                      />
+                    ) : null}
+
+                    {variationBulkAction ? (
+                      <button onClick={applyVariationBulkAction} type="button">
+                        Apply
+                      </button>
+                    ) : null}
 
                     <button onClick={generateVariations} type="button">
                       Generate variations
+                    </button>
+
+                    <button onClick={addManualVariation} type="button">
+                      Add manually
                     </button>
                   </div>
 
@@ -530,7 +709,7 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
                           </label>
 
                           <label>
-                            Regular price (Rs)
+                            Regular price ($)
                             <input
                               value={variation.regularPrice}
                               onChange={(event) => updateVariation(variation.id, { regularPrice: event.target.value })}
@@ -539,7 +718,7 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
                           </label>
 
                           <label>
-                            Sale price (Rs)
+                            Sale price ($)
                             <input
                               value={variation.salePrice}
                               onChange={(event) => updateVariation(variation.id, { salePrice: event.target.value })}
@@ -571,6 +750,30 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
                               <option value="onbackorder">On backorder</option>
                             </select>
                           </label>
+
+                          {productForm.productAttributes
+                            .filter((attribute) => attribute.variation && attribute.name.trim())
+                            .map((attribute) => {
+                              const name = attribute.name.trim();
+                              const values = splitValues(attribute.values);
+
+                              return (
+                                <label key={`${variation.id}-${name}`}>
+                                  {name}
+                                  <select
+                                    value={variation.attributes[name] ?? ''}
+                                    onChange={(event) => updateVariationAttribute(variation.id, name, event.target.value)}
+                                  >
+                                    <option value="">Any {name}</option>
+                                    {values.map((value) => (
+                                      <option value={value} key={value}>
+                                        {value}
+                                      </option>
+                                    ))}
+                                  </select>
+                                </label>
+                              );
+                            })}
                         </div>
                       ) : null}
                     </div>
@@ -586,7 +789,7 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
                 Purchase note
                 <textarea
                   value={productForm.purchaseNote}
-                  onChange={(event) => setProductForm({ ...productForm, purchaseNote: event.target.value })}
+                  onChange={(event) => updateForm({ purchaseNote: event.target.value })}
                 />
               </label>
 
@@ -594,7 +797,7 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
                 Menu order
                 <input
                   value={productForm.menuOrder}
-                  onChange={(event) => setProductForm({ ...productForm, menuOrder: event.target.value })}
+                  onChange={(event) => updateForm({ menuOrder: event.target.value })}
                   type="number"
                 />
               </label>
@@ -604,12 +807,7 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
                 <span>
                   <input
                     checked={productForm.enableReviews}
-                    onChange={(event) =>
-                      setProductForm({
-                        ...productForm,
-                        enableReviews: event.target.checked,
-                      })
-                    }
+                    onChange={(event) => updateForm({ enableReviews: event.target.checked })}
                     type="checkbox"
                   />
                 </span>
@@ -620,12 +818,7 @@ export function ProductDataBox({ productForm, setProductForm, activeTab, setActi
                 <span>
                   <input
                     checked={productForm.availableForPos}
-                    onChange={(event) =>
-                      setProductForm({
-                        ...productForm,
-                        availableForPos: event.target.checked,
-                      })
-                    }
+                    onChange={(event) => updateForm({ availableForPos: event.target.checked })}
                     type="checkbox"
                   />
                 </span>

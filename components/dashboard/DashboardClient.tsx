@@ -10,11 +10,13 @@ export function DashboardClient({
   data,
   initialTab = "activity",
   initialOrderStatus = "all",
+  initialOrderId,
 }: {
   user: DashboardUser;
   data: DashboardData;
   initialTab?: DashboardTab;
   initialOrderStatus?: OrderStatusFilter;
+  initialOrderId?: string;
 }) {
   const [user, setUser] = useState<DashboardUser>(initialUser);
   const [articleView, setArticleView] = useState<ArticleDashboardView | null>(null);
@@ -44,6 +46,7 @@ export function DashboardClient({
       data={data}
       initialTab={initialTab}
       initialOrderStatus={initialOrderStatus}
+      initialOrderId={initialOrderId}
       articleView={articleView}
       dashboardView={dashboardView}
       onArticleNavigate={handleArticleNavigate}

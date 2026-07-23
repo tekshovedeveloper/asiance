@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import Link from 'next/link';
 import { AuthPanel } from '@/components/AuthPanel';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
+import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 
 export default function LoginPage() {
@@ -20,6 +21,7 @@ export default function LoginPage() {
           </p>
         </div>
       </section>
+      <SiteFooter />
     </main>
   );
 }

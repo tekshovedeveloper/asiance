@@ -24,12 +24,14 @@ const tabs: { key: DashboardTab; label: string }[] = [
 export function ProfileTabs({
   initialTab,
   initialOrderStatus = "all",
+  initialOrderId,
   data,
   user,
   onUserChange,
 }: {
   initialTab: DashboardTab;
   initialOrderStatus?: OrderStatusFilter;
+  initialOrderId?: string;
   data: DashboardData;
   user: DashboardUser;
   onUserChange: (u: DashboardUser) => void;
@@ -100,7 +102,7 @@ export function ProfileTabs({
         </TabPanel> */}
 
         <TabPanel when={active === "orders"}>
-          <OrdersPanel initialStatus={initialOrderStatus} />
+          <OrdersPanel initialStatus={initialOrderStatus} initialOrderId={initialOrderId} />
         </TabPanel>
       </div>
     </div>

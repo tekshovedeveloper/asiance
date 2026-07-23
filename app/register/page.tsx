@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Suspense } from 'react';
 import { AuthPanel } from '@/components/AuthPanel';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
+import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 
 export default function RegisterPage() {
@@ -21,6 +22,7 @@ export default function RegisterPage() {
           </p>
         </div>
       </section>
+      <SiteFooter />
     </main>
   );
 }

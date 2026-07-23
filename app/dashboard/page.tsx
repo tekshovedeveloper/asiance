@@ -32,6 +32,7 @@
 // }
 
 import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
 import { DashboardClient } from "@/components/dashboard/DashboardClient";
 import { RequireAuth } from "@/components/auth/RequireAuth";
 import { getActivity, getGroups, getFiles, getThreads } from "@/lib/api";
@@ -43,6 +44,7 @@ const orderStatuses = ["all", "processing", "shipped", "completed", "cancelled",
 type DashboardSearchParams = {
   tab?: string | string[];
   status?: string | string[];
+  order?: string | string[];
 };
 
 function firstParam(value?: string | string[]) {
@@ -67,6 +69,7 @@ export default async function DashboardPage({
   const resolvedSearchParams = searchParams ? await searchParams : {};
   const initialTab = parseDashboardTab(resolvedSearchParams.tab);
   const initialOrderStatus = parseOrderStatus(resolvedSearchParams.status);
+  const initialOrderId = firstParam(resolvedSearchParams.order);
 
   const [activity, groups, threads, files] = await Promise.all([
     getActivity(),
@@ -95,9 +98,12 @@ export default async function DashboardPage({
           user={initialUser}
           initialTab={initialTab}
           initialOrderStatus={initialOrderStatus}
+          initialOrderId={initialOrderId}
           data={{ activity, friends, groups, threads, files }}
         />
       </RequireAuth>
+
+      <SiteFooter />
     </>
   );
 }

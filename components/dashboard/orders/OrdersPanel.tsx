@@ -70,7 +70,13 @@ function within24h(createdAt: string) {
 
 type ToastMsg = { id: number; text: string };
 
-export function OrdersPanel({ initialStatus = 'all' }: { initialStatus?: OrderStatusFilter }) {
+export function OrdersPanel({
+  initialStatus = 'all',
+  initialOrderId,
+}: {
+  initialStatus?: OrderStatusFilter;
+  initialOrderId?: string;
+}) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
@@ -89,6 +95,19 @@ export function OrdersPanel({ initialStatus = 'all' }: { initialStatus?: OrderSt
       .catch((err) => { setOrders([]); setFetchError(err?.message ?? 'Failed to load orders.'); })
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(() => {
+    if (!initialOrderId || orders.length === 0) return;
+
+    const target = orders.find(
+      (order) => order._id === initialOrderId || String(order.orderNumber) === initialOrderId,
+    );
+
+    if (!target) return;
+
+    setFilter('all');
+    setExpanded(target._id);
+  }, [initialOrderId, orders]);
 
   function showToast(text: string) {
     const id = Date.now();
@@ -218,7 +237,7 @@ export function OrdersPanel({ initialStatus = 'all' }: { initialStatus?: OrderSt
                     </div>
                     <div className="order-item-pricing">
                       <span className="order-item-qty">×{item.quantity}</span>
-                      <span className="order-item-price">PKR.{item.price.toLocaleString()}</span>
+                      <span className="order-item-price">${item.price.toLocaleString()}</span>
                     </div>
                   </div>
                 ))}
@@ -227,7 +246,7 @@ export function OrdersPanel({ initialStatus = 'all' }: { initialStatus?: OrderSt
               {/* Totals row */}
               <div className="order-totals-row">
                 <span className="order-totals-label">Total</span>
-                <strong className="order-totals-value">PKR.{order.total.toLocaleString()}</strong>
+                <strong className="order-totals-value">${order.total.toLocaleString()}</strong>
               </div>
 
               {/* Expanded details */}
@@ -261,15 +280,15 @@ export function OrdersPanel({ initialStatus = 'all' }: { initialStatus?: OrderSt
                   <div className="order-price-breakdown">
                     <div className="order-price-line">
                       <span>Subtotal</span>
-                      <span>PKR.{order.subtotal.toLocaleString()}</span>
+                      <span>${order.subtotal.toLocaleString()}</span>
                     </div>
                     <div className="order-price-line">
                       <span>Shipping</span>
-                      <span>PKR.{order.shipping.toLocaleString()}</span>
+                      <span>${order.shipping.toLocaleString()}</span>
                     </div>
                     <div className="order-price-line order-price-line--total">
                       <span>Total</span>
-                      <strong>PKR.{order.total.toLocaleString()}</strong>
+                      <strong>${order.total.toLocaleString()}</strong>
                     </div>
                   </div>
                 </div>

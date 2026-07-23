@@ -10,13 +10,8 @@ export function SiteFooter() {
           </Link>
 
           <p className="footer-tag">
-            A modern circle for considerate living, slow commerce, and small rituals.
+            A modern circle for thoughtful community, editorial stories, member profiles, slow commerce, and small rituals that make everyday living feel considered.
           </p>
-
-          <form className="footer-newsletter">
-            <input type="email" placeholder="your email" />
-            <button type="button">Join</button>
-          </form>
         </div>
 
         <div className="footer-col">

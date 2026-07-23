@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { API_URL } from '@/lib/api';
+import { showAppToast } from '@/lib/app-toast';
 import styles from './Shipping.module.css';
 
 type Props = {
@@ -35,20 +36,40 @@ export function ShippingMethodModal({ zoneId, onClose, onSaved }: Props) {
   const [type, setType] = useState<'free_shipping' | 'flat_rate' | 'local_pickup' | ''>('');
   const [title, setTitle] = useState('');
   const [cost, setCost] = useState('0');
-  const [freeShippingRequirement, setFreeShippingRequirement] = useState('no_requirement');
   const [minimumOrderAmount, setMinimumOrderAmount] = useState('0');
   const [saving, setSaving] = useState(false);
 
   function selectType(value: 'free_shipping' | 'flat_rate' | 'local_pickup') {
     setType(value);
 
-    if (value === 'free_shipping') setTitle('Free shipping');
+    if (value === 'free_shipping') {
+      setTitle('Free shipping');
+    }
     if (value === 'flat_rate') setTitle('Flat rate');
     if (value === 'local_pickup') setTitle('Local pickup');
   }
 
   async function saveMethod() {
     if (!type) return;
+
+    const methodTitle = title.trim();
+    const methodCost = Number(cost || 0);
+    const freeShippingMinimum = Number(minimumOrderAmount || 0);
+
+    if (!methodTitle) {
+      showAppToast('Please enter shipping method name', 'info');
+      return;
+    }
+
+    if (type === 'free_shipping' && (!Number.isFinite(freeShippingMinimum) || freeShippingMinimum < 0)) {
+      showAppToast('Please enter a valid minimum order amount', 'info');
+      return;
+    }
+
+    if (type !== 'free_shipping' && (!Number.isFinite(methodCost) || methodCost < 0)) {
+      showAppToast('Please enter a valid shipping cost', 'info');
+      return;
+    }
 
     setSaving(true);
 
@@ -57,22 +78,25 @@ export function ShippingMethodModal({ zoneId, onClose, onSaved }: Props) {
         method: 'POST',
         headers: authHeaders(),
         body: JSON.stringify({
-          title,
+          title: methodTitle,
           type,
           enabled: true,
-          cost: Number(cost || 0),
-          freeShippingRequirement,
-          minimumOrderAmount: Number(minimumOrderAmount || 0),
+          cost: type === 'free_shipping' ? 0 : methodCost,
+          freeShippingRequirement: type === 'free_shipping' ? 'minimum_order' : 'no_requirement',
+          minimumOrderAmount: type === 'free_shipping' ? freeShippingMinimum : 0,
         }),
       });
 
+      const data = await response.json().catch(() => null);
+
       if (!response.ok) {
-        throw new Error('Shipping method save failed');
+        throw new Error(data?.message || 'Shipping method save failed');
       }
 
+      showAppToast('Shipping method saved', 'success');
       onSaved();
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Something went wrong');
+      showAppToast(error instanceof Error ? error.message : 'Something went wrong', 'error');
     } finally {
       setSaving(false);
     }
@@ -145,33 +169,14 @@ export function ShippingMethodModal({ zoneId, onClose, onSaved }: Props) {
             {type === 'free_shipping' ? (
               <>
                 <label className={styles.field}>
-                  Free shipping requires
-                  <select
-                    value={freeShippingRequirement}
-                    onChange={(event) => setFreeShippingRequirement(event.target.value)}
-                  >
-                    <option value="no_requirement">No requirement</option>
-                    <option value="valid_coupon">A valid free shipping coupon</option>
-                    <option value="minimum_order">A minimum order amount</option>
-                    <option value="minimum_order_or_coupon">
-                      A minimum order amount OR coupon
-                    </option>
-                    <option value="minimum_order_and_coupon">
-                      A minimum order amount AND coupon
-                    </option>
-                  </select>
+                  Minimum order amount
+                  <input
+                    type="number"
+                    value={minimumOrderAmount}
+                    onChange={(event) => setMinimumOrderAmount(event.target.value)}
+                  />
+                  <small>Free shipping will apply when the order reaches this amount.</small>
                 </label>
-
-                {freeShippingRequirement.includes('minimum_order') ? (
-                  <label className={styles.field}>
-                    Minimum order amount
-                    <input
-                      type="number"
-                      value={minimumOrderAmount}
-                      onChange={(event) => setMinimumOrderAmount(event.target.value)}
-                    />
-                  </label>
-                ) : null}
               </>
             ) : null}
 

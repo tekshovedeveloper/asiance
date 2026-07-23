@@ -19,6 +19,7 @@ import {
   type FriendUser,
   type FriendRequest,
 } from "@/lib/api";
+import { showAppToast } from "@/lib/app-toast";
 import type { Member } from "@/lib/types";
 
 const FALLBACK_AVATAR = "/assets/profile/dymmy-profile.jpeg";
@@ -67,7 +68,7 @@ function FriendRow({ user, onRemove }: { user: FriendUser; onRemove: () => Promi
       const thread = await createOrGetChatThread(userId);
       router.push(`/messages?thread=${thread._id}`);
     } catch (err) {
-      alert((err as Error)?.message ?? 'Could not open chat.');
+      showAppToast((err as Error)?.message ?? 'Could not open chat.', 'error');
     } finally { setMsgBusy(false); }
   }
 
@@ -115,7 +116,7 @@ function RequestRow({
       action === "accept" ? await onAccept() : await onReject();
     } catch (err) {
       console.error(`Failed to ${action} friend request:`, err);
-      alert((err as Error)?.message ?? `Failed to ${action} request. Please try again.`);
+      showAppToast((err as Error)?.message ?? `Failed to ${action} request. Please try again.`, 'error');
     } finally {
       setBusy(null);
     }

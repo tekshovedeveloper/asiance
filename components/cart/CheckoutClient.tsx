@@ -13,6 +13,11 @@ type CartItem = {
   price: number;
   image: string;
   quantity: number;
+  sku?: string;
+  size?: string;
+  variationId?: string;
+  selectedVariationName?: string;
+  selectedAttributes?: Record<string, string>;
 };
 
 type CheckoutErrors = {
@@ -29,6 +34,17 @@ function money(value: number) {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;
+}
+
+function formatSelectedOptions(item: CartItem) {
+  if (item.selectedAttributes && Object.keys(item.selectedAttributes).length) {
+    return Object.entries(item.selectedAttributes)
+      .filter(([, value]) => value)
+      .map(([name, value]) => `${name}: ${value}`)
+      .join(', ');
+  }
+
+  return item.selectedVariationName || item.size || '';
 }
 
 function validatePostalCode(countryCode: string, postalCode: string) {
@@ -115,7 +131,9 @@ export function CheckoutClient() {
   const [shippingPostcode, setShippingPostcode] = useState('');
 
   const [shippingOptions, setShippingOptions] = useState<{ id: string; title: string; type: string; cost: number }[]>([]);
-const [shippingCost, setShippingCost] = useState(0);
+  const [shippingCost, setShippingCost] = useState(0);
+  const [shippingLoading, setShippingLoading] = useState(false);
+  const [shippingLoadError, setShippingLoadError] = useState('');
 
   const billingStates = useMemo(
     () => State.getStatesOfCountry(billingCountry),
@@ -159,7 +177,7 @@ const [shippingCost, setShippingCost] = useState(0);
   );
 
   const shipping = items.length ? shippingCost : 0;
-const total = subtotal + shipping;
+  const total = subtotal + shipping;
 
   function validateCheckout() {
     const nextErrors: CheckoutErrors = {};
@@ -195,27 +213,53 @@ const total = subtotal + shipping;
 
 
   useEffect(() => {
+    let cancelled = false;
+
     async function loadShipping() {
       if (!items.length) {
         setShippingOptions([]);
         setShippingCost(0);
+        setShippingLoadError('');
         return;
       }
 
-      const res = await fetch(
-        `${API_URL}/shop/shipping/options?total=${encodeURIComponent(String(subtotal))}&region=${encodeURIComponent(regionName)}`,
-      );
-  
-      const data = await res.json().catch(() => []);
-      const options = Array.isArray(data) ? data : [];
-  
-      setShippingOptions(options);
-  
-      // pick first option (or you can choose cheapest, etc.)
-      setShippingCost(options[0]?.cost ?? 0);
+      setShippingLoading(true);
+      setShippingLoadError('');
+
+      try {
+        const res = await fetch(
+          `${API_URL}/shop/shipping/options?total=${encodeURIComponent(String(subtotal))}&region=${encodeURIComponent(regionName)}`,
+        );
+    
+        const data = await res.json().catch(() => []);
+
+        if (!res.ok) {
+          throw new Error('Shipping options could not be loaded.');
+        }
+
+        const options = Array.isArray(data) ? data : [];
+
+        if (cancelled) return;
+    
+        setShippingOptions(options);
+        setShippingCost(options[0]?.cost ?? 0);
+        setShippingLoadError(options.length ? '' : 'No shipping methods are available for the selected address.');
+      } catch (error) {
+        if (cancelled) return;
+
+        setShippingOptions([]);
+        setShippingCost(0);
+        setShippingLoadError(error instanceof Error ? error.message : 'Shipping options could not be loaded.');
+      } finally {
+        if (!cancelled) setShippingLoading(false);
+      }
     }
   
     loadShipping();
+
+    return () => {
+      cancelled = true;
+    };
   }, [items.length, subtotal, regionName]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
@@ -231,6 +275,16 @@ const total = subtotal + shipping;
 
     if (!validateCheckout()) {
       setStatus('Please resolve the highlighted checkout issues before placing your order.');
+      return;
+    }
+
+    if (items.length && shippingLoading) {
+      setStatus('Shipping options are still loading. Please try again in a moment.');
+      return;
+    }
+
+    if (items.length && !shippingOptions.length) {
+      setStatus(shippingLoadError || 'No shipping methods are available for the selected address.');
       return;
     }
 
@@ -350,15 +404,8 @@ const total = subtotal + shipping;
         </span>
       </div>
 
-      <div className={styles.noticeBox}>
-        <span className={styles.blueSquareIcon} />
-        <span>
-          Have a coupon? <button type="button">Click here to enter your code</button>
-        </span>
-      </div>
-
       {status ? (
-        <div className={Object.keys(errors).length ? styles.errorNotice : styles.successNotice}>
+        <div className={styles.errorNotice}>
           {status}
         </div>
       ) : null}
@@ -612,6 +659,12 @@ const total = subtotal + shipping;
                 <div className={styles.orderRow} key={`${item.slug}-${index}`}>
                   <span>
                     {item.name}
+                    {formatSelectedOptions(item) ? (
+                      <>
+                        <br />
+                        <small>{formatSelectedOptions(item)}</small>
+                      </>
+                    ) : null}
                     <br />× {item.quantity || 1}
                   </span>
                   <span>{money(Number(item.price || 0) * Number(item.quantity || 1))}</span>
@@ -632,7 +685,13 @@ const total = subtotal + shipping;
             <div className={styles.orderRow}>
   <span>Shipment</span>
   <span>
-    {shippingOptions.length ? (
+    {shippingLoading ? (
+      <>
+        Loading shipping...
+        <br />
+        <strong>{money(0)}</strong>
+      </>
+    ) : shippingOptions.length ? (
       <>
         {shippingOptions[0].title}
         <br />
@@ -640,7 +699,7 @@ const total = subtotal + shipping;
       </>
     ) : (
       <>
-        No shipping options
+        {shippingLoadError || 'No shipping options'}
         <br />
         <strong>{money(0)}</strong>
       </>
@@ -715,7 +774,11 @@ const total = subtotal + shipping;
             <strong>reCAPTCHA</strong>
           </div> */}
 
-          <button className={styles.placeOrderButton} type="submit" disabled={!items.length}>
+          <button
+            className={styles.placeOrderButton}
+            type="submit"
+            disabled={!items.length || shippingLoading || !shippingOptions.length}
+          >
             Place order
           </button>
         </aside>
@@ -789,7 +852,7 @@ const total = subtotal + shipping;
 // const CART_KEY = 'asiance_cart';
 
 // function money(value: number) {
-//   return `Rs ${Number(value || 0).toLocaleString()}`;
+//   return `$${Number(value || 0).toLocaleString()}`;
 // }
 
 // export function CheckoutClient() {
@@ -859,14 +922,6 @@ const total = subtotal + shipping;
 //   return (
 //     <section className={styles.checkoutWrap}>
 //       <h1 className={styles.checkoutTitle}>Checkout</h1>
-
-//       <div className={styles.couponBox}>
-//         <span className={styles.squareIcon} />
-//         <span>
-//           Have a coupon?{' '}
-//           <button type="button">Click here to enter your code</button>
-//         </span>
-//       </div>
 
 //       <form className={styles.checkoutGrid} onSubmit={submit}>
 //         <section className={styles.billingPanel}>

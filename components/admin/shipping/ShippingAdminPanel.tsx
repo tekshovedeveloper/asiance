@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
 import { API_URL } from '@/lib/api';
+import { showAppToast } from '@/lib/app-toast';
 import styles from './Shipping.module.css';
 import { ShippingMethodModal } from './ShippingMethodModal';
 import { ShippingZoneEditor } from './ShippingZoneEditor';
@@ -49,6 +50,22 @@ function authHeaders() {
   };
 }
 
+function money(value: number) {
+  return `$${Number(value || 0).toLocaleString()}`;
+}
+
+function methodDescription(method: ShippingMethod) {
+  if (method.type === 'free_shipping') {
+    return `Free shipping over ${money(method.minimumOrderAmount)}`;
+  }
+
+  if (method.type === 'flat_rate') {
+    return money(method.cost);
+  }
+
+  return 'Local pickup';
+}
+
 export function ShippingAdminPanel({ token, onChanged }: Props) {
   const [zones, setZones] = useState<ShippingZone[]>([]);
   const [selectedZone, setSelectedZone] = useState<ShippingZone | null>(null);
@@ -56,19 +73,38 @@ export function ShippingAdminPanel({ token, onChanged }: Props) {
   const [methodModalOpen, setMethodModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  async function fetchZones() {
+    const response = await fetch(`${API_URL}/shop/shipping/zones`, {
+      headers: authHeaders(),
+    });
+
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok) {
+      throw new Error(data?.message || 'Shipping zones could not be loaded');
+    }
+
+    return Array.isArray(data) ? data : [];
+  }
+
   async function loadZones() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/shop/shipping/zones`, {
-        headers: authHeaders(),
-      });
-
-      const data = await response.json();
-      setZones(Array.isArray(data) ? data : []);
+      const data = await fetchZones();
+      setZones(data);
+    } catch (error) {
+      setZones([]);
+      showAppToast(error instanceof Error ? error.message : 'Shipping zones could not be loaded', 'error');
     } finally {
       setLoading(false);
     }
+  }
+
+  async function refreshSelectedZone(zoneId: string) {
+    const data = await fetchZones();
+    setZones(data);
+    setSelectedZone(data.find((zone) => zone._id === zoneId) || null);
   }
 
   useEffect(() => {
@@ -78,23 +114,54 @@ export function ShippingAdminPanel({ token, onChanged }: Props) {
   async function deleteZone(id: string) {
     if (!confirm('Delete this shipping zone?')) return;
 
-    await fetch(`${API_URL}/shop/shipping/zones/${id}`, {
-      method: 'DELETE',
-      headers: authHeaders(),
-    });
+    try {
+      const response = await fetch(`${API_URL}/shop/shipping/zones/${id}`, {
+        method: 'DELETE',
+        headers: authHeaders(),
+      });
 
-    await loadZones();
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(data?.message || 'Shipping zone could not be deleted');
+      }
+
+      setSelectedZone((current) => (current?._id === id ? null : current));
+      await loadZones();
+      onChanged();
+      showAppToast('Shipping zone deleted', 'success');
+    } catch (error) {
+      showAppToast(error instanceof Error ? error.message : 'Shipping zone could not be deleted', 'error');
+    }
   }
 
   async function deleteMethod(zoneId: string, methodId: string) {
     if (!confirm('Delete this shipping method?')) return;
 
-    await fetch(`${API_URL}/shop/shipping/zones/${zoneId}/methods/${methodId}`, {
-      method: 'DELETE',
-      headers: authHeaders(),
-    });
+    try {
+      const response = await fetch(`${API_URL}/shop/shipping/zones/${zoneId}/methods/${methodId}`, {
+        method: 'DELETE',
+        headers: authHeaders(),
+      });
 
-    await loadZones();
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(data?.message || 'Shipping method could not be deleted');
+      }
+
+      if (data?._id) {
+        setSelectedZone(data);
+        setZones((current) => current.map((zone) => (zone._id === data._id ? data : zone)));
+      } else {
+        await refreshSelectedZone(zoneId);
+      }
+
+      onChanged();
+      showAppToast('Shipping method deleted', 'success');
+    } catch (error) {
+      showAppToast(error instanceof Error ? error.message : 'Shipping method could not be deleted', 'error');
+    }
   }
 
   if (addingZone) {
@@ -104,6 +171,7 @@ export function ShippingAdminPanel({ token, onChanged }: Props) {
         onSaved={async () => {
           setAddingZone(false);
           await loadZones();
+          onChanged();
         }}
       />
     );
@@ -139,11 +207,7 @@ export function ShippingAdminPanel({ token, onChanged }: Props) {
               <span>{method.title}</span>
               <span>{method.enabled ? 'Yes' : 'No'}</span>
               <span>
-                {method.type === 'free_shipping'
-                  ? 'Free shipping'
-                  : method.type === 'flat_rate'
-                    ? `$${method.cost}`
-                    : 'Local pickup'}
+                {methodDescription(method)}
               </span>
               <span>
                 <button
@@ -171,15 +235,8 @@ export function ShippingAdminPanel({ token, onChanged }: Props) {
             onClose={() => setMethodModalOpen(false)}
             onSaved={async () => {
               setMethodModalOpen(false);
-              await loadZones();
-
-              const response = await fetch(`${API_URL}/shop/shipping/zones`, {
-                headers: authHeaders(),
-              });
-
-              const data = await response.json();
-              const updated = data.find((z: ShippingZone) => z._id === selectedZone._id);
-              setSelectedZone(updated || null);
+              await refreshSelectedZone(selectedZone._id);
+              onChanged();
             }}
           />
         ) : null}
@@ -189,26 +246,6 @@ export function ShippingAdminPanel({ token, onChanged }: Props) {
 
   return (
     <section className={styles.screen}>
-      <h1>Settings</h1>
-
-      <div className={styles.tabs}>
-        <button type="button">General</button>
-        <button type="button">Products</button>
-        <button className={styles.activeTab} type="button">
-          Shipping
-        </button>
-        <button type="button">Payments</button>
-        <button type="button">Emails</button>
-      </div>
-
-      <div className={styles.subLinks}>
-        <strong>Shipping zones</strong>
-        <span>|</span>
-        <button type="button">Shipping settings</button>
-        <span>|</span>
-        <button type="button">Classes</button>
-      </div>
-
       <div className={styles.headingRow}>
         <h2>Shipping zones</h2>
 

@@ -18,6 +18,9 @@ type LastOrder = {
     name: string;
     quantity: number;
     price: number;
+    size?: string;
+    selectedVariationName?: string;
+    selectedAttributes?: Record<string, string>;
   }>;
 };
 
@@ -26,6 +29,17 @@ function money(value?: number) {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;
+}
+
+function formatSelectedOptions(item: NonNullable<LastOrder['items']>[number]) {
+  if (item.selectedAttributes && Object.keys(item.selectedAttributes).length) {
+    return Object.entries(item.selectedAttributes)
+      .filter(([, value]) => value)
+      .map(([name, value]) => `${name}: ${value}`)
+      .join(', ');
+  }
+
+  return item.selectedVariationName || item.size || '';
 }
 
 export function ThankYouClient() {
@@ -107,6 +121,12 @@ export function ThankYouClient() {
               <div className={styles.thankYouItem} key={`${item.name}-${index}`}>
                 <span>
                   {item.name} × {item.quantity || 1}
+                  {formatSelectedOptions(item) ? (
+                    <>
+                      <br />
+                      <small>{formatSelectedOptions(item)}</small>
+                    </>
+                  ) : null}
                 </span>
                 <strong>
                   {money(Number(item.price || 0) * Number(item.quantity || 1))}

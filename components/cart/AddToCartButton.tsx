@@ -7,13 +7,36 @@ import type { Product } from '@/lib/types';
 type Props = {
   product: Product;
   selectedValues?: Record<string, string>;
+  selectedVariationId?: string;
+  selectedVariationName?: string;
+  disabled?: boolean;
+  disabledLabel?: string;
 };
 
-export function AddToCartButton({ product, selectedValues }: Props) {
+function cleanSelectedValues(values?: Record<string, string>) {
+  if (!values) return undefined;
+
+  const selected = Object.fromEntries(
+    Object.entries(values).filter(([, value]) => String(value ?? '').trim()),
+  );
+
+  return Object.keys(selected).length ? selected : undefined;
+}
+
+export function AddToCartButton({
+  product,
+  selectedValues,
+  selectedVariationId,
+  selectedVariationName,
+  disabled = false,
+  disabledLabel = 'unavailable',
+}: Props) {
   const { addItem, openDrawer } = useCart();
   const [loading, setLoading] = useState(false);
 
   async function add() {
+    if (disabled) return;
+
     setLoading(true);
     // Brief delay so the loader is visible
     await new Promise((r) => setTimeout(r, 450));
@@ -21,6 +44,7 @@ export function AddToCartButton({ product, selectedValues }: Props) {
     const size = selectedValues
       ? Object.values(selectedValues).filter(Boolean).join(' / ')
       : undefined;
+    const selectedAttributes = cleanSelectedValues(selectedValues);
 
     addItem({
       slug: product.slug,
@@ -30,6 +54,9 @@ export function AddToCartButton({ product, selectedValues }: Props) {
       image: product.image,
       size: size || undefined,
       sku: product.sku || undefined,
+      variationId: selectedVariationId,
+      selectedVariationName,
+      selectedAttributes,
     });
 
     setLoading(false);
@@ -41,10 +68,12 @@ export function AddToCartButton({ product, selectedValues }: Props) {
       className="icon-text-btn"
       type="button"
       onClick={() => void add()}
-      disabled={loading}
-      style={{ opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
+      disabled={loading || disabled}
+      style={{ opacity: loading || disabled ? 0.7 : 1, cursor: loading || disabled ? 'not-allowed' : 'pointer' }}
     >
-      {loading ? (
+      {disabled ? (
+        <span>{disabledLabel}</span>
+      ) : loading ? (
         <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <span className="cart-btn-spinner" />
           Adding…

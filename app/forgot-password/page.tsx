@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import { SiteHeader } from '@/components/SiteHeader';
+import { SiteFooter } from '@/components/SiteFooter';
 import { ForgotPasswordPanel } from '@/components/ForgotPasswordPanel';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
 
@@ -14,6 +15,7 @@ export default function ForgotPasswordPage() {
           </Suspense>
         </div>
       </section>
+      <SiteFooter />
     </main>
   );
 }

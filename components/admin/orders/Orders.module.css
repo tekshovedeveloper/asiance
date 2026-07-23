@@ -328,6 +328,22 @@
     color: #3858e9;
     padding: 6px 18px;
   }
+
+  .orderSaveButton {
+    min-height: 32px;
+    margin: 0 0 14px;
+    border: 0;
+    background: #3858e9;
+    color: #fff;
+    border-radius: 2px;
+    padding: 6px 14px;
+    cursor: pointer;
+  }
+
+  .orderSaveButton:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
   
   .permissionsBox h2,
   .customFieldsBox h2,

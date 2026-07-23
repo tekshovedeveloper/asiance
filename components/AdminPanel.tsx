@@ -119,6 +119,8 @@ type AdminView =
   | 'activity'
   | 'users';
 
+type AdminMenuKey = 'news' | 'articles' | 'groups';
+
 type NewsFormState = {
   title: string;
   slug: string;
@@ -233,6 +235,11 @@ export function AdminPanel() {
   const [stats, setStats] = useState<Stats>(fallbackStats);
   const [status, setStatus] = useState('');
   const [activeView, setActiveView] = useState<AdminView>('news-list');
+  const [openAdminMenus, setOpenAdminMenus] = useState<Record<AdminMenuKey, boolean>>({
+    news: true,
+    articles: false,
+    groups: false,
+  });
   const [newsItems, setNewsItems] = useState<NewsItem[]>(fallbackNewsItems);
   const [newsCategories, setNewsCategories] = useState<NewsCategory[]>(fallbackNewsCategories);
   const [newsForm, setNewsForm] = useState<NewsFormState>(emptyNewsForm);
@@ -995,7 +1002,25 @@ setStatus('Admin connected.');
       setStatus(editingGroupSlug ? 'Group was not updated. Check admin login.' : 'Group was not saved. Check admin login and API connection.');
     }
   }
+  const isNewsView = activeView.startsWith('news');
   const isArticleView = activeView === 'article-categories' || activeView.startsWith('articles');
+  const isGroupView = activeView === 'circles' || activeView === 'group-types' || activeView === 'groups-list';
+  const isNewsOpen = openAdminMenus.news;
+  const isArticleOpen = openAdminMenus.articles;
+  const isGroupOpen = openAdminMenus.groups;
+
+  function toggleAdminMenu(menu: AdminMenuKey, view: AdminView) {
+    const isCurrentlyOpen = openAdminMenus[menu];
+
+    setOpenAdminMenus((current) => ({
+      ...current,
+      [menu]: !current[menu],
+    }));
+
+    if (!isCurrentlyOpen) {
+      setActiveView(view);
+    }
+  }
 
   if (!authChecked) {
     return (
@@ -1011,24 +1036,28 @@ setStatus('Admin connected.');
         <div className="wp-admin-brand">asiance admin</div>
         <nav aria-label="Admin sections">
           <button
-            className={`wp-menu-item ${activeView.startsWith('news') ? 'active' : ''}`}
-            onClick={() => setActiveView('news-list')}
+            className={`wp-menu-item ${isNewsView ? 'active' : ''}`}
+            onClick={() => toggleAdminMenu('news', 'news-list')}
             type="button"
+            aria-expanded={isNewsOpen}
           >
             <Megaphone size={18} />
             <span>News</span>
+            <ChevronDown className={`wp-menu-caret ${isNewsOpen ? 'open' : ''}`} size={16} />
           </button>
-          <div className="wp-submenu">
-            <button onClick={() => setActiveView('news-list')} type="button">
-              All News
-            </button>
-            <button onClick={openAddNews} type="button">
-              Add New News Item
-            </button>
-            <button onClick={() => setActiveView('news-categories')} type="button">
-              News Categories
-            </button>
-          </div>
+          {isNewsOpen ? (
+            <div className="wp-submenu">
+              <button onClick={() => setActiveView('news-list')} type="button">
+                All News
+              </button>
+              <button onClick={openAddNews} type="button">
+                Add New News Item
+              </button>
+              <button onClick={() => setActiveView('news-categories')} type="button">
+                News Categories
+              </button>
+            </div>
+          ) : null}
           <button
             className={`wp-menu-item ${activeView === 'overview' ? 'active' : ''}`}
             onClick={() => setActiveView('overview')}
@@ -1067,40 +1096,47 @@ setStatus('Admin connected.');
 
           <button
             className={`wp-menu-item ${isArticleView ? 'active' : ''}`}
-            onClick={() => setActiveView('articles-list')}
+            onClick={() => toggleAdminMenu('articles', 'articles-list')}
             type="button"
+            aria-expanded={isArticleOpen}
           >
             <FileText size={18} />
             <span>Articles</span>
-            <ChevronDown className="wp-menu-caret" size={16} />
+            <ChevronDown className={`wp-menu-caret ${isArticleOpen ? 'open' : ''}`} size={16} />
           </button>
-          <div className="wp-submenu">
-            <button onClick={() => setActiveView('articles-list')} type="button">
-              All Articles
-            </button>
-            <button onClick={() => setActiveView('articles-pending')} type="button">
-              Pending Articles
-            </button>
-            <button onClick={() => setActiveView('articles-add')} type="button">
-              Add New Article
-            </button>
-            <button onClick={() => setActiveView('article-categories')} type="button">
-              Article Categories
-            </button>
-          </div>
+          {isArticleOpen ? (
+            <div className="wp-submenu">
+              <button onClick={() => setActiveView('articles-list')} type="button">
+                All Articles
+              </button>
+              <button onClick={() => setActiveView('articles-pending')} type="button">
+                Pending Articles
+              </button>
+              <button onClick={() => setActiveView('articles-add')} type="button">
+                Add New Article
+              </button>
+              <button onClick={() => setActiveView('article-categories')} type="button">
+                Article Categories
+              </button>
+            </div>
+          ) : null}
           <button
-            className={`wp-menu-item ${['circles', 'group-types', 'groups-list'].includes(activeView) ? 'active' : ''}`}
-            onClick={() => { setActiveView('circles'); if (groupTypesList.length === 0) void loadGroupTypes(); if (adminGroups.length === 0) void loadAdminGroups(); }}
+            className={`wp-menu-item ${isGroupView ? 'active' : ''}`}
+            onClick={() => { toggleAdminMenu('groups', 'circles'); if (!isGroupOpen && groupTypesList.length === 0) void loadGroupTypes(); if (!isGroupOpen && adminGroups.length === 0) void loadAdminGroups(); }}
             type="button"
+            aria-expanded={isGroupOpen}
           >
             <FolderPlus size={18} />
             <span>Groups</span>
+            <ChevronDown className={`wp-menu-caret ${isGroupOpen ? 'open' : ''}`} size={16} />
           </button>
-          <div className="wp-submenu">
-            <button onClick={() => { setActiveView('circles'); if (groupTypesList.length === 0) void loadGroupTypes(); if (adminGroups.length === 0) void loadAdminGroups(); }} type="button">Create Group</button>
-            <button onClick={() => { setActiveView('groups-list'); if (adminGroups.length === 0) void loadAdminGroups(); }} type="button">Manage Groups</button>
-            <button onClick={() => { setActiveView('group-types'); if (groupTypesList.length === 0) void loadGroupTypes(); }} type="button">Group Types</button>
-          </div>
+          {isGroupOpen ? (
+            <div className="wp-submenu">
+              <button onClick={() => { setActiveView('circles'); if (groupTypesList.length === 0) void loadGroupTypes(); if (adminGroups.length === 0) void loadAdminGroups(); }} type="button">Create Group</button>
+              <button onClick={() => { setActiveView('groups-list'); if (adminGroups.length === 0) void loadAdminGroups(); }} type="button">Manage Groups</button>
+              <button onClick={() => { setActiveView('group-types'); if (groupTypesList.length === 0) void loadGroupTypes(); }} type="button">Group Types</button>
+            </div>
+          ) : null}
           <button
             className={`wp-menu-item ${activeView === 'activity' ? 'active' : ''}`}
             onClick={() => { setActiveView('activity'); if (activityItems.length === 0) void loadActivityItems(); }}

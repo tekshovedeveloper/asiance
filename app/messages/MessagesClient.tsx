@@ -463,7 +463,7 @@ export default function MessagesPage() {
         ),
       );
     } catch (err) {
-      alert((err as Error)?.message ?? 'Failed to delete message.');
+      showAppToast((err as Error)?.message ?? 'Failed to delete message.', 'error');
     }
   }
 
@@ -477,7 +477,7 @@ export default function MessagesPage() {
       setActiveThread(null);
       router.replace('/messages');
     } catch (err) {
-      alert((err as Error)?.message ?? 'Failed to delete conversation.');
+      showAppToast((err as Error)?.message ?? 'Failed to delete conversation.', 'error');
     } finally {
       setDeletingThread(false);
     }
@@ -516,6 +516,7 @@ export default function MessagesPage() {
       <main>
         <SiteHeader />
         <LoadingIndicator label="Loading conversations..." />
+        <SiteFooter />
       </main>
     );
   }
@@ -723,6 +724,7 @@ export default function MessagesPage() {
         </div>
       </div>
 
+      <SiteFooter />
     </main>
   );
 }

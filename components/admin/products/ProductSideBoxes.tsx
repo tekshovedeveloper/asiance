@@ -1,4 +1,5 @@
 import type { ChangeEvent } from 'react';
+import { showAppToast } from '@/lib/app-toast';
 import type { ProductForm, ProductView, Taxonomy } from './types';
 import { SideBox } from './SideBox';
 
@@ -44,7 +45,7 @@ export function ProductSideBoxes({
     const slug = form.slug || editingProductSlug || makeSlug(form.name);
 
     if (!slug) {
-      alert('Please enter product name first.');
+      showAppToast('Please enter product name first.', 'info');
       return;
     }
 

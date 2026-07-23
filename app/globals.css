@@ -889,6 +889,14 @@ em {
   align-items: start;
 }
 
+.activity-layout {
+  align-items: start;
+}
+
+.activity-layout > .dash-card {
+  align-self: start;
+}
+
 .activity-wall-main,
 .activity-wall-side {
   display: grid;
@@ -1794,7 +1802,7 @@ em {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1fr 1.2fr;
+  grid-template-columns: 1.85fr 1fr 1fr 1fr 1.2fr;
   gap: 40px;
   padding-bottom: 60px;
   border-bottom: 1px solid #2c2c2c;
@@ -1830,8 +1838,8 @@ em {
   font-style: italic;
   color: #999;
   font-size: 14px;
-  max-width: 260px;
-  margin: 0 0 24px;
+  max-width: 390px;
+  margin: 0;
   line-height: 1.5;
 }
 
@@ -2515,6 +2523,71 @@ em {
   font-size: 15px;
   font-weight: 600;
   color: var(--ink);
+}
+
+.contact-social-block {
+  display: grid;
+  gap: 12px;
+}
+
+.contact-social-block h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.contact-social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.contact-social-link {
+  display: inline-flex;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-soft);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--brand);
+  text-decoration: none;
+  box-shadow: 0 10px 24px rgba(26, 19, 32, 0.05);
+  transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.contact-social-link svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.contact-social-link .contact-social-brand-icon path {
+  fill: currentColor;
+  stroke: none;
+}
+
+.contact-social-link--youtube svg {
+  width: 23px;
+  height: 23px;
+}
+
+.contact-social-link--pinterest svg {
+  width: 21px;
+  height: 21px;
+}
+
+.contact-social-link:hover {
+  border-color: rgba(122, 44, 138, 0.28);
+  background: var(--paper-warm);
+  color: #7a2c8a;
+  transform: translateY(-2px);
 }
 
 .contact-card {
@@ -3935,6 +4008,11 @@ em {
 
 .wp-menu-caret {
   margin-left: auto;
+  transition: transform 0.16s ease;
+}
+
+.wp-menu-caret.open {
+  transform: rotate(180deg);
 }
 
 .wp-menu-item:hover,
@@ -5542,6 +5620,17 @@ em {
   .woo-variation-toolbar select {
     min-height: 34px;
     min-width: 170px;
+    border: 1px solid #8c8f94;
+    background: #fff;
+    color: #2c3338;
+    padding: 0 10px;
+    border-radius: 3px;
+    font-size: 13px;
+  }
+
+  .woo-variation-bulk-input {
+    min-height: 34px;
+    width: 140px;
     border: 1px solid #8c8f94;
     background: #fff;
     color: #2c3338;
@@ -7419,22 +7508,40 @@ em {
 
 .app-toast {
   cursor: default;
+  border-color: rgba(122, 44, 138, 0.16);
+  border-radius: 12px;
+  box-shadow: 0 18px 48px rgba(28, 18, 34, 0.16);
+  min-width: 360px;
+  max-width: 480px;
+  padding: 18px 20px;
 }
 
 .app-toast-stack {
-  bottom: 96px;
+  left: 28px;
+  right: auto;
+  top: auto;
+  bottom: 28px;
 }
 
-.app-toast-error .notif-toast-icon {
-  background: #b42318;
+.app-toast .notif-toast-icon {
+  width: 40px;
+  height: 40px;
+  background: #7a2c8a;
 }
 
-.app-toast-success .notif-toast-icon {
-  background: #067647;
+.app-toast .notif-toast-msg {
+  font-size: 16px;
+  line-height: 1.45;
 }
 
+.app-toast-error {
+  border-color: rgba(122, 44, 138, 0.24);
+}
+
+.app-toast-error .notif-toast-icon,
+.app-toast-success .notif-toast-icon,
 .app-toast-info .notif-toast-icon {
-  background: var(--brand-soft, #7c3aed);
+  background: #7a2c8a;
 }
 
 /* ─── Notification bell panel ─────────────────────────────────── */
@@ -8212,7 +8319,7 @@ em {
 
 .member-app-hero {
   position: relative;
-  height: 520px;
+  height: 420px;
   overflow: hidden;
   background: #eee9ec;
 }

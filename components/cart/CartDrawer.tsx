@@ -4,6 +4,18 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { Minus, Plus, Trash2, X } from 'lucide-react';
 import { useCart } from './CartContext';
+import type { CartItem } from './CartContext';
+
+function formatSelectedOptions(item: CartItem) {
+  if (item.selectedAttributes && Object.keys(item.selectedAttributes).length) {
+    return Object.entries(item.selectedAttributes)
+      .filter(([, value]) => value)
+      .map(([name, value]) => `${name}: ${value}`)
+      .join(', ');
+  }
+
+  return item.selectedVariationName || item.size || '';
+}
 
 export function CartDrawer() {
   const { items, isDrawerOpen, closeDrawer, removeItem, changeQty } = useCart();
@@ -79,11 +91,11 @@ export function CartDrawer() {
                 />
                 <div className="cart-drawer-item-info">
                   <p className="cart-drawer-item-name">{item.name}</p>
-                  {item.size && (
-                    <p className="cart-drawer-item-meta">Size: {item.size}</p>
-                  )}
+                  {formatSelectedOptions(item) ? (
+                    <p className="cart-drawer-item-meta">{formatSelectedOptions(item)}</p>
+                  ) : null}
                   <p className="cart-drawer-item-price">
-                    PKR.{item.price.toLocaleString()}
+                    ${item.price.toLocaleString()}
                   </p>
                   {item.sku && (
                     <p className="cart-drawer-item-meta">Product ID: {item.sku}</p>
@@ -128,7 +140,7 @@ export function CartDrawer() {
             <div className="cart-drawer-divider" />
             <div className="cart-drawer-subtotal">
               <span>Subtotal</span>
-              <strong>PKR.{subtotal.toLocaleString()}</strong>
+              <strong>${subtotal.toLocaleString()}</strong>
             </div>
             <p className="cart-drawer-shipping">
               Taxes included and shipping calculated at checkout
