@@ -112,6 +112,7 @@ export type NewsCategory = {
   name: string;
   slug: string;
   description?: string;
+  image?: string;
   sortOrder?: number;
 };
 

@@ -142,6 +142,7 @@ type CategoryFormState = {
   name: string;
   slug: string;
   description: string;
+  image: string;
   sortOrder: string;
 };
 
@@ -179,6 +180,7 @@ const emptyCategoryForm: CategoryFormState = {
   name: '',
   slug: '',
   description: '',
+  image: '',
   sortOrder: '0',
 };
 
@@ -466,6 +468,21 @@ useEffect(() => {
     }
   }
 
+  async function handleCategoryImageFile(event: ChangeEvent<HTMLInputElement>) {
+    const input = event.currentTarget;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    try {
+      const url = await uploadImageFile(file);
+      setCategoryForm((current) => ({ ...current, image: url }));
+    } catch {
+      // upload error already handled in uploadImageFile
+    } finally {
+      input.value = '';
+    }
+  }
+
   async function loadStats(authToken = token) {
     if (!authToken) {
       setStats(fallbackStats);
@@ -675,6 +692,7 @@ setStatus('Admin connected.');
       name: category.name,
       slug: category.slug,
       description: category.description ?? '',
+      image: category.image ?? '',
       sortOrder: String(category.sortOrder ?? 0),
     });
   }
@@ -696,6 +714,7 @@ setStatus('Admin connected.');
             name: categoryForm.name,
             slug: categoryForm.slug || undefined,
             description: categoryForm.description,
+            image: categoryForm.image,
             sortOrder: Number(categoryForm.sortOrder) || 0,
           }),
         },
@@ -1483,11 +1502,31 @@ setStatus('Admin connected.');
                   placeholder="Description"
                   rows={5}
                 />
+                <label>
+                  <span>Category image</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleCategoryImageFile}
+                    disabled={uploadingImage}
+                  />
+                </label>
+                <input
+                  value={categoryForm.image}
+                  onChange={(event) => setCategoryForm({ ...categoryForm, image: event.target.value })}
+                  placeholder="Image URL"
+                />
+                {categoryForm.image ? (
+                  <div className="upload-preview wp-category-image-preview">
+                    <img src={categoryForm.image} alt="Category preview" />
+                  </div>
+                ) : null}
                 <button type="submit">{editingCategorySlug ? 'Update Category' : 'Add New Category'}</button>
               </form>
               <table className="wp-news-table">
                 <thead>
                   <tr>
+                    <th>Image</th>
                     <th>Name</th>
                     <th>Slug</th>
                     <th>Description</th>
@@ -1497,6 +1536,13 @@ setStatus('Admin connected.');
                 <tbody>
                   {newsCategories.map((category) => (
                     <tr key={category.slug}>
+                      <td>
+                        {category.image ? (
+                          <img className="wp-category-table-image" src={category.image} alt="" />
+                        ) : (
+                          '-'
+                        )}
+                      </td>
                       <td>{category.name}</td>
                       <td>{category.slug}</td>
                       <td>{category.description || '-'}</td>

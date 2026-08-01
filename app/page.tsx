@@ -1,9 +1,13 @@
 import Link from 'next/link';
 import { ActivityFeed } from '@/components/ActivityFeed';
-import { ArticleCard } from '@/components/ArticleCard';
-import { GroupCard } from '@/components/GroupCard';
+import { CommunityCategoryStrip } from '@/components/CommunityCategoryStrip';
+import { CommunityHeroAccount } from '@/components/CommunityHeroAccount';
+import { FeaturedArticlesSection } from '@/components/FeaturedArticlesSection';
+import { FeaturedCirclesSection } from '@/components/FeaturedCirclesSection';
+import { HomeMembershipCta } from '@/components/HomeMembershipCta';
 import { NewsBbcSection } from '@/components/NewsBbcSection';
-import { ProductCard } from '@/components/ProductCard';
+import { ShopCategorySection } from '@/components/ShopCategorySection';
+import { ShopLatestSection } from '@/components/ShopLatestSection';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import {
@@ -16,9 +20,11 @@ import {
   getProducts,
 } from '@/lib/api';
 
+export const dynamic = 'force-dynamic';
+
 export default async function HomePage() {
   const [products, articles, news, newsCategories, groups, activity, members] = await Promise.all([
-    getProducts(),
+    getProducts({ sort: 'latest' }),
     getArticles(),
     getNews({ limit: 12 }),
     getNewsCategories(),
@@ -30,83 +36,57 @@ export default async function HomePage() {
   return (
     <main className="page-shell">
       <SiteHeader active="Home" />
-      <section className="hero">
-        <div
-          className="hero-image-main"
-          style={{
-            backgroundImage:
-              "linear-gradient(135deg, rgba(0,0,0,.48), rgba(0,0,0,.12) 55%), url('/assets/home/home1.jpg')",
-          }}
-        >
-          <div className="hero-overlay">
-            <div className="hero-eyebrow">The Seasonal Issue / Vol. 12</div>
+      <section className="community-hero" aria-labelledby="community-hero-title">
+        <img
+          className="community-hero__image"
+          src="/assets/home/asiance-community-hero.png"
+          alt="A mother embracing her young child in a softly lit room"
+        />
+        <div className="community-hero__scrim" aria-hidden="true" />
 
-            <h1 className="hero-title">
-              Swimsuits, <em>basket bags,</em>
-              <br />
-              and every soft thing
-              <br />
-              summer asks for.
-            </h1>
-
-            <p className="hero-sub">
-              A curated edit from our editors, wellbeing rituals, slow-living essentials,
-              and the conversations happening around them.
-            </p>
-
-            <Link href="/shop" className="btn btn-arrow">
-              Shop new drops
+        <div className="community-hero__content">
+          <h1 id="community-hero-title" className="community-hero__title">
+            A community
+            <br />
+            for <em>every chapter</em>
+            <br />
+            of your life.
+          </h1>
+          <p className="community-hero__copy">
+            Beauty. Love. Family. Lifestyle.
+            <br />
+            All connected. All for you.
+          </p>
+          <div className="community-hero__actions">
+            <Link href="/circles" className="community-hero__button community-hero__button--primary">
+              Explore Circle
+            </Link>
+            <Link href="/shop" className="community-hero__button">
+              Shop now
             </Link>
           </div>
         </div>
 
-        <div
-          className="hero-image-side"
-          style={{
-            backgroundImage:
-              "linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.62)), url('/assets/home/home2.jpg')",
-          }}
-        >
-          <div className="hero-overlay compact">
-            <div className="hero-eyebrow">From the Blog / 04 min</div>
-
-            <h2 className="hero-side-title">
-              What <em>quiet luxury</em> really means in 2026
-            </h2>
-
-            <Link href="/blog/gentle-contrast-therapy" className="btn btn-arrow">
-              Read the piece
-            </Link>
-          </div>
-        </div>
+        <CommunityHeroAccount />
       </section>
 
-      <NewsBbcSection
+      {newsCategories.length ? <CommunityCategoryStrip categories={newsCategories} /> : null}
+
+      <ShopLatestSection products={products} />
+
+      <FeaturedArticlesSection articles={articles} />
+
+      <ShopCategorySection />
+
+      <FeaturedCirclesSection groups={groups} />
+
+      {/* <NewsBbcSection
         items={news}
         categories={newsCategories}
         title="What is moving the circle this week."
-      />
+      /> */}
 
-      <section className="section warm">
-        <div className="section-head">
-          <div>
-            <span className="eyebrow">circles</span>
-            <h2>
-              Find <em>your people</em> in a smaller room.
-            </h2>
-          </div>
-          <Link href="/circles" className="text-link">
-            Browse all circles
-          </Link>
-        </div>
-        <div className="group-grid">
-          {groups.slice(0, 6).map((group) => (
-            <GroupCard group={group} key={group.slug} />
-          ))}
-        </div>
-      </section>
-
-      <section className="section">
+      {/* <section className="section">
         <div className="activity-layout">
           <div>
             <div className="section-head">
@@ -141,57 +121,9 @@ export default async function HomePage() {
             </div>
           </aside>
         </div>
-      </section>
+      </section> */}
 
-      <section className="section cool">
-        <div className="section-head">
-          <div>
-            <span className="eyebrow">must-read</span>
-            <h2>
-              The <em>stories</em> of the week.
-            </h2>
-          </div>
-          <Link href="/blog" className="text-link">
-            All stories
-          </Link>
-        </div>
-        <div className="story-grid">
-          {articles.slice(0, 3).map((article, index) => (
-            <ArticleCard article={article} large={index === 0} key={article.slug} />
-          ))}
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="section-head">
-          <div>
-            <span className="eyebrow">shop</span>
-            <h2>
-              New <em>arrivals</em> this week.
-            </h2>
-          </div>
-          <Link href="/shop" className="text-link">
-            Shop all
-          </Link>
-        </div>
-        <div className="product-grid">
-          {products.slice(0, 4).map((product) => (
-            <ProductCard product={product} key={product.slug} />
-          ))}
-        </div>
-      </section>
-
-      <section className="home-cta">
-        <div>
-          <span className="eyebrow">membership</span>
-          <h2>
-            Join the <em>circle</em>.
-          </h2>
-        </div>
-        <Link href="/register" className="btn">
-          Create your account
-        </Link>
-      </section>
+      <HomeMembershipCta />
       <SiteFooter />
     </main>
   );

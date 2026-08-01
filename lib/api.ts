@@ -177,6 +177,21 @@ function filterProductsFallback(options: ProductQuery = {}) {
 function productCategoryFallback() {
   const categories = new Map<string, ProductCategory>();
 
+  [
+    ['Beauty', 'beauty'],
+    ['Fashion', 'fashion'],
+    ['Jewelry', 'jewelry'],
+    ['Wedding', 'wedding'],
+    ['Baby & Kids', 'baby-kids'],
+    ['Home', 'home'],
+    ['Travel', 'travel'],
+    ['Food', 'food'],
+    ['Wellness', 'wellness'],
+    ['Sale', 'sale'],
+  ].forEach(([name, slug]) => {
+    categories.set(slug, { name, slug, count: 0 });
+  });
+
   products.forEach((product) => {
     const slug = product.categorySlug || productSlug(product.category);
     const existing = categories.get(slug);

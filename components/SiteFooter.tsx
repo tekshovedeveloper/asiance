@@ -25,14 +25,14 @@ export function SiteFooter() {
           <h4>Community & Read</h4>
           <Link href="/community-news">Community News</Link>
           <Link href="/circles">Groups</Link>
-           <Link href="/blog">Blog</Link>
+          <Link href="/blog">Blog</Link>
         </div>
 
         <div className="footer-col">
           <h4>Shop & Read</h4>
           <Link href="/shop">Shop</Link>
-           <Link href="/cart">Cart</Link>
-            <Link href="/shipping">Shipping</Link>
+          <Link href="/cart">Cart</Link>
+          <Link href="/shipping">Shipping</Link>
           <Link href="/checkout">Checkout</Link>
         </div>
 
@@ -47,8 +47,7 @@ export function SiteFooter() {
       </div>
 
       <div className="footer-bottom">
-        <span>© 2026 Asiance</span>
-        <span>Concept · UI/UX · Ready for handoff</span>
+        <span>© 2026 Asiance. All Rights Reserved.</span>
       </div>
     </footer>
   );
