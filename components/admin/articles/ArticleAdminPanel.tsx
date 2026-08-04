@@ -569,7 +569,7 @@ export function ArticleAdminPanel({
                   onChange={(event) => setForm({ ...form, featured: event.target.checked })}
                   type="checkbox"
                 />
-                Featured
+                Featured destination for this category
               </label>
               <input
                 value={form.authorName}
@@ -808,7 +808,7 @@ export function ArticleAdminPanel({
               <th>Article Categories</th>
               <th>Status</th>
               <th>Date</th>
-              <th>Featured</th>
+              <th>Category Featured</th>
             </tr>
           </thead>
           <tbody>

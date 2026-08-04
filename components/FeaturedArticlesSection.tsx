@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import type { Article } from '@/lib/types';
+import { cloudinaryImageUrl } from '@/lib/cloudinary';
 
 type FeaturedArticlesSectionProps = {
   articles: Article[];
@@ -25,7 +26,7 @@ export function FeaturedArticlesSection({ articles }: FeaturedArticlesSectionPro
         {featuredArticles.map((article) => (
           <article className="featured-article-card" key={article.slug}>
             <Link href={`/blog/${article.slug}`} className="featured-article-card__link">
-              <img src={article.image} alt="" />
+              <img src={cloudinaryImageUrl(article.image, 900)} alt="" />
               <span className="featured-article-card__scrim" aria-hidden="true" />
               <div className="featured-article-card__content">
                 <span>{article.category}</span>

@@ -1,11 +1,12 @@
 import Link from 'next/link';
 import type { Article } from '@/lib/types';
+import { cloudinaryImageUrl } from '@/lib/cloudinary';
 
 export function ArticleCard({ article, large = false }: { article: Article; large?: boolean }) {
   return (
     <article className={`story-card ${large ? 'story-card-large' : ''}`}>
       <Link href={`/blog/${article.slug}`} className="story-image">
-        <img src={article.image} alt={article.title} />
+        <img src={cloudinaryImageUrl(article.image, large ? 1400 : 900)} alt={article.title} />
       </Link>
       <div className="story-body">
         <span className="eyebrow">{article.category}</span>

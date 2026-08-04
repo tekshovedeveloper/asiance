@@ -22,6 +22,7 @@ type MobileMenuTab = 'navigation' | 'notifications' | 'messages';
 
 const nav = [
   ['Home', '/'],
+  ['Travel', '/travel'],
   ['Community News', '/community-news'],
   ['Activity', '/activity'],
   ['Members', '/members'],
