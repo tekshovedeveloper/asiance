@@ -39,7 +39,7 @@ export default async function HomePage() {
       <section className="community-hero" aria-labelledby="community-hero-title">
         <img
           className="community-hero__image"
-          src="/assets/home/asiance-community-hero.png"
+          src="https://res.cloudinary.com/ux81wsbq/image/upload/v1786640148/asiance/site-assets/home/asiance-community-hero-png.png"
           alt="A mother embracing her young child in a softly lit room"
         />
         <div className="community-hero__scrim" aria-hidden="true" />

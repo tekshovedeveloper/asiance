@@ -22,7 +22,7 @@ type MobileMenuTab = 'navigation' | 'notifications' | 'messages';
 
 const nav = [
   ['Home', '/'],
-  ['Travel', '/travel'],
+  ['Explore Asiance', '/women'],
   ['Community News', '/community-news'],
   ['Activity', '/activity'],
   ['Members', '/members'],
@@ -31,7 +31,7 @@ const nav = [
   ['Shop', '/shop'],
 ];
 
-const FALLBACK_AVATAR = '/assets/profile/dymmy-profile.jpeg';
+const FALLBACK_AVATAR = 'https://res.cloudinary.com/ux81wsbq/image/upload/v1786640168/asiance/site-assets/profile/dymmy-profile-jpeg.jpg';
 
 function NotifIcon({ type }: { type: string }) {
   if (type === 'message') return <MessageCircle size={14} />;
@@ -98,7 +98,7 @@ export function SiteHeader({ active }: { active?: string }) {
     }
 
     function closeOnDesktop() {
-      if (window.innerWidth > 820) setMobileMenuOpen(false);
+      if (window.innerWidth > 1100) setMobileMenuOpen(false);
     }
 
     document.addEventListener('keydown', closeOnEscape);

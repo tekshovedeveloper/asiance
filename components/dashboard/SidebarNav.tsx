@@ -44,8 +44,8 @@ import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import styles from "./dashboard.module.css";
 import type { ArticleDashboardView, DashboardSidebarView, DashboardUser } from "./types";
 
-const FALLBACK_COVER = "/assets/profile/dummy-cover.png";
-const FALLBACK_AVATAR = "/assets/profile/dummy-profile.png";
+const FALLBACK_COVER = "https://res.cloudinary.com/ux81wsbq/image/upload/v1786640168/asiance/site-assets/profile/dummy-cover-png.png";
+const FALLBACK_AVATAR = "https://res.cloudinary.com/ux81wsbq/image/upload/v1786640168/asiance/site-assets/profile/dummy-profile-png.png";
 
 
 

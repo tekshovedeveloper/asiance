@@ -62,7 +62,7 @@ export function MemberCard({
     <div className="member-card">
       <Link href={`/members/${member.handle}`} className="member-card-inner">
         <img
-          src={member.avatar || "/assets/profile/dymmy-profile.jpeg"}
+          src={member.avatar || "https://res.cloudinary.com/ux81wsbq/image/upload/v1786640168/asiance/site-assets/profile/dymmy-profile-jpeg.jpg"}
           alt={member.name}
         />
         <h3>{member.name}</h3>

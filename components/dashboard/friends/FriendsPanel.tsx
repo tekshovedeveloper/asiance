@@ -22,7 +22,7 @@ import {
 import { showAppToast } from "@/lib/app-toast";
 import type { Member } from "@/lib/types";
 
-const FALLBACK_AVATAR = "/assets/profile/dymmy-profile.jpeg";
+const FALLBACK_AVATAR = "https://res.cloudinary.com/ux81wsbq/image/upload/v1786640168/asiance/site-assets/profile/dymmy-profile-jpeg.jpg";
 
 type SubTab = "friendships" | "requests" | "all-members";
 type SortOption = "last-active" | "newest" | "alphabetical";

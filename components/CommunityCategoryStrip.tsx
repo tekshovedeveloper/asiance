@@ -17,15 +17,15 @@ const legacyCategorySlugs = new Set([
 ]);
 
 const categoryFallbackImages: Record<string, string> = {
-  beauty: '/assets/categories/beauty.png',
-  fashion: '/assets/categories/fashion.png',
-  dating: '/assets/categories/dating.png',
-  weddings: '/assets/categories/weddings.png',
-  baby: '/assets/categories/baby.png',
-  kids: '/assets/categories/kids.png',
-  travel: '/assets/categories/travel.png',
-  home: '/assets/categories/home.png',
-  food: '/assets/categories/food.png',
+  beauty: 'https://res.cloudinary.com/ux81wsbq/image/upload/v1786640141/asiance/site-assets/categories/beauty-png.png',
+  fashion: 'https://res.cloudinary.com/ux81wsbq/image/upload/v1786640141/asiance/site-assets/categories/fashion-png.png',
+  dating: 'https://res.cloudinary.com/ux81wsbq/image/upload/v1786640142/asiance/site-assets/categories/dating-png.png',
+  weddings: 'https://res.cloudinary.com/ux81wsbq/image/upload/v1786640148/asiance/site-assets/categories/weddings-png.png',
+  baby: 'https://res.cloudinary.com/ux81wsbq/image/upload/v1786640139/asiance/site-assets/categories/baby-png.png',
+  kids: 'https://res.cloudinary.com/ux81wsbq/image/upload/v1786640145/asiance/site-assets/categories/kids-png.png',
+  travel: 'https://res.cloudinary.com/ux81wsbq/image/upload/v1786640145/asiance/site-assets/categories/travel-png.png',
+  home: 'https://res.cloudinary.com/ux81wsbq/image/upload/v1786640146/asiance/site-assets/categories/home-png.png',
+  food: 'https://res.cloudinary.com/ux81wsbq/image/upload/v1786640143/asiance/site-assets/categories/food-png.png',
 };
 
 type CommunityCategoryStripProps = {

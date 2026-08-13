@@ -2,8 +2,8 @@
 import styles from "../dashboard.module.css";
 import type { DashboardUser } from "../types";
 
-const FALLBACK_COVER = "/assets/profile/dummy-cover.png";
-const FALLBACK_AVATAR = "/assets/profile/dummy-profile.png";
+const FALLBACK_COVER = "https://res.cloudinary.com/ux81wsbq/image/upload/v1786640168/asiance/site-assets/profile/dummy-cover-png.png";
+const FALLBACK_AVATAR = "https://res.cloudinary.com/ux81wsbq/image/upload/v1786640168/asiance/site-assets/profile/dummy-profile-png.png";
 
 const isValid = (v?: string | null) => typeof v === "string" && v.trim().length > 0;
 

@@ -58,8 +58,8 @@ type PurchasedProduct = {
   lastPurchasedAt?: string;
 };
 
-const FALLBACK_AVATAR = '/assets/profile/dummy-profile.png';
-const FALLBACK_COVER = '/assets/profile/dummy-cover.png';
+const FALLBACK_AVATAR = 'https://res.cloudinary.com/ux81wsbq/image/upload/v1786640168/asiance/site-assets/profile/dummy-profile-png.png';
+const FALLBACK_COVER = 'https://res.cloudinary.com/ux81wsbq/image/upload/v1786640168/asiance/site-assets/profile/dummy-cover-png.png';
 
 function normalizeHandle(value?: string) {
   return (value ?? '').replace(/^@/, '').trim().toLowerCase();

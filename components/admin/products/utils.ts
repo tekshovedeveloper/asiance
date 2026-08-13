@@ -83,5 +83,5 @@ export function commaList(value: string) {
 }
 
 export function productImage(product: Product) {
-  return product.image || '/assets/placeholder-product.jpg';
+  return product.image || 'https://res.cloudinary.com/ux81wsbq/image/upload/v1786640167/asiance/site-assets/products/snail-mucin-dew-essence-png.png';
 }

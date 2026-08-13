@@ -25,7 +25,7 @@ import { isUploadFileTooLargeError, uploadErrorMessage } from '@/lib/upload-vali
 import type { DashboardUser } from '@/components/dashboard/types';
 import { Paperclip, Send, Smile, X, Trash2, Trash, Maximize2 } from 'lucide-react';
 
-const FALLBACK_AVATAR = '/assets/profile/dymmy-profile.jpeg';
+const FALLBACK_AVATAR = 'https://res.cloudinary.com/ux81wsbq/image/upload/v1786640168/asiance/site-assets/profile/dymmy-profile-jpeg.jpg';
 
 /** Generate a valid 24-char hex ObjectId on the client so the optimistic message always has _id */
 function generateObjectId(): string {

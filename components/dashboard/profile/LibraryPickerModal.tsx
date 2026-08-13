@@ -9,8 +9,8 @@ export type LibraryAsset = {
 };
 
 const mockAssets: LibraryAsset[] = [
-  { id: "1", url: "/assets/profile/dummy-profile.png", title: "Avatar 1" },
-  { id: "2", url: "/assets/profile/dummy-cover.png", title: "Cover 1" },
+  { id: "1", url: "https://res.cloudinary.com/ux81wsbq/image/upload/v1786640168/asiance/site-assets/profile/dummy-profile-png.png", title: "Avatar 1" },
+  { id: "2", url: "https://res.cloudinary.com/ux81wsbq/image/upload/v1786640168/asiance/site-assets/profile/dummy-cover-png.png", title: "Cover 1" },
 ];
 
 export function LibraryPickerModal({
