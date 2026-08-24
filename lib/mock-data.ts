@@ -210,6 +210,20 @@ export const products: Product[] = [
 
 export const articles: Article[] = [
   {
+    title: 'Sandy Liang: Soft. Feminine. Unapologetically Her.',
+    slug: 'sandy-liang-soft-feminine-unapologetically-her',
+    category: 'Fashion and Beauty',
+    excerpt: 'The designer redefining modern femininity, one bow at a time.',
+    content:
+      '<p>In a fashion world that often celebrates the loudest voice in the room, Sandy Liang is quietly building something lasting. Her designs are soft, romantic, and deeply personal, and they have become a uniform for a new generation of women who dress for themselves.</p><blockquote>I design clothes that I want to wear, that make me feel like myself, just the best version of me.</blockquote><h2>From Downtown Girl to Fashion Force</h2><p>Born and raised in the Lower East Side, Sandy Liang grew up surrounded by art, attitude, and authenticity. After studying at Parsons, she launched her namesake label in 2014 and quickly built a world where nostalgia feels sharp, modern, and completely wearable.</p><img src="/blog/sandy-liang-look-strip.png" alt="Pink bow dresses and accessories inspired by Sandy Liang" /><h2>The Liang Girl</h2><p>There is a distinct charm to a Sandy Liang girl. She is playful but polished, nostalgic but now. Think delicate bows, pearl details, sheer layers, and a whole lot of heart.</p><h2>Creative Process</h2><p>Liang often starts with memory: school uniforms, Chinatown storefronts, downtown walks, and the emotional shorthand of a ribbon or a perfect flat. The result is clothing that feels familiar without becoming sentimental.</p><h2>Representation Matters</h2><p>Her work carries the ease of a designer who does not flatten identity into a theme. Instead, she lets specificity lead. The clothes speak through personal references, city energy, and the confidence of an Asian American designer building her own visual language.</p><h2>What\'s Next</h2><p>The next chapter looks softer, sharper, and even more expansive. As Liang continues to grow, the bow remains less of a decoration than a signature: a small, unapologetic mark of girlhood, agency, and style.</p>',
+    image: '/blog/sandy-liang-hero.png',
+    authorName: 'Jaymie Moran',
+    tags: ['fashion', 'designers', 'street style', 'shop the look'],
+    featured: true,
+    status: 'published',
+    publishedAt: '2026-08-18T13:30:00.000Z',
+  },
+  {
     title: 'A Five-Minute Skin Reset for Humid Summer Mornings',
     slug: 'five-minute-skin-reset-humid-mornings',
     category: 'Fashion & Beauty',

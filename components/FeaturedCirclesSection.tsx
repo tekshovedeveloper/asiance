@@ -4,9 +4,17 @@ import type { Group } from '@/lib/types';
 
 type FeaturedCirclesSectionProps = {
   groups: Group[];
+  title?: string;
+  href?: string;
+  linkLabel?: string;
 };
 
-export function FeaturedCirclesSection({ groups }: FeaturedCirclesSectionProps) {
+export function FeaturedCirclesSection({
+  groups,
+  title = 'Featured circles',
+  href = '/circles',
+  linkLabel = 'View all circles',
+}: FeaturedCirclesSectionProps) {
   const featuredGroups = [...groups]
     .sort((left, right) => {
       const leftIsGeneric = left.category.toLowerCase() === 'circle' ? 1 : 0;
@@ -20,9 +28,9 @@ export function FeaturedCirclesSection({ groups }: FeaturedCirclesSectionProps) 
   return (
     <section className="featured-circles-section" aria-labelledby="featured-circles-title">
       <div className="featured-circles-section__heading">
-        <h2 id="featured-circles-title">Featured circles</h2>
-        <Link href="/circles" className="featured-circles-section__all">
-          View all circles
+        <h2 id="featured-circles-title">{title}</h2>
+        <Link href={href} className="featured-circles-section__all">
+          {linkLabel}
           <ArrowRight size={17} aria-hidden="true" />
         </Link>
       </div>

@@ -2,12 +2,10 @@ import Link from 'next/link';
 import { ActivityFeed } from '@/components/ActivityFeed';
 import { CommunityCategoryStrip } from '@/components/CommunityCategoryStrip';
 import { CommunityHeroAccount } from '@/components/CommunityHeroAccount';
-import { FeaturedArticlesSection } from '@/components/FeaturedArticlesSection';
-import { FeaturedCirclesSection } from '@/components/FeaturedCirclesSection';
 import { HomeMembershipCta } from '@/components/HomeMembershipCta';
+import { HomePersonalizedSections } from '@/components/HomePersonalizedSections';
 import { NewsBbcSection } from '@/components/NewsBbcSection';
 import { ShopCategorySection } from '@/components/ShopCategorySection';
-import { ShopLatestSection } from '@/components/ShopLatestSection';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import {
@@ -72,13 +70,9 @@ export default async function HomePage() {
 
       {newsCategories.length ? <CommunityCategoryStrip categories={newsCategories} /> : null}
 
-      <ShopLatestSection products={products} />
-
-      <FeaturedArticlesSection articles={articles} />
-
-      <ShopCategorySection />
-
-      <FeaturedCirclesSection groups={groups} />
+      <HomePersonalizedSections products={products} articles={articles} groups={groups}>
+        <ShopCategorySection />
+      </HomePersonalizedSections>
 
       {/* <NewsBbcSection
         items={news}

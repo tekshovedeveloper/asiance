@@ -151,6 +151,14 @@ function productSlug(value: string) {
     .replace(/(^-|-$)/g, '');
 }
 
+function normalizeCategoryName(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/&/g, 'and')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
 function filterProductsFallback(options: ProductQuery = {}) {
   const category = options.category?.toLowerCase();
   const filtered = category
@@ -226,8 +234,12 @@ export async function getProduct(slug: string) {
 }
 
 export function getArticles(category?: string) {
+  const normalizedCategory = category ? normalizeCategoryName(category) : '';
   const fallback = category
-    ? articles.filter((article) => article.category.toLowerCase().includes(category.toLowerCase()))
+    ? articles.filter((article) => {
+        const articleCategory = normalizeCategoryName(article.category);
+        return articleCategory.includes(normalizedCategory) || normalizedCategory.includes(articleCategory);
+      })
     : articles;
   const query = category ? `?category=${encodeURIComponent(category)}` : '';
   return fetchJson<Article[]>(`/articles${query}`, fallback);
@@ -403,8 +415,7 @@ export function getMembers(init?: RequestInit) {
 
 export async function getMember(handle: string) {
   const normalized = handle.replace(/^@/, '');
-  const fallback = members.find((member) => member.handle === normalized) ?? members[0];
-  return fetchJson<Member>(`/members/${normalized}`, fallback);
+  return requestJson<Member>(`/members/${normalized}`, { method: 'GET' });
 }
 
 export function getActivity() {
@@ -676,6 +687,17 @@ export type UpdateMePayload = Partial<Pick<
   | "username"
   | "email"
   | "bio"
+  | "address"
+  | "profileVisibility"
+  | "profileTags"
+  | "hobbies"
+  | "maritalStatus"
+  | "personalQuestion"
+  | "blogCategoryInterests"
+  | "blogCategoryReason"
+  | "productCategoryInterests"
+  | "productCategoryReason"
+  | "communityCircleSlugs"
   | "interests"
   | "avatarUrl"
   | "coverImageUrl"

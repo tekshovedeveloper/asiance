@@ -150,7 +150,7 @@
 
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "../dashboard.module.css";
 import type { DashboardUser } from "../types";
 import { updateMe, uploadImage } from "@/lib/api";
@@ -192,11 +192,28 @@ export function ProfilePanel({
     snapchatUrl: user.snapchatUrl ?? "",
     emailLink: user.emailLink ?? "",
   });
-  const [tagText, setTagText] = useState((user.interests ?? []).join(', '));
+  const [tagText, setTagText] = useState(((user.profileTags?.length ? user.profileTags : user.interests) ?? []).join(', '));
 
   const [busy, setBusy] = useState<null | "avatar" | "cover" | "save">(null);
   const [error, setError] = useState<string | null>(null);
   const bioLetterCount = form.bio.length;
+
+  useEffect(() => {
+    setForm({
+      name: user.name ?? "",
+      username: user.username ?? "",
+      email: user.email ?? "",
+      bio: limitBioLetters(user.bio ?? ""),
+      avatarUrl: user.avatarUrl ?? "",
+      coverImageUrl: user.coverImageUrl ?? "",
+      facebookUrl: user.facebookUrl ?? "",
+      instagramUrl: user.instagramUrl ?? "",
+      tiktokUrl: user.tiktokUrl ?? "",
+      snapchatUrl: user.snapchatUrl ?? "",
+      emailLink: user.emailLink ?? "",
+    });
+    setTagText(((user.profileTags?.length ? user.profileTags : user.interests) ?? []).join(', '));
+  }, [user]);
 
   async function pickAndUpload(kind: "avatar" | "cover", file: File) {
     setError(null);
@@ -222,7 +239,7 @@ export function ProfilePanel({
       const updated = await updateMe({
         ...form,
         bio: limitBioLetters(form.bio),
-        interests: parseProfileTags(tagText),
+        profileTags: parseProfileTags(tagText),
       });
       onUserChange(updated);
     } catch (e: any) {

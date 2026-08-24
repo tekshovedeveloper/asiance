@@ -185,6 +185,17 @@ export type Member = {
   bio: string;
   location: string;
   status: string;
+  profileVisibility?: 'public' | 'members' | 'private';
+  canViewProfile?: boolean;
+  profileTags?: string[];
+  hobbies?: string[];
+  maritalStatus?: string;
+  personalQuestion?: string;
+  blogCategoryInterests?: string[];
+  blogCategoryReason?: string;
+  productCategoryInterests?: string[];
+  productCategoryReason?: string;
+  communityCircleSlugs?: string[];
   interests?: string[];
   friendCount?: number;
   following?: string[];

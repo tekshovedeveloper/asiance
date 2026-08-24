@@ -3,6 +3,7 @@ import styles from "./dashboard.module.css";
 import { SidebarNav } from "./SidebarNav";
 import { ArticlesPanel } from "./articles/ArticlesPanel";
 import { AccountPrivacyPanel } from "./privacy/AccountPrivacyPanel";
+import { ProfileCustomizeModal } from "./profile/ProfileCustomizeModal";
 import { ProfileHero } from "./profile/ProfileHero";
 import { ProfileTabs } from "./profile/ProfileTabs";
 import { RightRail } from "./RightRail";
@@ -23,8 +24,11 @@ export function DashboardShell({
   data,
   articleView,
   dashboardView,
+  customizeProfileOpen,
   onArticleNavigate,
   onDashboardNavigate,
+  onCustomizeProfileOpen,
+  onCustomizeProfileClose,
   onUserChange,
 }: {
   user: DashboardUser;
@@ -34,8 +38,11 @@ export function DashboardShell({
   data: DashboardData;
   articleView?: ArticleDashboardView | null;
   dashboardView?: DashboardSidebarView | null;
+  customizeProfileOpen: boolean;
   onArticleNavigate: (view: ArticleDashboardView | null) => void;
   onDashboardNavigate: (view: DashboardSidebarView | null) => void;
+  onCustomizeProfileOpen: () => void;
+  onCustomizeProfileClose: () => void;
   onUserChange: (u: DashboardUser) => void;
 }) {
   return (
@@ -46,6 +53,7 @@ export function DashboardShell({
         activeDashboardView={dashboardView ?? null}
         onArticleNavigate={onArticleNavigate}
         onDashboardNavigate={onDashboardNavigate}
+        onCustomizeProfile={onCustomizeProfileOpen}
       />
 
       <div className={styles.main}>
@@ -76,6 +84,13 @@ export function DashboardShell({
           ) : null}
         </div>
       </div>
+
+      <ProfileCustomizeModal
+        open={customizeProfileOpen}
+        user={user}
+        onClose={onCustomizeProfileClose}
+        onUserChange={onUserChange}
+      />
     </div>
   );
 }

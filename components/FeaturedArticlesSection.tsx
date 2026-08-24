@@ -5,9 +5,17 @@ import { cloudinaryImageUrl } from '@/lib/cloudinary';
 
 type FeaturedArticlesSectionProps = {
   articles: Article[];
+  title?: string;
+  href?: string;
+  linkLabel?: string;
 };
 
-export function FeaturedArticlesSection({ articles }: FeaturedArticlesSectionProps) {
+export function FeaturedArticlesSection({
+  articles,
+  title = 'Featured articles',
+  href = '/blog',
+  linkLabel = 'View all articles',
+}: FeaturedArticlesSectionProps) {
   const featuredArticles = articles.slice(0, 4);
 
   if (!featuredArticles.length) return null;
@@ -15,9 +23,9 @@ export function FeaturedArticlesSection({ articles }: FeaturedArticlesSectionPro
   return (
     <section className="featured-articles-section" aria-labelledby="featured-articles-title">
       <div className="featured-articles-section__heading">
-        <h2 id="featured-articles-title">Featured articles</h2>
-        <Link href="/blog" className="featured-articles-section__all">
-          View all articles
+        <h2 id="featured-articles-title">{title}</h2>
+        <Link href={href} className="featured-articles-section__all">
+          {linkLabel}
           <ArrowRight size={17} aria-hidden="true" />
         </Link>
       </div>

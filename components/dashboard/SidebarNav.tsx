@@ -40,7 +40,8 @@
 
 // components/dashboard/SidebarNav.tsx
 import Link from "next/link";
-import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
+import { Settings } from "lucide-react";
+import { Fragment, useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import styles from "./dashboard.module.css";
 import type { ArticleDashboardView, DashboardSidebarView, DashboardUser } from "./types";
 
@@ -118,6 +119,7 @@ const Icons = {
       <path d="M9 12l2 2 4-4" />
     </svg>
   ),
+  customize: <Settings className={styles.svg} strokeWidth={2} />,
   dropdown: (
     <svg viewBox="0 0 24 24" className={styles.svg} fill="none" stroke="currentColor" strokeWidth="2">
       <path d="M4 6h16" />
@@ -191,12 +193,14 @@ export function SidebarNav({
   activeDashboardView,
   onArticleNavigate,
   onDashboardNavigate,
+  onCustomizeProfile,
 }: {
   user: DashboardUser;
   activeArticleView: ArticleDashboardView | null;
   activeDashboardView: DashboardSidebarView | null;
   onArticleNavigate: (view: ArticleDashboardView | null) => void;
   onDashboardNavigate: (view: DashboardSidebarView | null) => void;
+  onCustomizeProfile: () => void;
 }) {
   const [articlesOpen, setArticlesOpen] = useState(Boolean(activeArticleView));
 
@@ -316,7 +320,7 @@ export function SidebarNav({
             );
           }
 
-          return (
+          const navLink = (
             <Link
               key={item.href}
               href={item.href!}
@@ -332,6 +336,30 @@ export function SidebarNav({
               </span>
             </Link>
           );
+
+          if (item.href === "/activity") {
+            return (
+              <Fragment key="activity-customize-profile">
+                {navLink}
+                <button
+                  className={`${styles.navItem} ${styles.navDropdownButton}`}
+                  onClick={() => {
+                    onArticleNavigate(null);
+                    onDashboardNavigate(null);
+                    onCustomizeProfile();
+                  }}
+                  type="button"
+                >
+                  <span className={styles.navLeft}>
+                    <Icon title="Customize Profile">{Icons.customize}</Icon>
+                    <span className={styles.navLabel}>Customize Profile</span>
+                  </span>
+                </button>
+              </Fragment>
+            );
+          }
+
+          return navLink;
         })}
       </nav>
     </aside>

@@ -21,6 +21,7 @@ import {
   getMemberFriends,
   getMemberPurchasedProducts,
   getMyOrders,
+  getProducts,
   getOutgoingRequests,
   rejectFriendRequest,
   sendFriendRequest,
@@ -28,7 +29,11 @@ import {
   type FriendUser,
 } from '@/lib/api';
 import { showAppToast } from '@/lib/app-toast';
-import type { Activity, Article, Group, Member } from '@/lib/types';
+import {
+  filterArticlesByProfileCategories,
+  filterProductsByProfileCategories,
+} from '@/lib/profile-personalization';
+import type { Activity, Article, Group, Member, Product } from '@/lib/types';
 
 type FriendStatus = 'none' | 'pending-out' | 'pending-in' | 'accepted' | 'me';
 type ProfileTab = 'posts' | 'articles' | 'friends' | 'groups' | 'products';
@@ -93,8 +98,12 @@ function groupBelongsToMember(group: Group, member: Member) {
   const groupId = (group._id ?? '').toString();
   const groupMemberIds = group.members ?? [];
   const memberGroupIds = member.groups ?? [];
+  const selectedGroupSlugs = new Set(
+    (member.communityCircleSlugs ?? []).map((slug) => slug.trim().toLowerCase()).filter(Boolean),
+  );
 
   return (
+    selectedGroupSlugs.has(group.slug.toLowerCase()) ||
     groupMemberIds.some((id) => sameId(id, memberId)) ||
     memberGroupIds.some((id) => sameId(id, groupId))
   );
@@ -271,6 +280,7 @@ export default function MemberProfilePage({
   const [member, setMember] = useState<Member | null>(null);
   const [activity, setActivity] = useState<Activity[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [profileFriends, setProfileFriends] = useState<FriendUser[]>([]);
   const [profileGroups, setProfileGroups] = useState<Group[]>([]);
   const [purchasedProducts, setPurchasedProducts] = useState<PurchasedProduct[]>([]);
@@ -278,34 +288,57 @@ export default function MemberProfilePage({
   const [incomingReqId, setIncomingReqId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
   const [activeTab, setActiveTab] = useState<ProfileTab>('posts');
   const [isOwnProfile, setIsOwnProfile] = useState(false);
+  const [privacyLocked, setPrivacyLocked] = useState(false);
 
   useEffect(() => {
     async function init() {
       setLoading(true);
+      setLoadError('');
       try {
         setFriendStatus('none');
         setIncomingReqId(null);
         setIsOwnProfile(false);
+        setPrivacyLocked(false);
+        setMember(null);
+        setActivity([]);
+        setArticles([]);
+        setProducts([]);
         setProfileFriends([]);
         setProfileGroups([]);
         setPurchasedProducts([]);
 
-        const [m, acts, articleList, groupList] = await Promise.all([
-          getMember(handle),
-          getMemberActivity(handle),
-          getArticles(),
-          getGroups(),
-        ]);
+        const m = await getMember(handle);
 
         setMember(m);
-        setActivity(acts);
-        setArticles(articleList);
-        setProfileGroups(groupList.filter((group) => groupBelongsToMember(group, m)));
 
         const token = localStorage.getItem('asiance_token');
+        const isPrivateProfile = m.profileVisibility === 'private';
+
+        if (m.canViewProfile === false) {
+          setPrivacyLocked(true);
+          return;
+        }
+
         if (!token) {
+          if (isPrivateProfile) {
+            setPrivacyLocked(true);
+            return;
+          }
+
+          const [acts, articleList, groupList, productList] = await Promise.all([
+            getMemberActivity(handle),
+            getArticles(),
+            getGroups(),
+            getProducts({ sort: 'latest' }),
+          ]);
+          setActivity(acts);
+          setArticles(articleList);
+          setProducts(productList);
+          setProfileGroups(groupList.filter((group) => groupBelongsToMember(group, m)));
+
           const [publicFriends, publicProducts] = await Promise.all([
             m.showFriends ? getMemberFriends(handle) : Promise.resolve([]),
             m.showProducts ? getMemberPurchasedProducts(handle) : Promise.resolve([]),
@@ -315,10 +348,37 @@ export default function MemberProfilePage({
           return;
         }
 
-        const me = await getMe();
-        const memberId = ((m as any).id ?? (m as any)._id ?? '').toString();
+        let me;
+        try {
+          me = await getMe();
+        } catch (err) {
+          if (isPrivateProfile) {
+            setPrivacyLocked(true);
+            return;
+          }
+          throw err;
+        }
 
-        if (me.id && memberId === me.id) {
+        const memberId = ((m as any).id ?? (m as any)._id ?? '').toString();
+        const isOwner = Boolean(me.id && memberId === me.id);
+
+        if (isPrivateProfile && !isOwner) {
+          setPrivacyLocked(true);
+          return;
+        }
+
+        const [acts, articleList, groupList, productList] = await Promise.all([
+          getMemberActivity(handle),
+          getArticles(),
+          getGroups(),
+          getProducts({ sort: 'latest' }),
+        ]);
+        setActivity(acts);
+        setArticles(articleList);
+        setProducts(productList);
+        setProfileGroups(groupList.filter((group) => groupBelongsToMember(group, m)));
+
+        if (isOwner) {
           const [friends, orders] = await Promise.all([
             getFriendsList(),
             getMyOrders(),
@@ -353,8 +413,8 @@ export default function MemberProfilePage({
             setFriendStatus('none');
           }
         }
-      } catch {
-        // Member fallbacks are handled in the API helper.
+      } catch (error) {
+        setLoadError((error as Error)?.message || 'This profile could not be loaded.');
       } finally {
         setLoading(false);
       }
@@ -377,6 +437,16 @@ export default function MemberProfilePage({
       return Boolean(memberName && article.authorName?.trim().toLowerCase() === memberName);
     });
   }, [articles, member?.name, memberHandle]);
+  const profileArticleInterests = member?.blogCategoryInterests?.filter(Boolean) ?? [];
+  const profileProductInterests = member?.productCategoryInterests?.filter(Boolean) ?? [];
+  const profileArticles = useMemo(() => {
+    if (!profileArticleInterests.length) return memberArticles;
+    return filterArticlesByProfileCategories(articles, profileArticleInterests, false);
+  }, [articles, memberArticles, profileArticleInterests.join('|')]);
+  const profileProducts = useMemo(
+    () => filterProductsByProfileCategories(products, profileProductInterests, false),
+    [products, profileProductInterests.join('|')],
+  );
 
   const totalLikes = useMemo(
     () => activity.reduce((sum, item) => sum + (item.likes ?? 0), 0),
@@ -452,12 +522,27 @@ export default function MemberProfilePage({
     if (friendStatus === 'accepted') return handleMessage();
   }
 
-  if (loading || !member) {
+  if (loading) {
     return (
       <>
         <SiteHeader active="Members" />
         <main className="member-app-page">
           <LoadingIndicator label="Loading profile..." />
+        </main>
+        <SiteFooter />
+      </>
+    );
+  }
+
+  if (!member) {
+    return (
+      <>
+        <SiteHeader active="Members" />
+        <main className="member-app-page">
+          <div className="member-app-empty">
+            <p>{loadError || 'This profile could not be loaded.'}</p>
+            <Link href="/members">Back to all members</Link>
+          </div>
         </main>
         <SiteFooter />
       </>
@@ -473,8 +558,8 @@ export default function MemberProfilePage({
   const latestPosts = profilePosts
     .filter((post) => (featuredPost?._id ? post._id !== featuredPost._id : post !== featuredPost))
     .slice(0, 5);
-  const featuredArticle = memberArticles.find((article) => article.featured) ?? memberArticles[0];
-  const latestArticles = memberArticles
+  const featuredArticle = profileArticles.find((article) => article.featured) ?? profileArticles[0];
+  const latestArticles = profileArticles
     .filter((article) => (featuredArticle?._id ? article._id !== featuredArticle._id : article !== featuredArticle))
     .slice(0, 5);
   const emailHref = normalizeEmailLink(member.emailLink || member.email);
@@ -512,19 +597,20 @@ export default function MemberProfilePage({
   ].filter((item) => item.href);
   const canViewFriends = isOwnProfile || Boolean(member.showFriends);
   const canViewProducts = isOwnProfile || Boolean(member.showProducts);
+  const productTabCount = profileProductInterests.length ? profileProducts.length : purchasedProducts.length;
   const tabs: Array<{ key: ProfileTab; label: string; count: number }> = [
     { key: 'posts', label: 'Posts', count: profilePosts.length },
-    { key: 'articles', label: 'Articles', count: memberArticles.length },
+    { key: 'articles', label: 'Articles', count: profileArticles.length },
     { key: 'friends', label: 'Friends', count: profileFriends.length || friendCount },
     { key: 'groups', label: 'Groups', count: profileGroups.length },
-    { key: 'products', label: 'Products', count: purchasedProducts.length },
+    { key: 'products', label: 'Products', count: productTabCount },
   ];
 
   return (
     <>
       <SiteHeader active="Members" />
       <main className="member-app-page">
-        <div className="member-app-shell">
+        <div className={`member-app-shell${privacyLocked ? ' member-app-shell--locked' : ''}`}>
           <section className="member-app-hero">
             <img className="member-app-cover-image" src={cover} alt="" />
           </section>
@@ -665,7 +751,7 @@ export default function MemberProfilePage({
             )}
 
             {activeTab === 'articles' && (
-              memberArticles.length > 0 ? (
+              profileArticles.length > 0 ? (
                 <div className="member-app-content-layout">
                   {featuredArticle && (
                     <article className="member-app-feature-card">
@@ -688,7 +774,7 @@ export default function MemberProfilePage({
                       </Link>
                     </div>
                     <div className="member-app-latest-grid">
-                      {(latestArticles.length ? latestArticles : memberArticles).slice(0, 5).map((article) => (
+                      {(latestArticles.length ? latestArticles : profileArticles).slice(0, 5).map((article) => (
                         <Link className="member-app-mini-card" href={`/blog/${article.slug}`} key={article.slug}>
                           <img src={article.image || cover} alt="" />
                           <h3>{article.title}</h3>
@@ -744,7 +830,22 @@ export default function MemberProfilePage({
             )}
 
             {activeTab === 'products' && (
-              purchasedProducts.length > 0 ? (
+              profileProductInterests.length && profileProducts.length > 0 ? (
+                <div className="member-app-latest-grid member-app-products-grid">
+                  {profileProducts.map((product) => {
+                    const price = product.salePrice ?? product.price;
+
+                    return (
+                      <Link className="member-app-mini-card" href={`/shop/${product.slug}`} key={product.slug}>
+                        <img src={product.image || FALLBACK_COVER} alt={product.name} />
+                        <h3>{product.name}</h3>
+                        <span className="member-app-product-meta">{product.category}</span>
+                        <span>${price}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              ) : !profileProductInterests.length && purchasedProducts.length > 0 ? (
                 <div className="member-app-latest-grid member-app-products-grid">
                   {purchasedProducts.map((product) => {
                     const productCard = (
@@ -772,12 +873,35 @@ export default function MemberProfilePage({
                 </div>
               ) : (
                 <div className="member-app-empty">
-                  {canViewProducts ? 'No purchased products yet.' : 'Products are private.'}
+                  {profileProductInterests.length
+                    ? 'No products match these profile categories yet.'
+                    : canViewProducts
+                      ? 'No purchased products yet.'
+                      : 'Products are private.'}
                 </div>
               )
             )}
           </section>
         </div>
+        {privacyLocked ? (
+          <div className="member-private-modal" role="dialog" aria-modal="true" aria-labelledby="member-private-title">
+            <div className="member-private-card">
+              <h2 id="member-private-title">
+                {member.profileVisibility === 'members'
+                  ? 'This profile is for Asiance members'
+                  : 'This profile is private'}
+              </h2>
+              <p>
+                {member.profileVisibility === 'members'
+                  ? 'Log in to view this member profile.'
+                  : 'Only this member can view the full profile.'}
+              </p>
+              <button type="button" onClick={() => router.push('/members')}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : null}
       </main>
       <SiteFooter />
     </>

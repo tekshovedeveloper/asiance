@@ -21,6 +21,7 @@ export function DashboardClient({
   const [user, setUser] = useState<DashboardUser>(initialUser);
   const [articleView, setArticleView] = useState<ArticleDashboardView | null>(null);
   const [dashboardView, setDashboardView] = useState<DashboardSidebarView | null>(null);
+  const [customizeProfileOpen, setCustomizeProfileOpen] = useState(false);
 
   useEffect(() => {
     getMe()
@@ -49,8 +50,11 @@ export function DashboardClient({
       initialOrderId={initialOrderId}
       articleView={articleView}
       dashboardView={dashboardView}
+      customizeProfileOpen={customizeProfileOpen}
       onArticleNavigate={handleArticleNavigate}
       onDashboardNavigate={handleDashboardNavigate}
+      onCustomizeProfileOpen={() => setCustomizeProfileOpen(true)}
+      onCustomizeProfileClose={() => setCustomizeProfileOpen(false)}
       onUserChange={setUser}
     />
   );

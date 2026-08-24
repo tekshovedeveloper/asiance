@@ -15,7 +15,19 @@ function formatPrice(value: number) {
   }).format(value);
 }
 
-export function ShopLatestSection({ products }: { products: Product[] }) {
+type ShopLatestSectionProps = {
+  products: Product[];
+  title?: string;
+  href?: string;
+  linkLabel?: string;
+};
+
+export function ShopLatestSection({
+  products,
+  title = 'Shop the latest',
+  href = '/shop?sort=latest',
+  linkLabel = 'View all products',
+}: ShopLatestSectionProps) {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
 
   useEffect(() => {
@@ -44,9 +56,9 @@ export function ShopLatestSection({ products }: { products: Product[] }) {
   return (
     <section className="shop-latest-section" aria-labelledby="shop-latest-title">
       <div className="shop-latest-section__heading">
-        <h2 id="shop-latest-title">Shop the latest</h2>
-        <Link href="/shop?sort=latest" className="shop-latest-section__all">
-          View all products
+        <h2 id="shop-latest-title">{title}</h2>
+        <Link href={href} className="shop-latest-section__all">
+          {linkLabel}
           <ArrowRight size={16} aria-hidden="true" />
         </Link>
       </div>
