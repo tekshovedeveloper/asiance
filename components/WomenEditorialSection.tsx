@@ -9,6 +9,7 @@ import {
   Heart,
   HeartHandshake,
   Plane,
+  Shirt,
   UsersRound,
 } from 'lucide-react';
 import { cloudinaryImageUrl } from '@/lib/cloudinary';
@@ -27,6 +28,12 @@ type WomenDestination = {
 };
 
 const womenDestinations: WomenDestination[] = [
+  {
+    label: 'Fashion',
+    copy: 'Designer stories, beauty notes, and style inspiration',
+    href: '/fashion',
+    Icon: Shirt,
+  },
   {
     label: 'Dating',
     copy: 'Find love and build meaningful connections',
