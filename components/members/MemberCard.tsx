@@ -37,8 +37,8 @@ export function MemberCard({
     if (state !== "idle" || !userId) return;
     setState("loading");
     try {
-      await sendFriendRequest(userId);
-      setState("sent");
+      const result = await sendFriendRequest(userId);
+      setState(result.status === "accepted" ? "friends" : "sent");
     } catch {
       setState("error");
       setTimeout(() => setState("idle"), 2500);

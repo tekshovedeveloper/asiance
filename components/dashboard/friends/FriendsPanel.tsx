@@ -170,8 +170,8 @@ function MemberRow({
     if (!memberId || status !== "none") return;
     setBusy(true);
     try {
-      await sendFriendRequest(memberId);
-      onStatusChange(memberId, "pending");
+      const result = await sendFriendRequest(memberId);
+      onStatusChange(memberId, result.status === "accepted" ? "accepted" : "pending");
     } catch { /* not logged in */ }
     finally { setBusy(false); }
   };
@@ -377,8 +377,10 @@ export function FriendsPanel() {
               key={String(f._id)}
               user={f}
               onRemove={async () => {
-                await removeFriend(String(f._id));
-                setFriends((prev) => prev.filter((x) => x._id !== f._id));
+                const friendId = String(f._id);
+                await removeFriend(friendId);
+                setFriends((prev) => prev.filter((x) => String(x._id) !== friendId));
+                handleStatusChange(friendId, "none");
               }}
             />
           ))}
@@ -390,12 +392,30 @@ export function FriendsPanel() {
               key={String(r.friendshipId)}
               request={r}
               onAccept={async () => {
+                const requesterId = String(r.requesterId);
                 await acceptFriendRequest(String(r.friendshipId));
-                setRequests((prev) => prev.filter((x) => x.friendshipId !== r.friendshipId));
+                setRequests((prev) => prev.filter((x) => String(x.friendshipId) !== String(r.friendshipId)));
+                setFriends((prev) => {
+                  if (prev.some((friend) => String(friend._id) === requesterId)) return prev;
+                  return [
+                    ...prev,
+                    {
+                      _id: requesterId,
+                      name: r.name,
+                      handle: r.handle,
+                      avatar: r.avatar,
+                      status: r.status,
+                      bio: r.bio,
+                    },
+                  ];
+                });
+                handleStatusChange(requesterId, "accepted");
               }}
               onReject={async () => {
+                const requesterId = String(r.requesterId);
                 await rejectFriendRequest(String(r.friendshipId));
-                setRequests((prev) => prev.filter((x) => x.friendshipId !== r.friendshipId));
+                setRequests((prev) => prev.filter((x) => String(x.friendshipId) !== String(r.friendshipId)));
+                handleStatusChange(requesterId, "none");
               }}
             />
           ))}
