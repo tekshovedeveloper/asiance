@@ -6,18 +6,18 @@ import { useRouter } from 'next/navigation';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
 import {
   Bell, MessageCircle, ShoppingBag, ChevronDown,
-  LogOut, Settings, UserPlus, Heart, Menu, X,
+  LogOut, Settings, UserPlus, Heart, Menu, X, Trash2,
 } from 'lucide-react';
 import {
   getChatThreads, getMe, getUnreadMessageCount, getUnreadNotificationCount,
-  markAllNotificationsRead, getNotifications,
-  type ChatThread,
+  getNotifications, deleteNotification, markAllNotificationsRead,
+  type ChatThread, type NotificationItem,
 } from '@/lib/api';
 import type { DashboardUser } from '@/components/dashboard/types';
 import { useSocketContext } from '@/components/SocketProvider';
 import { useCart } from '@/components/cart/CartContext';
+import { showAppToast } from '@/lib/app-toast';
 
-type NotifItem = { _id?: string; message: string; type: string; read: boolean; createdAt?: string; link?: string };
 type MobileMenuTab = 'navigation' | 'notifications' | 'messages';
 
 const nav = [
@@ -68,8 +68,10 @@ export function SiteHeader({ active }: { active?: string }) {
   const [notifCount, setNotifCount] = useState(0);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifPanelOpen, setNotifPanelOpen] = useState(false);
-  const [notifications, setNotifications] = useState<NotifItem[]>([]);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
   const [notifLoading, setNotifLoading] = useState(false);
+  const [notifError, setNotifError] = useState(false);
+  const [deletingNotificationId, setDeletingNotificationId] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileTab, setMobileTab] = useState<MobileMenuTab>('navigation');
   const [messageThreads, setMessageThreads] = useState<ChatThread[]>([]);
@@ -77,14 +79,44 @@ export function SiteHeader({ active }: { active?: string }) {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const notifRef = useRef<HTMLDivElement>(null);
+  const notificationRefreshId = useRef(0);
 
   useEffect(() => {
-    const token = localStorage.getItem('asiance_token');
-    if (!token) return;
+    let refreshId = 0;
+    const syncAccount = () => {
+      const id = ++refreshId;
+      setMe(null);
+      setUnread(0);
+      setNotifCount(0);
+      setNotifications([]);
+      if (!localStorage.getItem('asiance_token')) return;
 
-    getMe().then((user) => setMe(user)).catch(() => setMe(null));
-    getUnreadMessageCount().then((r) => setUnread(r.count)).catch(() => {});
-    getUnreadNotificationCount().then((r) => setNotifCount(r.count)).catch(() => {});
+      getMe().then((user) => {
+        if (id === refreshId) setMe(user);
+      }).catch(() => {});
+      getUnreadMessageCount().then((r) => {
+        if (id === refreshId) setUnread(r.count);
+      }).catch(() => {});
+      getUnreadNotificationCount().then((r) => {
+        if (id === refreshId) setNotifCount(r.count);
+      }).catch(() => {});
+    };
+    syncAccount();
+    window.addEventListener('asiance:auth-changed', syncAccount);
+    window.addEventListener('storage', syncAccount);
+    return () => {
+      refreshId += 1;
+      window.removeEventListener('asiance:auth-changed', syncAccount);
+      window.removeEventListener('storage', syncAccount);
+    };
+  }, []);
+
+  useEffect(() => {
+    const refreshCount = () => {
+      getUnreadNotificationCount().then((r) => setNotifCount(r.count)).catch(() => {});
+    };
+    window.addEventListener('asiance:notifications-changed', refreshCount);
+    return () => window.removeEventListener('asiance:notifications-changed', refreshCount);
   }, []);
 
   useEffect(() => {
@@ -118,9 +150,18 @@ export function SiteHeader({ active }: { active?: string }) {
         setNotifCount((prev) => prev + 1);
       }
       setNotifications((prev) => [
-        { message: n.message, type: n.type, read: false, link: (n as any).link },
-        ...prev,
+        { _id: n._id, message: n.message, type: n.type, read: false, link: n.link, createdAt: n.createdAt },
+        ...prev.filter((item) => !n._id || item._id !== n._id),
       ]);
+      const refreshId = ++notificationRefreshId.current;
+      getNotifications().then((list) => {
+        if (refreshId === notificationRefreshId.current) {
+          setNotifications(list ?? []);
+          setNotifError(false);
+        }
+      }).catch(() => {}).finally(() => {
+        if (refreshId === notificationRefreshId.current) setNotifLoading(false);
+      });
     });
   }, [onNotification]);
 
@@ -138,15 +179,51 @@ export function SiteHeader({ active }: { active?: string }) {
   }, []);
 
   function loadNotifications() {
+    const refreshId = ++notificationRefreshId.current;
     setNotifLoading(true);
+    setNotifError(false);
     getNotifications()
-      .then((list) => {
-        setNotifications(list ?? []);
-        setNotifCount(0);
-        markAllNotificationsRead().catch(() => {});
+      .then(async (list) => {
+        if (refreshId !== notificationRefreshId.current) return;
+        const items = list ?? [];
+        if (items.some((item) => !item.read)) {
+          try {
+            await markAllNotificationsRead();
+            if (refreshId !== notificationRefreshId.current) return;
+            setNotifications(items.map((item) => ({ ...item, read: true })));
+            setNotifCount(0);
+            window.dispatchEvent(new Event('asiance:notifications-changed'));
+            return;
+          } catch {
+            // Keep the unread state if the server could not save the change.
+          }
+        }
+        if (refreshId === notificationRefreshId.current) setNotifications(items);
       })
-      .catch(() => {})
-      .finally(() => setNotifLoading(false));
+      .catch(() => {
+        if (refreshId === notificationRefreshId.current) setNotifError(true);
+      })
+      .finally(() => {
+        if (refreshId === notificationRefreshId.current) setNotifLoading(false);
+      });
+  }
+
+  async function removeNotification(notificationId: string) {
+    const removedItem = notifications.find((item) => item._id === notificationId);
+    setDeletingNotificationId(notificationId);
+    try {
+      await deleteNotification(notificationId);
+      notificationRefreshId.current += 1;
+      setNotifications((prev) => prev.filter((item) => item._id !== notificationId));
+      if (removedItem && !removedItem.read && removedItem.type !== 'message') {
+        setNotifCount((prev) => Math.max(0, prev - 1));
+      }
+      getUnreadNotificationCount().then((result) => setNotifCount(result.count)).catch(() => {});
+    } catch {
+      showAppToast('Could not delete notification. Please try again.', 'error');
+    } finally {
+      setDeletingNotificationId(null);
+    }
   }
 
   function openNotifPanel() {
@@ -182,6 +259,7 @@ export function SiteHeader({ active }: { active?: string }) {
   function logout() {
     localStorage.removeItem('asiance_token');
     localStorage.removeItem('asiance_user');
+    window.dispatchEvent(new Event('asiance:auth-changed'));
     setMe(null);
     setMobileMenuOpen(false);
     router.push('/');
@@ -250,25 +328,26 @@ export function SiteHeader({ active }: { active?: string }) {
                     <div className="notif-panel-empty">
                       <LoadingIndicator compact />
                     </div>
+                  ) : notifError ? (
+                    <div className="notif-panel-empty">Could not load notifications. <button type="button" onClick={loadNotifications}>Try again</button></div>
                   ) : notifications.length === 0 ? (
                     <div className="notif-panel-empty">No notifications yet</div>
                   ) : (
-                    notifications.map((n, i) => (
-                      <a
+                    notifications.slice(0, 20).map((n, i) => (
+                      <div
                         key={n._id ?? i}
-                        href={n.link ?? '#'}
                         className={`notif-panel-item${n.read ? '' : ' notif-panel-item--unread'}`}
-                        onClick={() => setNotifPanelOpen(false)}
                       >
                         <span className="notif-panel-icon"><NotifIcon type={n.type} /></span>
                         <div className="notif-panel-content">
-                          <p className="notif-panel-msg">{n.message}</p>
+                          <a className="notif-panel-msg" href={n.link || '/notifications'} onClick={() => setNotifPanelOpen(false)}>{n.message}</a>
                           {n.createdAt && (
                             <span className="notif-panel-time">{formatNotifTime(n.createdAt)}</span>
                           )}
                         </div>
                         {!n.read && <span className="notif-panel-dot" />}
-                      </a>
+                        {n._id && <button type="button" className="notif-delete" aria-label={`Delete notification: ${n.message}`} title="Delete notification" disabled={deletingNotificationId === n._id} onClick={() => removeNotification(n._id!)}><Trash2 size={14} /></button>}
+                      </div>
                     ))
                   )}
                 </div>
@@ -448,24 +527,25 @@ export function SiteHeader({ active }: { active?: string }) {
                     </div>
                   ) : notifLoading ? (
                     <LoadingIndicator compact />
+                  ) : notifError ? (
+                    <div className="mobile-menu-empty">Could not load notifications. <button type="button" onClick={loadNotifications}>Try again</button></div>
                   ) : notifications.length ? (
                     <>
                       {notifications.slice(0, 6).map((notification, index) => (
-                        <Link
-                          href={notification.link ?? '/notifications'}
+                        <div
                           className="mobile-menu-feed-item"
                           key={notification._id ?? index}
-                          onClick={() => setMobileMenuOpen(false)}
                         >
                           <span className="mobile-menu-feed-icon">
                             <NotifIcon type={notification.type} />
                           </span>
-                          <span>
+                          <Link href={notification.link || '/notifications'} onClick={() => setMobileMenuOpen(false)} className="mobile-menu-feed-content">
                             <strong>{notification.message}</strong>
                             <small>{formatNotifTime(notification.createdAt)}</small>
-                          </span>
-                          {!notification.read ? <i aria-label="Unread" /> : null}
-                        </Link>
+                          </Link>
+                          <i aria-label={notification.read ? undefined : 'Unread'} style={{ visibility: notification.read ? 'hidden' : 'visible' }} />
+                          {notification._id && <button type="button" className="notif-delete" aria-label={`Delete notification: ${notification.message}`} disabled={deletingNotificationId === notification._id} onClick={() => removeNotification(notification._id!)}><Trash2 size={14} /></button>}
+                        </div>
                       ))}
                       <Link
                         href="/notifications"

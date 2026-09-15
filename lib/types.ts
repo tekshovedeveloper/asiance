@@ -107,6 +107,28 @@ export type ArticleCategory = {
   sortOrder?: number;
 };
 
+export type HomeSlideArticle = Pick<Article, 'title' | 'slug' | 'excerpt' | 'category' | 'status' | 'publishedAt'> & {
+  _id: string;
+};
+
+export type HomeSlide = {
+  _id: string;
+  articleId: string | null;
+  article: HomeSlideArticle | null;
+  image: string;
+  imageAlt: string;
+  sortOrder: number;
+  active: boolean;
+};
+
+export type HomeSlidePayload = {
+  articleId: string;
+  image: string;
+  imageAlt: string;
+  sortOrder: number;
+  active: boolean;
+};
+
 export type NewsCategory = {
   _id?: string;
   name: string;

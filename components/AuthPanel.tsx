@@ -97,6 +97,7 @@ export function AuthPanel({ mode }: { mode: 'login' | 'register' }) {
       } else {
         localStorage.setItem('asiance_token', data.accessToken);
         localStorage.setItem('asiance_user', JSON.stringify(data.user));
+        window.dispatchEvent(new Event('asiance:auth-changed'));
         const redirect = safeRedirectTarget(searchParams.get('redirect') ?? searchParams.get('next'));
         router.push(redirect ?? (data.user.role === 'admin' ? '/admin' : '/dashboard'));
       }

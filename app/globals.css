@@ -776,7 +776,7 @@ button {
 
 .mobile-menu-feed-item {
   display: grid;
-  grid-template-columns: 36px minmax(0, 1fr) 8px;
+  grid-template-columns: 36px minmax(0, 1fr) 8px 26px;
   align-items: center;
   gap: 11px;
   min-height: 72px;
@@ -797,11 +797,13 @@ button {
   color: var(--brand);
 }
 
-.mobile-menu-feed-item > span:nth-child(2) {
+.mobile-menu-feed-content {
   display: grid;
   min-width: 0;
   gap: 3px;
 }
+
+.mobile-menu-feed-content:hover strong { color: var(--brand); }
 
 .mobile-menu-feed-item strong {
   overflow: hidden;
@@ -10087,11 +10089,34 @@ em {
 }
 
 .notif-panel-msg {
+  display: block;
   font-size: 13px;
   line-height: 1.4;
   margin: 0 0 2px;
   color: var(--ink);
+  text-decoration: none;
 }
+
+.notif-panel-msg:hover { color: var(--brand); }
+
+.notif-delete {
+  flex-shrink: 0;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+
+.notif-delete:hover,
+.notif-delete:focus-visible { background: #fce8e8; color: #bd3030; }
+.notif-delete:disabled { opacity: 0.4; cursor: wait; }
 
 .notif-panel-time {
   font-size: 11px;

@@ -19,6 +19,7 @@ import type {
   Group,
   GroupMember,
   GroupType,
+  HomeSlide,
   Member,
   NewsCategory,
   NewsItem,
@@ -34,6 +35,10 @@ export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000
 const SERVER_API_URL = process.env.API_INTERNAL_URL ?? API_URL;
 const DEFAULT_FETCH_TIMEOUT_MS = 3000;
 const PUBLIC_API_ORIGIN = API_URL.replace(/\/api\/?$/, '');
+
+export function getHomeSlides() {
+  return fetchJson<HomeSlide[]>('/home-slides', []);
+}
 
 function absoluteUploadUrl(url: string) {
   return url.startsWith('http') ? url : `${API_URL.replace(/\/api$/, '')}${url}`;
@@ -555,8 +560,14 @@ export async function getFavorites() {
   return requestJson<Activity[]>('/favorites', { method: 'GET' });
 }
 
+export type NotificationItem = { _id?: string; message: string; type: string; read: boolean; createdAt?: string; link?: string };
+
 export async function getNotifications() {
-  return requestJson<Array<{ _id?: string; message: string; type: string; read: boolean; createdAt?: string; link?: string }>>('/notifications', { method: 'GET' });
+  return requestJson<NotificationItem[]>('/notifications', { method: 'GET', cache: 'no-store' });
+}
+
+export async function deleteNotification(notificationId: string) {
+  return requestJson<{ ok: boolean }>(`/notifications/${encodeURIComponent(notificationId)}`, { method: 'DELETE' });
 }
 
 export async function getUnreadNotificationCount(): Promise<{ count: number }> {

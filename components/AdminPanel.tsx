@@ -9,6 +9,7 @@ import {
   ChevronDown,
   FileText,
   FolderPlus,
+  Images,
   LayoutDashboard,
   LogOut,
   Megaphone,
@@ -50,6 +51,7 @@ import { ProductAdminPanel } from '@/components/admin/products';
 import { OrderAdminPanel } from '@/components/admin/orders/OrderAdminPanel';
 import { ShippingAdminPanel } from '@/components/admin/shipping/ShippingAdminPanel';
 import { UserAdminPanel } from '@/components/admin/users/UserAdminPanel';
+import { HomeSliderAdminPanel } from '@/components/admin/home-slider/HomeSliderAdminPanel';
 import {
   articles,
   groups,
@@ -106,6 +108,7 @@ type Stats = {
 
 type AdminView =
   | 'overview'
+  | 'home-slider'
   | 'news-list'
   | 'news-add'
   | 'news-categories'
@@ -550,6 +553,7 @@ if (data.user?.role !== 'admin') {
 
 localStorage.setItem('asiance_token', data.accessToken);
 localStorage.setItem('asiance_user', JSON.stringify(data.user));
+window.dispatchEvent(new Event('asiance:auth-changed'));
 
 setToken(data.accessToken);
 setAuthChecked(true);
@@ -568,6 +572,7 @@ setStatus('Admin connected.');
   function logout() {
     localStorage.removeItem('asiance_token');
     localStorage.removeItem('asiance_user');
+    window.dispatchEvent(new Event('asiance:auth-changed'));
     router.replace('/login');
   }
 
@@ -1093,6 +1098,14 @@ setStatus('Admin connected.');
             <PackagePlus size={18} />
             <span>Products</span>
           </button>
+          <button
+            className={`wp-menu-item ${activeView === 'home-slider' ? 'active' : ''}`}
+            onClick={() => setActiveView('home-slider')}
+            type="button"
+          >
+            <Images size={18} />
+            <span>Home Slider</span>
+          </button>
 
           <button
   className={`wp-menu-item ${activeView === 'orders' ? 'active' : ''}`}
@@ -1576,6 +1589,8 @@ setStatus('Admin connected.');
         ) : null}
 
         {activeView === 'products' ? <ProductAdminPanel token={token} onChanged={() => loadStats()} /> : null}
+
+        {activeView === 'home-slider' ? <HomeSliderAdminPanel token={token} /> : null}
 
         {activeView === 'orders' ? <OrderAdminPanel token={token} onChanged={() => loadStats()} /> : null}
 
