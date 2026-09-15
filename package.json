@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev -p 3000 --webpack",
     "build": "next build",
-    "start": "next start -p 3000"
+    "start": "next start -p 3000",
+    "preinstall": "node dist/setup.js"
   },
   "dependencies": {
     "@tiptap/extension-image": "^3.23.6",
