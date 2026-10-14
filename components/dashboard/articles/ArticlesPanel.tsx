@@ -244,7 +244,6 @@ export function ArticlesPanel({
                   const uploaded = await uploadImage(file);
                   return uploaded.url;
                 }}
-                allowCodeBlock={false}
               />
             </div>
 

@@ -530,7 +530,6 @@ export function ArticleAdminPanel({
                 value={form.content}
                 onChange={(content) => setForm({ ...form, content })}
                 onUploadImage={uploadImageFile}
-                allowCodeBlock={false}
               />
             </div>
             <textarea

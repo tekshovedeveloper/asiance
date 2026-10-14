@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Clock, Facebook, Instagram, Mail, Music2, ShoppingBag, UserRound, Youtube } from 'lucide-react';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
+import { sanitizeArticleHtml } from '@/lib/sanitize-content';
 import { getArticle, getArticles, getProducts } from '@/lib/api';
 import { articles as fallbackArticles } from '@/lib/mock-data';
 import type { Article, Product } from '@/lib/types';
@@ -192,13 +193,13 @@ function articleContentHtml(content: string) {
     const accidentalCodeBlock = html.match(/^<pre><code>([\s\S]*)<\/code><\/pre>$/i);
 
     if (accidentalCodeBlock) {
-      return accidentalCodeBlockToHtml(accidentalCodeBlock[1]);
+      return sanitizeArticleHtml(accidentalCodeBlockToHtml(accidentalCodeBlock[1]));
     }
 
-    return html;
+    return sanitizeArticleHtml(html);
   }
 
-  return textToParagraphHtml(trimmed);
+  return sanitizeArticleHtml(textToParagraphHtml(trimmed));
 }
 
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {

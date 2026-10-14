@@ -4,6 +4,7 @@ import { NewsCard } from '@/components/NewsCard';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { getNews, getNewsItem } from '@/lib/api';
+import { sanitizeArticleHtml } from '@/lib/sanitize-content';
 
 export default async function NewsDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -32,7 +33,10 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ slu
         ) : null}
       </section>
       {item.image ? <img className="article-image" src={item.image} alt={item.title} /> : null}
-      <article className="article-body ql-editor" dangerouslySetInnerHTML={{ __html: item.content || '' }} />
+      <article
+        className="article-body ql-editor"
+        dangerouslySetInnerHTML={{ __html: sanitizeArticleHtml(item.content || '') }}
+      />
       {related.length ? (
         <section className="section news-related-section">
           <div className="section-head">
