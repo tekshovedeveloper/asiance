@@ -4,12 +4,16 @@ import {
   ArrowRight,
   Baby,
   ChevronRight,
+  Cpu,
   Flame,
   Gem,
   Heart,
   HeartHandshake,
+  House,
   Plane,
   Shirt,
+  ShoppingBag,
+  Sparkles,
   UsersRound,
 } from 'lucide-react';
 import { cloudinaryImageUrl } from '@/lib/cloudinary';
@@ -37,7 +41,7 @@ const womenDestinations: WomenDestination[] = [
   {
     label: 'Dating',
     copy: 'Find love and build meaningful connections',
-    href: '/love',
+    href: '/dating',
     Icon: HeartHandshake,
   },
   {
@@ -63,6 +67,30 @@ const womenDestinations: WomenDestination[] = [
     copy: 'Destinations and tips for every adventure',
     href: '/travel',
     Icon: Plane,
+  },
+  {
+    label: 'Beauty',
+    copy: 'Skincare, makeup, wellness, and beauty inspiration',
+    href: '/beauty',
+    Icon: Sparkles,
+  },
+  {
+    label: 'Home',
+    copy: 'Beautiful spaces, entertaining, and everyday rituals',
+    href: '/blog?category=Home',
+    Icon: House,
+  },
+  {
+    label: 'Tech',
+    copy: 'Smart tools, trends, and innovation for modern life',
+    href: '/tech',
+    Icon: Cpu,
+  },
+  {
+    label: 'Shop',
+    copy: 'Curated beauty, lifestyle, and gifts worth discovering',
+    href: '/shop',
+    Icon: ShoppingBag,
   },
 ];
 

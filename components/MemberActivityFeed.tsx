@@ -22,7 +22,7 @@ const API_ORIGIN = API_URL.replace(/\/api\/?$/, '');
 
 function resolveMediaUrl(url: string) {
   if (!url || url.startsWith('http') || url.startsWith('blob:') || url.startsWith('data:')) return url;
-  return `${API_ORIGIN}${url}`;
+  return url.startsWith('/api/uploads/') ? `${API_ORIGIN}${url}` : url;
 }
 
 function detectMediaType(urlOrMime: string): string {

@@ -7,13 +7,19 @@ import { getArticleCategories, getArticles } from '@/lib/api';
 export default async function BlogPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ category?: string }>;
+  searchParams?: Promise<{ category?: string; tag?: string }>;
 }) {
   const resolvedSearchParams = searchParams ? await searchParams : {};
-  const selectedCategory = resolvedSearchParams.category ?? '';
+  const selectedCategory = (resolvedSearchParams.category ?? '').toLowerCase();
+  const selectedTag = (resolvedSearchParams.tag ?? '').toLowerCase();
   const categories = await getArticleCategories();
   const selectedCategoryName = categories.find((category) => category.slug === selectedCategory)?.name;
-  const articles = await getArticles(selectedCategoryName);
+  const categoryArticles = await getArticles(selectedCategoryName);
+  const articles = selectedTag
+    ? categoryArticles.filter((article) =>
+        (article.tags ?? []).some((tag) => tag.toLowerCase() === selectedTag),
+      )
+    : categoryArticles;
 
   return (
     <main>
@@ -43,11 +49,26 @@ export default async function BlogPage({
         ))}
       </div>
       <section className="section" style={{ paddingTop: 0 }}>
-        <div className="story-grid">
-          {articles.map((article, index) => (
-            <ArticleCard article={article} large={index === 0} key={article.slug} />
-          ))}
-        </div>
+        {selectedTag ? (
+          <div className="blog-filter-heading">
+            <span>Topic</span>
+            <strong>{selectedTag.replace(/-/g, ' ')}</strong>
+            <Link href={selectedCategory ? `/blog?category=${selectedCategory}` : '/blog'}>Clear topic</Link>
+          </div>
+        ) : null}
+        {articles.length ? (
+          <div className="story-grid">
+            {articles.map((article, index) => (
+              <ArticleCard article={article} large={index === 0} key={article.slug} />
+            ))}
+          </div>
+        ) : (
+          <div className="blog-empty-state">
+            <h2>No stories in this topic yet.</h2>
+            <p>Try another technology topic or view all articles.</p>
+            <Link href={selectedCategory ? `/blog?category=${selectedCategory}` : '/blog'}>View all articles</Link>
+          </div>
+        )}
       </section>
       <SiteFooter />
     </main>

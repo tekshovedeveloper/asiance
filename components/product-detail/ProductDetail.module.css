@@ -35,6 +35,52 @@
     background: #ffffff;
     min-height: 100vh;
   }
+
+  .loadingWrapper {
+    display: grid;
+    grid-template-columns: 30% 40% 30%;
+    align-items: center;
+    min-height: calc(100vh - 115px);
+    padding: 38px 28px;
+    background: #fff;
+  }
+
+  .loadingInfo,
+  .loadingActions {
+    display: grid;
+    gap: 14px;
+    padding: 32px;
+  }
+
+  .loadingInfo span,
+  .loadingActions span,
+  .loadingImage {
+    border-radius: 7px;
+    background: linear-gradient(90deg, #f5f1f7 25%, #fbf9fc 50%, #f5f1f7 75%);
+    background-size: 200% 100%;
+    animation: product-loading-shimmer 1.25s ease-in-out infinite;
+  }
+
+  .loadingInfo span:nth-child(1) { width: 30%; height: 16px; }
+  .loadingInfo span:nth-child(2) { width: 82%; height: 42px; }
+  .loadingInfo span:nth-child(3) { width: 92%; height: 68px; }
+  .loadingInfo span:nth-child(4) { width: 25%; height: 18px; }
+
+  .loadingImage {
+    width: min(100%, 620px);
+    aspect-ratio: 1;
+    justify-self: center;
+  }
+
+  .loadingActions span {
+    width: 100%;
+    height: 34px;
+    border-radius: 999px;
+  }
+
+  @keyframes product-loading-shimmer {
+    to { background-position: -200% 0; }
+  }
   
   .wrapper {
     display: grid;
@@ -98,26 +144,108 @@
   .gallery {
     background: #ffffff;
     min-height: calc(800px - 82px);
- 
+    padding: 24px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
   }
   
   .imageCard {
     position: relative;
     width: 100%;
-    min-height: calc(800px - 82px);
+    max-width: 620px;
+    aspect-ratio: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    border-radius: 8px;
+    background: #f8f5fa;
   }
   
   .productImage {
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: 800px;
-    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
     display: block;
+  }
+
+  .galleryArrow {
+    position: absolute;
+    top: 50%;
+    display: grid;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    border: 1px solid rgba(91, 32, 105, 0.18);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.94);
+    color: #68227b;
+    box-shadow: 0 7px 20px rgba(44, 18, 52, 0.15);
+    cursor: pointer;
+    place-items: center;
+    transform: translateY(-50%);
+  }
+
+  .galleryArrow:hover,
+  .galleryArrow:focus-visible {
+    background: #68227b;
+    color: #fff;
+  }
+
+  .galleryArrow svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .galleryArrowLeft { left: 16px; }
+  .galleryArrowRight { right: 16px; }
+
+  .galleryCount {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: rgba(35, 23, 39, 0.78);
+    color: #fff;
+    font-family: var(--sans);
+    font-size: 11px;
+    line-height: 1;
+  }
+
+  .thumbnailRail {
+    display: flex;
+    width: 100%;
+    max-width: 620px;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 2px;
+    scrollbar-width: thin;
+  }
+
+  .thumbnailButton {
+    width: 78px;
+    height: 78px;
+    flex: 0 0 78px;
+    overflow: hidden;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 5px;
+    background: #f8f5fa;
+    cursor: pointer;
+  }
+
+  .thumbnailButton img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .thumbnailButtonActive {
+    border-color: #7a2c8a;
   }
   
   .zoomButton {
@@ -240,6 +368,22 @@
   }
   
   @media (max-width: 1100px) {
+    .loadingWrapper {
+      grid-template-columns: 1fr;
+      gap: 24px;
+      padding: 32px 24px 60px;
+    }
+
+    .loadingInfo,
+    .loadingActions {
+      padding: 16px 0;
+    }
+
+    .loadingImage {
+      grid-row: 1;
+      width: min(100%, 680px);
+    }
+
     .wrapper {
       grid-template-columns: 1fr;
     }
@@ -254,15 +398,17 @@
   
     .gallery {
       min-height: auto;
+      padding: 20px 24px 4px;
     }
   
     .imageCard {
-      min-height: 560px;
+      min-height: 0;
+      max-width: 680px;
     }
   
     .productImage {
-      max-width: 70%;
-      max-height: 520px;
+      max-width: none;
+      max-height: none;
     }
   }
   
@@ -276,12 +422,30 @@
     }
   
     .imageCard {
-      min-height: 460px;
+      min-height: 0;
     }
   
     .productImage {
-      max-width: 82%;
-      max-height: 420px;
+      max-width: none;
+      max-height: none;
+    }
+
+    .gallery {
+      padding: 12px 16px 0;
+    }
+
+    .galleryArrow {
+      width: 36px;
+      height: 36px;
+    }
+
+    .galleryArrowLeft { left: 10px; }
+    .galleryArrowRight { right: 10px; }
+
+    .thumbnailButton {
+      width: 66px;
+      height: 66px;
+      flex-basis: 66px;
     }
   
     .purchasePanel {

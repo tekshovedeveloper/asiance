@@ -18498,15 +18498,15 @@ em {
 .fashion-hero {
   position: relative;
   isolation: isolate;
-  min-height: clamp(560px, 37vw, 760px);
+  aspect-ratio: 1174 / 464;
+  min-height: 0;
   overflow: hidden;
-  border-top: 1px solid #2c211f;
-  border-bottom: 5px solid #f7f3f6;
-  background: #2a211f;
+  border: 0;
+  background: #151018;
   color: #fffdf8;
 }
 
-.fashion-hero__image,
+.fashion-hero__picture,
 .fashion-hero__scrim {
   position: absolute;
   inset: 0;
@@ -18514,17 +18514,21 @@ em {
   height: 100%;
 }
 
-.fashion-hero__image {
+.fashion-hero__picture {
   z-index: -2;
+}
+
+.fashion-hero__image {
+  display: block;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  object-position: 50% 48%;
+  object-position: center;
 }
 
 .fashion-hero__scrim {
   z-index: -1;
-  background:
-    linear-gradient(90deg, rgba(28, 20, 18, 0.92) 0%, rgba(28, 20, 18, 0.8) 20%, rgba(28, 20, 18, 0.2) 49%, rgba(28, 20, 18, 0.34) 69%, rgba(28, 20, 18, 0.78) 100%),
-    linear-gradient(180deg, rgba(12, 8, 7, 0.18), rgba(12, 8, 7, 0.18));
+  display: none;
   pointer-events: none;
 }
 
@@ -18535,10 +18539,56 @@ em {
   grid-template-columns: minmax(300px, 36%) minmax(190px, 1fr) minmax(270px, 28%);
   align-items: center;
   width: 100%;
+  height: 100%;
   min-width: 0;
-  min-height: inherit;
+  min-height: 0;
   padding: clamp(42px, 5vw, 78px) clamp(44px, 5.2vw, 88px);
+  opacity: 0;
+  pointer-events: none;
 }
+
+.fashion-hero__content a,
+.fashion-hero__rail-item {
+  visibility: hidden;
+}
+
+.fashion-hero__desktop-actions {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+}
+
+.fashion-hero__desktop-action {
+  position: absolute;
+  display: block;
+  border-radius: 2px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.fashion-hero__desktop-action:focus-visible {
+  outline: 2px solid #d8b0dc;
+  outline-offset: 2px;
+}
+
+.fashion-hero__desktop-action--feature {
+  left: 6.2%;
+  bottom: 6.5%;
+  width: 16%;
+  height: 10%;
+}
+
+.fashion-hero__desktop-action--rail-1,
+.fashion-hero__desktop-action--rail-2,
+.fashion-hero__desktop-action--rail-3 {
+  right: 5.1%;
+  width: 18%;
+  height: 18%;
+}
+
+.fashion-hero__desktop-action--rail-1 { top: 14%; }
+.fashion-hero__desktop-action--rail-2 { top: 37%; }
+.fashion-hero__desktop-action--rail-3 { top: 60%; }
 
 .fashion-hero__content {
   min-width: 0;
@@ -18563,7 +18613,7 @@ em {
   margin: 0;
   color: #fffdf8;
   font-family: var(--serif);
-  font-size: clamp(36px, 3.35vw, 54px);
+  font-size: clamp(38px, 4.8vw, 64px);
   font-weight: 400;
   letter-spacing: 0;
   line-height: 1;
@@ -18690,7 +18740,7 @@ em {
   }
 
   .fashion-hero h1 {
-    font-size: clamp(36px, 4.5vw, 54px);
+    font-size: clamp(36px, 4.5vw, 56px);
   }
 
   .fashion-hero__rail {
@@ -18705,14 +18755,16 @@ em {
 
 @media (max-width: 820px) {
   .fashion-hero {
+    aspect-ratio: auto;
     min-height: 680px;
   }
 
   .fashion-hero__image {
-    object-position: 55% center;
+    object-position: center;
   }
 
   .fashion-hero__scrim {
+    display: block;
     background:
       linear-gradient(180deg, rgba(28, 20, 18, 0.94) 0%, rgba(28, 20, 18, 0.68) 38%, rgba(28, 20, 18, 0.22) 60%, rgba(28, 20, 18, 0.9) 100%),
       linear-gradient(90deg, rgba(28, 20, 18, 0.34), rgba(28, 20, 18, 0.2));
@@ -18725,6 +18777,17 @@ em {
     align-items: start;
     min-height: 680px;
     padding: 38px 22px 20px;
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .fashion-hero__content a,
+  .fashion-hero__rail-item {
+    visibility: visible;
+  }
+
+  .fashion-hero__desktop-actions {
+    display: none;
   }
 
   .fashion-hero__content {
@@ -18793,7 +18856,7 @@ em {
   }
 
   .fashion-hero__image {
-    object-position: 56% center;
+    object-position: center;
   }
 
   .fashion-hero h1 {
@@ -18815,4 +18878,3407 @@ em {
     width: calc(100vw - 34px);
     max-width: calc(100vw - 34px);
   }
+}
+
+/* Asiance Tech */
+.beauty-page {
+  min-height: 100vh;
+  overflow-x: clip;
+  background: #fbf7fb;
+}
+
+.beauty-hero {
+  position: relative;
+  isolation: isolate;
+  min-height: clamp(520px, 35vw, 680px);
+  overflow: hidden;
+  background: #ead7e2;
+}
+
+.beauty-hero__image,
+.beauty-hero__scrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.beauty-hero__image {
+  z-index: -2;
+  object-fit: cover;
+  object-position: center;
+}
+
+.beauty-hero__scrim {
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(248, 234, 241, 0.94) 0%, rgba(248, 234, 241, 0.65) 24%, transparent 42%),
+    linear-gradient(270deg, rgba(248, 235, 243, 0.9) 0%, rgba(248, 235, 243, 0.55) 18%, transparent 37%);
+  pointer-events: none;
+}
+
+.beauty-hero__layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(340px, 32%) minmax(220px, 1fr) minmax(250px, 18%);
+  align-items: center;
+  gap: clamp(24px, 3vw, 60px);
+  width: 100%;
+  min-height: inherit;
+  padding: clamp(42px, 5vw, 86px) clamp(36px, 5.4vw, 104px) clamp(64px, 6vw, 102px);
+}
+
+.beauty-hero__content {
+  width: min(100%, 510px);
+}
+
+.beauty-hero__eyebrow {
+  display: block;
+  margin-bottom: 14px;
+  color: var(--brand);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.beauty-hero h1 {
+  margin: 0;
+  color: #1d1320;
+  font-family: var(--serif);
+  font-size: clamp(50px, 4.25vw, 78px);
+  font-weight: 400;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+}
+
+.beauty-hero h1 span {
+  display: block;
+}
+
+.beauty-hero h1 span:last-child {
+  white-space: nowrap;
+}
+
+.beauty-hero__content > p {
+  margin: 24px 0 0;
+  color: #35283a;
+  font-size: clamp(14px, 1.05vw, 17px);
+  font-weight: 550;
+  line-height: 1.62;
+}
+
+.beauty-hero__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-width: 210px;
+  min-height: 50px;
+  margin-top: 27px;
+  padding: 0 24px;
+  border: 1px solid var(--brand-deep);
+  border-radius: 2px;
+  background: linear-gradient(135deg, var(--brand-deep), var(--brand));
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  box-shadow: 0 15px 32px rgba(90, 31, 104, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.beauty-hero__button:hover,
+.beauty-hero__button:focus-visible {
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 18px 36px rgba(90, 31, 104, 0.27);
+}
+
+.beauty-hero__button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.beauty-hero__highlights {
+  grid-column: 3;
+  align-self: center;
+  width: min(100%, 300px);
+}
+
+.beauty-hero__highlights > a {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 13px;
+  padding: 20px 0;
+  color: #26192a;
+  border-bottom: 1px solid rgba(90, 31, 104, 0.2);
+}
+
+.beauty-hero__highlights > a:last-child {
+  border-bottom: 0;
+}
+
+.beauty-hero__highlights > a > span:first-child {
+  color: var(--brand);
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.beauty-hero__highlights strong,
+.beauty-hero__highlights small {
+  display: block;
+}
+
+.beauty-hero__highlights strong {
+  color: #201523;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.beauty-hero__highlights small {
+  max-width: 155px;
+  margin-top: 8px;
+  color: #4f4053;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.beauty-category-strip {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  width: calc(100% - clamp(40px, 5vw, 96px));
+  max-width: 1900px;
+  min-height: 150px;
+  margin: -30px auto clamp(50px, 5vw, 84px);
+  overflow: hidden;
+  border: 1px solid rgba(90, 31, 104, 0.16);
+  border-radius: 8px;
+  background: linear-gradient(110deg, rgba(255, 253, 255, 0.98), rgba(247, 236, 249, 0.97));
+  box-shadow: 0 18px 42px rgba(61, 25, 70, 0.12);
+  scroll-margin-top: 120px;
+}
+
+.beauty-category-item {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+  padding: 28px clamp(18px, 2vw, 36px) 24px;
+  color: var(--brand);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.beauty-category-item:not(:last-child) {
+  border-right: 1px solid rgba(90, 31, 104, 0.13);
+}
+
+.beauty-category-item:hover,
+.beauty-category-item:focus-visible {
+  background: rgba(122, 44, 138, 0.07);
+}
+
+.beauty-category-item > svg {
+  width: 45px;
+  height: 45px;
+  stroke-width: 1.35;
+}
+
+.beauty-category-item__copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.beauty-category-item__copy > strong {
+  color: #261a29;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.beauty-category-item__copy > span {
+  min-height: 38px;
+  margin-top: 7px;
+  color: #514655;
+  font-size: 10.5px;
+  line-height: 1.5;
+}
+
+.beauty-category-item small {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 10px;
+  color: var(--brand);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.beauty-category-item small svg {
+  width: 13px;
+  height: 13px;
+}
+
+@media (max-width: 1220px) {
+  .beauty-hero__layout {
+    grid-template-columns: minmax(330px, 34%) minmax(160px, 1fr) 250px;
+    padding-right: 38px;
+    padding-left: 38px;
+  }
+
+  .beauty-category-strip {
+    grid-auto-columns: 240px;
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+  }
+
+  .beauty-category-strip::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (max-width: 820px) {
+  .beauty-hero {
+    min-height: 790px;
+  }
+
+  .beauty-hero__image {
+    object-position: 57% center;
+  }
+
+  .beauty-hero__scrim {
+    background:
+      linear-gradient(180deg, rgba(249, 237, 243, 0.96) 0%, rgba(249, 237, 243, 0.72) 31%, transparent 52%, rgba(75, 32, 86, 0.24) 100%);
+  }
+
+  .beauty-hero__layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    gap: 25px;
+    padding: 40px 24px 65px;
+  }
+
+  .beauty-hero__content {
+    width: min(100%, 520px);
+  }
+
+  .beauty-hero__highlights {
+    grid-column: 1;
+    grid-row: 3;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    width: 100%;
+    max-width: none;
+    padding: 8px 18px;
+    border: 1px solid rgba(90, 31, 104, 0.14);
+    border-radius: 8px;
+    background: rgba(255, 250, 253, 0.9);
+    backdrop-filter: blur(10px);
+  }
+
+  .beauty-hero__highlights > a {
+    padding: 15px;
+    border-bottom: 0;
+  }
+
+  .beauty-hero__highlights > a:not(:last-child) {
+    border-right: 1px solid rgba(90, 31, 104, 0.16);
+  }
+
+  .beauty-category-strip {
+    width: calc(100% - 28px);
+    margin-top: -28px;
+  }
+}
+
+@media (max-width: 560px) {
+  .beauty-hero {
+    min-height: 960px;
+  }
+
+  .beauty-hero__image {
+    object-position: 59% center;
+  }
+
+  .beauty-hero__layout {
+    padding: 32px 16px 57px;
+  }
+
+  .beauty-hero__content {
+    text-align: center;
+  }
+
+  .beauty-hero__eyebrow {
+    font-size: 11px;
+  }
+
+  .beauty-hero h1 {
+    font-size: clamp(40px, 12vw, 54px);
+  }
+
+  .beauty-hero h1 span:last-child {
+    white-space: normal;
+  }
+
+  .beauty-hero__button {
+    width: min(100%, 280px);
+  }
+
+  .beauty-hero__highlights {
+    display: block;
+    padding: 8px 18px;
+  }
+
+  .beauty-hero__highlights > a {
+    grid-template-columns: 35px minmax(0, 1fr);
+    padding: 13px 0;
+  }
+
+  .beauty-hero__highlights > a:not(:last-child) {
+    border-right: 0;
+    border-bottom: 1px solid rgba(90, 31, 104, 0.14);
+  }
+
+  .beauty-category-strip {
+    grid-auto-columns: min(78vw, 270px);
+    min-height: 142px;
+    margin-bottom: 45px;
+  }
+}
+
+.beauty-editorial {
+  width: 100%;
+  padding: 0 clamp(20px, 3vw, 58px) clamp(52px, 5vw, 86px);
+  background: linear-gradient(180deg, #fbf6fa 0%, #fff 100%);
+}
+
+.beauty-highlight-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: 100%;
+  max-width: 1900px;
+  margin: 0 auto;
+  border-top: 1px solid rgba(90, 31, 104, 0.13);
+}
+
+.beauty-highlight-section {
+  min-width: 0;
+  padding: 24px 20px 18px;
+}
+
+.beauty-highlight-section:first-child {
+  border-right: 1px solid rgba(90, 31, 104, 0.13);
+}
+
+.beauty-editorial-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.beauty-editorial-heading h2 {
+  margin: 0;
+  color: var(--brand-deep);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.beauty-editorial-heading > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--brand);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.beauty-editorial-heading svg {
+  width: 13px;
+  height: 13px;
+}
+
+.beauty-highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.beauty-highlight-card {
+  position: relative;
+  display: block;
+  min-width: 0;
+  aspect-ratio: 0.72;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #d8bdcf;
+  color: #fff;
+}
+
+.beauty-highlight-card > img,
+.beauty-highlight-card__shade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.beauty-highlight-card > img {
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.beauty-highlight-card__shade {
+  background: linear-gradient(180deg, transparent 34%, rgba(22, 12, 24, 0.78) 100%);
+}
+
+.beauty-highlight-card:hover > img {
+  transform: scale(1.035);
+}
+
+.beauty-highlight-card__copy {
+  position: absolute;
+  inset: auto 13px 14px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.beauty-highlight-card__copy small {
+  font-size: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.beauty-highlight-card__copy strong {
+  margin-top: 5px;
+  font-family: var(--serif);
+  font-size: clamp(17px, 1.35vw, 24px);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.beauty-highlight-card__copy > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 11px;
+  font-size: 8.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.beauty-highlight-card__copy svg {
+  width: 12px;
+  height: 12px;
+}
+
+.beauty-shop-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(390px, 0.92fr);
+  width: 100%;
+  max-width: 1900px;
+  margin: 0 auto;
+  border-top: 1px solid rgba(90, 31, 104, 0.13);
+  border-bottom: 1px solid rgba(90, 31, 104, 0.13);
+}
+
+.beauty-shop-look {
+  min-width: 0;
+  padding: 24px 20px 22px;
+}
+
+.beauty-product-wrap {
+  position: relative;
+}
+
+.beauty-product-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 50px) / 6);
+  gap: 10px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.beauty-product-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.beauty-product-card {
+  min-width: 0;
+  color: #241827;
+  scroll-snap-align: start;
+}
+
+.beauty-product-card > span {
+  display: block;
+  aspect-ratio: 0.84;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #f4eaf1;
+}
+
+.beauty-product-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.beauty-product-card:hover img {
+  transform: scale(1.035);
+}
+
+.beauty-product-card strong,
+.beauty-product-card small {
+  display: block;
+}
+
+.beauty-product-card strong {
+  margin-top: 10px;
+  overflow: hidden;
+  font-family: var(--serif);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.beauty-product-card small {
+  margin-top: 5px;
+  color: #413547;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.beauty-product-arrow {
+  position: absolute;
+  z-index: 3;
+  top: 38%;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid rgba(90, 31, 104, 0.32);
+  background: rgba(255, 253, 255, 0.95);
+  color: var(--brand);
+  cursor: pointer;
+  place-items: center;
+  transform: translateY(-50%);
+}
+
+.beauty-product-arrow svg {
+  width: 15px;
+  height: 15px;
+}
+
+.beauty-product-arrow--left { left: -17px; }
+.beauty-product-arrow--right { right: -17px; }
+
+.beauty-editors-pick {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(230px, 0.8fr) minmax(240px, 1.2fr);
+  min-height: 300px;
+  overflow: hidden;
+  border-left: 1px solid rgba(90, 31, 104, 0.13);
+  background: linear-gradient(115deg, #f6e8ef 0%, #f0d0df 100%);
+  color: #261a29;
+}
+
+.beauty-editors-pick::after {
+  position: absolute;
+  inset: 0 auto 0 36%;
+  width: 90px;
+  background: linear-gradient(100deg, #f5e7ee 0%, rgba(245, 231, 238, 0) 100%);
+  content: '';
+  pointer-events: none;
+}
+
+.beauty-editors-pick__copy {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 32px 12px 32px 35px;
+}
+
+.beauty-editors-pick__copy small {
+  color: var(--brand);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.beauty-editors-pick__copy strong {
+  margin-top: 13px;
+  font-family: var(--serif);
+  font-size: clamp(30px, 2.5vw, 46px);
+  font-weight: 500;
+  line-height: 0.98;
+}
+
+.beauty-editors-pick__copy > span {
+  max-width: 270px;
+  margin-top: 17px;
+  font-size: 10.5px;
+  line-height: 1.55;
+}
+
+.beauty-editors-pick__copy b {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 12px 17px;
+  background: var(--brand);
+  color: #fff;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.beauty-editors-pick__copy b svg {
+  width: 13px;
+  height: 13px;
+}
+
+.beauty-editors-pick > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.beauty-discover-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr) minmax(420px, 1.15fr);
+  width: 100%;
+  max-width: 1900px;
+  margin: 28px auto 0;
+  overflow: hidden;
+  border: 1px solid rgba(90, 31, 104, 0.13);
+  background: #fff;
+}
+
+.beauty-trending-products,
+.beauty-community {
+  min-width: 0;
+  padding: 23px 20px 20px;
+}
+
+.beauty-trending-products {
+  border-right: 1px solid rgba(90, 31, 104, 0.13);
+}
+
+.beauty-community {
+  border-right: 1px solid rgba(90, 31, 104, 0.13);
+}
+
+.beauty-trending-products__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.beauty-trending-products__grid > a {
+  min-width: 0;
+  color: #241827;
+}
+
+.beauty-trending-products__grid > a > span {
+  display: block;
+  aspect-ratio: 0.87;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #f5ecef;
+}
+
+.beauty-trending-products__grid img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.beauty-trending-products__grid > a:hover img {
+  transform: scale(1.045);
+}
+
+.beauty-trending-products__grid strong,
+.beauty-trending-products__grid small {
+  display: block;
+}
+
+.beauty-trending-products__grid strong {
+  min-height: 34px;
+  margin-top: 10px;
+  font-family: var(--serif);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.beauty-trending-products__grid small {
+  margin-top: 4px;
+  color: #4b3d50;
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.beauty-community__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.beauty-community__grid > a {
+  min-width: 0;
+  color: #261a29;
+}
+
+.beauty-community__image {
+  display: block;
+  aspect-ratio: 0.92;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #eadce5;
+}
+
+.beauty-community__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.beauty-community__grid > a:hover img {
+  transform: scale(1.035);
+}
+
+.beauty-community__grid small {
+  display: block;
+  margin-top: 10px;
+  color: var(--brand);
+  font-size: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.beauty-community__grid strong {
+  display: block;
+  min-height: 48px;
+  margin-top: 5px;
+  font-family: var(--serif);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.24;
+}
+
+.beauty-community__author {
+  display: block;
+  margin-top: 7px;
+  color: #786c7c;
+  font-size: 9px;
+}
+
+.beauty-bundle-card {
+  position: relative;
+  display: block;
+  min-height: 310px;
+  overflow: hidden;
+  color: #281a2b;
+}
+
+.beauty-bundle-card > img,
+.beauty-bundle-card__shade {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.beauty-bundle-card > img {
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.4s ease;
+}
+
+.beauty-bundle-card:hover > img {
+  transform: scale(1.025);
+}
+
+.beauty-bundle-card__shade {
+  background: linear-gradient(90deg, rgba(251, 239, 245, 0.98) 0%, rgba(251, 239, 245, 0.9) 38%, rgba(251, 239, 245, 0.12) 72%);
+}
+
+.beauty-bundle-card__copy {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: 51%;
+  height: 100%;
+  min-height: 310px;
+  flex-direction: column;
+  justify-content: center;
+  padding: 30px 16px 30px 28px;
+}
+
+.beauty-bundle-card__copy small {
+  color: var(--brand);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.beauty-bundle-card__copy strong {
+  margin-top: 15px;
+  font-family: var(--serif);
+  font-size: clamp(27px, 2vw, 38px);
+  font-weight: 500;
+  line-height: 1.03;
+}
+
+.beauty-bundle-card__copy > span {
+  max-width: 220px;
+  margin-top: 18px;
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.beauty-bundle-card__copy b {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 8px;
+  margin-top: 21px;
+  padding: 11px 16px;
+  background: var(--brand);
+  color: #fff;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.beauty-bundle-card__copy b svg {
+  width: 13px;
+  height: 13px;
+}
+
+@media (max-width: 1180px) {
+  .beauty-highlight-card__copy { right: 10px; left: 10px; }
+  .beauty-shop-row { grid-template-columns: minmax(0, 1fr); }
+  .beauty-editors-pick { min-height: 340px; border-top: 1px solid rgba(90, 31, 104, 0.13); border-left: 0; }
+  .beauty-product-rail { grid-auto-columns: calc((100% - 40px) / 5); }
+  .beauty-discover-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .beauty-community { border-right: 0; }
+  .beauty-bundle-card { grid-column: 1 / -1; border-top: 1px solid rgba(90, 31, 104, 0.13); }
+  .beauty-bundle-card__copy { width: 43%; }
+}
+
+@media (max-width: 900px) {
+  .beauty-highlight-columns { grid-template-columns: minmax(0, 1fr); }
+  .beauty-highlight-section:first-child { border-right: 0; border-bottom: 1px solid rgba(90, 31, 104, 0.13); }
+  .beauty-highlight-card { aspect-ratio: 0.78; }
+  .beauty-product-rail { grid-auto-columns: minmax(140px, 24vw); }
+  .beauty-discover-row { grid-template-columns: minmax(0, 1fr); }
+  .beauty-trending-products,
+  .beauty-community { border-right: 0; border-bottom: 1px solid rgba(90, 31, 104, 0.13); }
+}
+
+@media (max-width: 620px) {
+  .beauty-editorial { padding-right: 14px; padding-left: 14px; }
+  .beauty-highlight-section,
+  .beauty-shop-look { padding-right: 8px; padding-left: 8px; }
+  .beauty-highlight-grid { grid-auto-columns: min(68vw, 235px); grid-template-columns: none; grid-auto-flow: column; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .beauty-highlight-card { aspect-ratio: 0.72; scroll-snap-align: start; }
+  .beauty-product-rail { grid-auto-columns: min(42vw, 168px); }
+  .beauty-product-arrow { display: none; }
+  .beauty-editors-pick { grid-template-columns: minmax(0, 1fr); min-height: 540px; }
+  .beauty-editors-pick__copy { position: absolute; inset: 0; justify-content: flex-end; padding: 28px; background: linear-gradient(180deg, transparent 28%, rgba(247, 232, 240, 0.98) 75%); }
+  .beauty-editors-pick::after { display: none; }
+  .beauty-editors-pick > img { min-height: 540px; }
+  .beauty-trending-products,
+  .beauty-community { padding-right: 12px; padding-left: 12px; }
+  .beauty-trending-products__grid { grid-auto-columns: min(44vw, 165px); grid-template-columns: none; grid-auto-flow: column; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .beauty-trending-products__grid > a { scroll-snap-align: start; }
+  .beauty-community__grid { grid-auto-columns: min(58vw, 210px); grid-template-columns: none; grid-auto-flow: column; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .beauty-community__grid > a { scroll-snap-align: start; }
+  .beauty-bundle-card { min-height: 510px; }
+  .beauty-bundle-card__shade { background: linear-gradient(180deg, rgba(251, 239, 245, 0.12) 25%, rgba(251, 239, 245, 0.98) 73%); }
+  .beauty-bundle-card__copy { width: 100%; min-height: 510px; justify-content: flex-end; padding: 30px 24px; }
+}
+
+.tech-page {
+  min-height: 100vh;
+  overflow-x: clip;
+  background: #faf8fb;
+}
+
+.tech-hero {
+  position: relative;
+  isolation: isolate;
+  min-height: clamp(530px, 35.2vw, 680px);
+  overflow: hidden;
+  background: #e8e0ee;
+}
+
+.tech-hero__image,
+.tech-hero__scrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.tech-hero__image {
+  z-index: -2;
+  object-fit: cover;
+  object-position: center;
+}
+
+.tech-hero__scrim {
+  z-index: -1;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.34) 31%, rgba(255, 255, 255, 0) 51%),
+    linear-gradient(90deg, transparent 69%, rgba(67, 30, 82, 0.19) 100%);
+  pointer-events: none;
+}
+
+.tech-hero__layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(420px, 39%) minmax(140px, 1fr) minmax(270px, 18%);
+  align-items: center;
+  gap: clamp(24px, 3vw, 58px);
+  width: 100%;
+  min-height: inherit;
+  padding: clamp(38px, 4.2vw, 72px) clamp(38px, 5.3vw, 102px) clamp(58px, 5.5vw, 94px);
+}
+
+.tech-hero__content {
+  width: min(100%, 520px);
+  min-width: 0;
+}
+
+.tech-hero__eyebrow {
+  display: block;
+  margin-bottom: 14px;
+  color: var(--brand);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.tech-hero h1 {
+  margin: 0;
+  color: #17101b;
+  font-family: var(--serif);
+  font-size: clamp(48px, 4.1vw, 72px);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.03;
+}
+
+.tech-hero h1 span {
+  display: block;
+}
+
+@media (min-width: 721px) {
+  .tech-hero h1 span {
+    white-space: nowrap;
+  }
+}
+
+.tech-hero__content > p {
+  max-width: 455px;
+  margin: 20px 0 0;
+  color: #302735;
+  font-size: clamp(14px, 1.05vw, 17px);
+  font-weight: 550;
+  line-height: 1.62;
+}
+
+.tech-hero__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-width: 214px;
+  min-height: 50px;
+  margin-top: 26px;
+  padding: 0 25px;
+  border: 1px solid var(--brand-deep);
+  border-radius: 3px;
+  background: var(--brand-deep);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 750;
+  text-transform: uppercase;
+  box-shadow: 0 14px 30px rgba(62, 24, 73, 0.2);
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+.tech-hero__button:hover,
+.tech-hero__button:focus-visible {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.tech-hero__button svg,
+.tech-trending__all svg,
+.tech-category-item small svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  stroke-width: 2;
+}
+
+.tech-trending {
+  grid-column: 3;
+  justify-self: end;
+  width: min(100%, 300px);
+  min-width: 0;
+  padding: 29px 30px 27px;
+  border: 1px solid rgba(90, 31, 104, 0.14);
+  border-radius: 10px;
+  background: rgba(255, 253, 255, 0.93);
+  box-shadow: 0 20px 50px rgba(49, 20, 60, 0.17);
+  backdrop-filter: blur(10px);
+}
+
+.tech-trending h2 {
+  margin: 0 0 8px;
+  color: var(--brand-deep);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.tech-trending ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tech-trending li {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-items: start;
+  gap: 11px;
+  padding: 19px 0;
+  border-bottom: 1px solid rgba(90, 31, 104, 0.12);
+}
+
+.tech-trending li > span {
+  position: relative;
+  color: var(--brand);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.tech-trending li > span::after {
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 27px;
+  height: 2px;
+  background: var(--brand-soft);
+  content: '';
+}
+
+.tech-trending li a {
+  color: #211825;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.55;
+  transition: color 0.18s ease;
+}
+
+.tech-trending li a:hover,
+.tech-trending li a:focus-visible {
+  color: var(--brand);
+}
+
+.tech-trending__all {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 21px;
+  color: var(--brand-deep);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.tech-category-strip {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  width: calc(100% - clamp(38px, 4vw, 76px));
+  max-width: 1900px;
+  min-height: 150px;
+  margin: -32px auto clamp(46px, 5vw, 78px);
+  overflow: hidden;
+  border: 1px solid rgba(90, 31, 104, 0.13);
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 18px 42px rgba(42, 20, 49, 0.11);
+  scroll-margin-top: 120px;
+}
+
+.tech-category-item {
+  display: grid;
+  grid-template-columns: 43px minmax(0, 1fr);
+  align-items: start;
+  gap: 13px;
+  min-width: 0;
+  padding: 30px clamp(13px, 1.35vw, 25px) 23px;
+  color: var(--brand);
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.tech-category-item:not(:last-child) {
+  border-right: 1px solid rgba(90, 31, 104, 0.12);
+}
+
+.tech-category-item > svg {
+  width: 40px;
+  height: 40px;
+  margin-top: 1px;
+  stroke-width: 1.55;
+}
+
+.tech-category-item__copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.tech-category-item__copy > strong {
+  color: #211825;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.tech-category-item__copy > span {
+  min-height: 38px;
+  margin-top: 7px;
+  color: #514757;
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 1.55;
+}
+
+.tech-category-item small {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 10px;
+  color: var(--brand);
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.tech-category-item small svg {
+  width: 13px;
+  height: 13px;
+}
+
+.tech-category-item:hover,
+.tech-category-item:focus-visible {
+  background: rgba(122, 44, 138, 0.065);
+  color: var(--brand-deep);
+}
+
+.tech-category-item:hover small,
+.tech-category-item:focus-visible small {
+  color: var(--brand-deep);
+}
+
+@media (max-width: 1320px) {
+  .tech-hero__layout {
+    grid-template-columns: minmax(380px, 39%) minmax(80px, 1fr) 278px;
+    padding-right: 38px;
+    padding-left: 38px;
+  }
+
+  .tech-category-strip {
+    grid-auto-columns: 210px;
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: none;
+  }
+
+  .tech-category-strip::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (max-width: 980px) {
+  .tech-hero {
+    min-height: 760px;
+  }
+
+  .tech-hero__image {
+    object-position: 58% center;
+  }
+
+  .tech-hero__scrim {
+    background:
+      linear-gradient(90deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.55) 44%, rgba(255, 255, 255, 0.03) 72%),
+      linear-gradient(180deg, transparent 42%, rgba(70, 34, 83, 0.34) 100%);
+  }
+
+  .tech-hero__layout {
+    grid-template-columns: minmax(0, 1fr) 285px;
+    grid-template-rows: 1fr auto;
+    align-items: start;
+    gap: 26px;
+    min-height: inherit;
+    padding: 44px 30px 72px;
+  }
+
+  .tech-hero__content {
+    grid-column: 1;
+    max-width: 470px;
+  }
+
+  .tech-hero h1 {
+    font-size: clamp(44px, 6.5vw, 62px);
+  }
+
+  .tech-trending {
+    grid-column: 2;
+    align-self: end;
+    width: 285px;
+  }
+}
+
+@media (max-width: 720px) {
+  .tech-hero {
+    min-height: 930px;
+  }
+
+  .tech-hero__image {
+    object-position: 64% center;
+  }
+
+  .tech-hero__scrim {
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.88) 34%, rgba(255, 255, 255, 0.05) 60%, rgba(61, 26, 74, 0.5) 100%);
+  }
+
+  .tech-hero__layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    gap: 28px;
+    padding: 38px 20px 62px;
+  }
+
+  .tech-hero__content {
+    grid-column: 1;
+    width: min(100%, 560px);
+    max-width: none;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .tech-hero__content > p {
+    margin-right: auto;
+    margin-left: auto;
+  }
+
+  .tech-trending {
+    grid-column: 1;
+    grid-row: 3;
+    justify-self: center;
+    align-self: end;
+    width: min(100%, 620px);
+    padding: 23px 24px 22px;
+  }
+
+  .tech-trending ol {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .tech-trending li {
+    grid-template-columns: 1fr;
+    gap: 13px;
+    padding: 15px 16px;
+    border-bottom: 0;
+  }
+
+  .tech-trending li:not(:last-child) {
+    border-right: 1px solid rgba(90, 31, 104, 0.12);
+  }
+
+  .tech-trending__all {
+    margin-top: 17px;
+  }
+
+  .tech-category-strip {
+    width: calc(100% - 28px);
+    margin-top: -28px;
+    margin-bottom: 42px;
+  }
+}
+
+@media (max-width: 520px) {
+  .tech-hero {
+    min-height: 1030px;
+  }
+
+  .tech-hero__image {
+    object-position: 66% center;
+  }
+
+  .tech-hero__layout {
+    padding: 32px 16px 56px;
+  }
+
+  .tech-hero__eyebrow {
+    margin-bottom: 11px;
+    font-size: 11px;
+  }
+
+  .tech-hero h1 {
+    font-size: clamp(38px, 11vw, 48px);
+    line-height: 1.04;
+  }
+
+  .tech-hero__content > p {
+    margin-top: 16px;
+    font-size: 14px;
+  }
+
+  .tech-hero__button {
+    width: min(100%, 280px);
+    margin-top: 21px;
+  }
+
+  .tech-trending {
+    width: 100%;
+  }
+
+  .tech-trending ol {
+    display: block;
+  }
+
+  .tech-trending li {
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 11px;
+    padding: 14px 0;
+    border-bottom: 1px solid rgba(90, 31, 104, 0.12);
+  }
+
+  .tech-trending li:not(:last-child) {
+    border-right: 0;
+  }
+
+  .tech-category-strip {
+    grid-auto-columns: min(78vw, 260px);
+    min-height: 142px;
+  }
+
+  .tech-category-item {
+    padding-top: 27px;
+  }
+}
+
+/* Tech editorial hub */
+.tech-editorial {
+  --tech-line: rgba(90, 31, 104, 0.14);
+  width: 100%;
+  padding: 0 clamp(20px, 3.1vw, 58px) clamp(38px, 4vw, 68px);
+  background: #fff;
+}
+
+.tech-editorial__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(250px, 18vw, 302px);
+  gap: clamp(20px, 2vw, 34px);
+  width: 100%;
+  max-width: 1900px;
+  margin: 0 auto;
+}
+
+.tech-editorial__main,
+.tech-editorial__aside {
+  min-width: 0;
+}
+
+.tech-editorial__aside {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.tech-topics > h2,
+.tech-section-label,
+.tech-top-stories > h2,
+.tech-shop__heading h2,
+.tech-popular-topics > h2 {
+  margin: 0;
+  color: var(--brand-deep);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.tech-topics > h2 {
+  margin: 2px 0 15px;
+}
+
+.tech-topics__rail {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(78px, 1fr));
+  gap: clamp(12px, 1.7vw, 30px);
+  overflow-x: auto;
+  padding: 0 4px 17px;
+  scrollbar-width: none;
+}
+
+.tech-topics__rail::-webkit-scrollbar,
+.tech-shop__rail::-webkit-scrollbar {
+  display: none;
+}
+
+.tech-topics__rail > a {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #241827;
+  font-size: 11px;
+  font-weight: 650;
+  text-align: center;
+}
+
+.tech-topics__image {
+  width: 100%;
+  max-width: 105px;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid rgba(90, 31, 104, 0.08);
+  border-radius: 50%;
+  background: #f4eff8;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tech-topics__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tech-topics__rail > a:hover .tech-topics__image,
+.tech-topics__rail > a:focus-visible .tech-topics__image {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(90, 31, 104, 0.16);
+}
+
+.tech-story-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2.02fr) minmax(245px, 0.98fr);
+  gap: 18px;
+  margin-top: 5px;
+}
+
+.tech-featured-story,
+.tech-top-stories,
+.tech-shop,
+.tech-popular-topics {
+  border: 1px solid var(--tech-line);
+  border-radius: 7px;
+  background: #fff;
+}
+
+.tech-featured-story {
+  padding: 15px;
+}
+
+.tech-section-label {
+  margin-bottom: 11px;
+}
+
+.tech-featured-story__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.34fr) minmax(205px, 0.86fr);
+  gap: clamp(18px, 2vw, 30px);
+  align-items: center;
+}
+
+.tech-featured-story__image {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 1.48;
+  border-radius: 3px;
+  background: #b998dc;
+}
+
+.tech-featured-story__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.tech-featured-story__image:hover img {
+  transform: scale(1.025);
+}
+
+.tech-featured-story__copy > span {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--brand);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.tech-featured-story__copy h2 {
+  margin: 0;
+  color: #1c141f;
+  font-family: var(--serif);
+  font-size: clamp(24px, 2vw, 36px);
+  font-weight: 500;
+  line-height: 1.08;
+}
+
+.tech-featured-story__copy h2 a {
+  color: inherit;
+}
+
+.tech-featured-story__copy > p {
+  margin: 18px 0 20px;
+  color: #4f4652;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.tech-text-link,
+.tech-shop__heading > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--brand);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.tech-text-link svg,
+.tech-shop__heading svg {
+  width: 13px;
+  height: 13px;
+}
+
+.tech-featured-story__gallery {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 9px;
+}
+
+.tech-featured-story__gallery button {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 3px;
+  background: #eee7f4;
+  cursor: pointer;
+}
+
+.tech-featured-story__gallery img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tech-featured-story__gallery button.is-active {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 2px rgba(122, 44, 138, 0.12);
+}
+
+.tech-top-stories {
+  display: flex;
+  flex-direction: column;
+  padding: 17px 18px 16px;
+}
+
+.tech-top-stories > h2 {
+  margin-bottom: 15px;
+}
+
+.tech-top-stories__list {
+  display: grid;
+  grid-template-rows: repeat(4, minmax(108px, 1fr));
+  flex: 1;
+  gap: 12px;
+}
+
+.tech-top-stories__list > a {
+  display: grid;
+  grid-template-columns: 108px minmax(0, 1fr);
+  gap: 15px;
+  align-items: center;
+  color: #2a202d;
+  font-family: var(--serif);
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+.tech-top-stories__image {
+  display: block;
+  width: 108px;
+  height: 108px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #eee7f4;
+}
+
+.tech-top-stories__list img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.38);
+}
+
+.tech-top-stories__list > a:hover,
+.tech-top-stories__list > a:focus-visible {
+  color: var(--brand);
+}
+
+.tech-top-stories > .tech-text-link {
+  margin-top: 17px;
+}
+
+.blog-filter-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 0 0 28px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+  text-transform: capitalize;
+}
+
+.blog-filter-heading > span {
+  color: var(--brand);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.blog-filter-heading > strong {
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 26px;
+  font-weight: 500;
+}
+
+.blog-filter-heading > a {
+  margin-left: auto;
+  color: var(--brand);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.blog-empty-state {
+  padding: 70px 24px;
+  border: 1px solid var(--line);
+  text-align: center;
+}
+
+.blog-empty-state h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 32px;
+  font-weight: 500;
+}
+
+.blog-empty-state p {
+  margin: 12px 0 20px;
+  color: var(--ink-muted);
+}
+
+.blog-empty-state a {
+  color: var(--brand);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.tech-community-card {
+  display: flex;
+  min-height: 322px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 27px 24px;
+  border-radius: 7px;
+  background: linear-gradient(145deg, #f5effa, #ece0f5);
+  text-align: center;
+}
+
+.tech-community-card > svg {
+  width: 47px;
+  height: 47px;
+  color: var(--brand);
+  stroke-width: 1.4;
+}
+
+.tech-community-card h2 {
+  margin: 17px 0 13px;
+  color: var(--brand-deep);
+  font-size: clamp(17px, 1.35vw, 22px);
+  font-weight: 760;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.tech-community-card > p {
+  max-width: 230px;
+  margin: 0;
+  color: #54485a;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.tech-community-card > a {
+  width: min(100%, 185px);
+  margin-top: 20px;
+  padding: 11px 18px;
+  border-radius: 2px;
+  background: var(--brand-deep);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.tech-community-card small {
+  margin-top: 12px;
+  color: #776c7b;
+  font-size: 9.5px;
+}
+
+.tech-community-card small a {
+  color: var(--brand);
+  text-decoration: underline;
+}
+
+.tech-popular-topics {
+  padding: 20px 18px 17px;
+}
+
+.tech-popular-topics > h2 {
+  margin-bottom: 12px;
+}
+
+.tech-popular-topics > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.tech-popular-topics > div > a {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) 15px;
+  gap: 9px;
+  align-items: center;
+  min-height: 31px;
+  color: #403646;
+  font-size: 10.5px;
+  font-weight: 620;
+}
+
+.tech-popular-topics > div svg {
+  width: 15px;
+  height: 15px;
+  color: var(--brand);
+  stroke-width: 1.8;
+}
+
+.tech-popular-topics > div svg:last-child {
+  width: 12px;
+  height: 12px;
+  justify-self: end;
+}
+
+.tech-popular-topics > .tech-text-link {
+  margin-top: 12px;
+}
+
+.tech-shop {
+  margin-top: 18px;
+  padding: 15px 13px 12px;
+}
+
+.tech-shop__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 0 3px 11px;
+}
+
+.tech-shop__viewport {
+  position: relative;
+}
+
+.tech-shop__rail {
+  display: grid;
+  grid-auto-columns: calc((100% - 50px) / 6);
+  grid-auto-flow: column;
+  gap: 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.tech-product-card {
+  position: relative;
+  min-width: 0;
+  padding: 10px 10px 12px;
+  border: 1px solid rgba(90, 31, 104, 0.1);
+  border-radius: 4px;
+  scroll-snap-align: start;
+}
+
+.tech-product-card__image {
+  display: block;
+  aspect-ratio: 1.15;
+  overflow: hidden;
+  background: #faf8fb;
+}
+
+.tech-product-card__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: transform 0.25s ease;
+}
+
+.tech-product-card:hover .tech-product-card__image img {
+  transform: scale(1.04);
+}
+
+.tech-product-card > button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  width: 27px;
+  height: 27px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.88);
+  color: #b798c3;
+  cursor: pointer;
+  place-items: center;
+}
+
+.tech-product-card > button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.tech-product-card h3 {
+  min-height: 28px;
+  margin: 10px 0 4px;
+  color: #2b202f;
+  font-family: var(--serif);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.tech-product-card h3 a {
+  color: inherit;
+}
+
+.tech-product-card > p {
+  margin: 0;
+  color: var(--brand-deep);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.tech-shop__arrow {
+  position: absolute;
+  z-index: 2;
+  top: 42%;
+  display: grid;
+  width: 29px;
+  height: 29px;
+  padding: 0;
+  border: 1px solid rgba(90, 31, 104, 0.16);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--brand);
+  box-shadow: 0 4px 12px rgba(38, 20, 43, 0.12);
+  cursor: pointer;
+  place-items: center;
+  transform: translateY(-50%);
+}
+
+.tech-shop__arrow svg {
+  width: 15px;
+  height: 15px;
+}
+
+.tech-shop__arrow--left { left: -28px; }
+.tech-shop__arrow--right { right: -28px; }
+
+.tech-community-deals {
+  display: grid;
+  grid-template-columns: minmax(0, 2.3fr) minmax(280px, 0.95fr);
+  gap: clamp(20px, 2vw, 34px);
+  width: 100%;
+  max-width: 1900px;
+  margin: clamp(28px, 3vw, 48px) auto 0;
+}
+
+.tech-community-feed,
+.tech-deals {
+  min-width: 0;
+  padding: 20px;
+  border: 1px solid var(--tech-line);
+  border-radius: 7px;
+  background: #fff;
+}
+
+.tech-community-deals__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 17px;
+}
+
+.tech-community-deals__heading h2,
+.tech-brands__heading h2 {
+  margin: 0;
+  color: var(--brand-deep);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.tech-community-deals__heading > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--brand);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.tech-community-deals__heading svg {
+  width: 13px;
+  height: 13px;
+}
+
+.tech-community-feed__grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.tech-community-post {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid rgba(90, 31, 104, 0.1);
+  border-radius: 5px;
+  background: #fff;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tech-community-post:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 26px rgba(58, 27, 67, 0.1);
+}
+
+.tech-community-post__image {
+  display: block;
+  aspect-ratio: 1.6;
+  overflow: hidden;
+  background: #f4eff8;
+}
+
+.tech-community-post__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.tech-community-post:hover .tech-community-post__image img {
+  transform: scale(1.035);
+}
+
+.tech-community-post__body {
+  padding: 12px 12px 11px;
+}
+
+.tech-community-post__body > span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--brand);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.tech-community-post h3 {
+  min-height: 54px;
+  margin: 0;
+  color: #261b29;
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.tech-community-post h3 a {
+  color: inherit;
+}
+
+.tech-community-post__meta {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) auto auto;
+  gap: 6px;
+  align-items: center;
+  margin-top: 14px;
+  color: #85798a;
+  font-size: 9px;
+}
+
+.tech-community-post__avatar {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #6b257c, #b17abf);
+  color: #fff;
+  font-family: var(--serif);
+  font-size: 13px;
+  place-items: center;
+}
+
+.tech-community-post__meta strong {
+  overflow: hidden;
+  color: #4c404f;
+  font-size: 9px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tech-community-post__meta > span:not(.tech-community-post__avatar) {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.tech-community-post__meta svg {
+  width: 12px;
+  height: 12px;
+  color: #a574b1;
+}
+
+.tech-deals__list {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+.tech-deals__list > a {
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  color: #2a202d;
+}
+
+.tech-deals__image {
+  display: block;
+  width: 70px;
+  height: 70px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #faf8fb;
+}
+
+.tech-deals__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.tech-deals__copy {
+  display: grid;
+  gap: 8px;
+}
+
+.tech-deals__copy > strong {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.tech-deals__copy small {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.tech-deals__copy b {
+  color: #2a202d;
+  font-weight: 800;
+}
+
+.tech-deals__copy del {
+  color: #928895;
+}
+
+.tech-deals__copy em {
+  color: #b14a62;
+  font-style: normal;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.tech-brands {
+  width: 100%;
+  max-width: 1900px;
+  margin: 24px auto 0;
+  padding: 0 8px;
+}
+
+.tech-brands__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.tech-brands__viewport {
+  position: relative;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+}
+
+.tech-brands__track {
+  display: flex;
+  width: max-content;
+  animation: tech-brands-marquee 32s linear infinite;
+  will-change: transform;
+}
+
+.tech-brands__group {
+  display: flex;
+  align-items: center;
+  gap: clamp(44px, 5vw, 88px);
+  flex: 0 0 auto;
+  padding: 8px clamp(44px, 5vw, 88px) 15px 4px;
+}
+
+@keyframes tech-brands-marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+.tech-brands span {
+  flex: 0 0 auto;
+  color: #1f1921;
+  font-size: clamp(18px, 1.75vw, 29px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.tech-brands span[data-brand='apple']::before {
+  content: '●';
+  margin-right: 7px;
+  font-size: 17px;
+}
+
+.tech-brands span[data-brand='samsung'],
+.tech-brands span[data-brand='anker'] {
+  color: #304781;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.tech-brands span[data-brand='sony'],
+.tech-brands span[data-brand='asus'] {
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 1280px) {
+  .tech-editorial__grid { grid-template-columns: minmax(0, 1fr) 250px; }
+  .tech-story-grid { grid-template-columns: minmax(0, 1.75fr) minmax(220px, 0.9fr); }
+  .tech-featured-story__body { grid-template-columns: minmax(0, 1.15fr) minmax(190px, 0.85fr); }
+  .tech-shop__rail { grid-auto-columns: calc((100% - 30px) / 4); }
+  .tech-topics__rail { grid-auto-columns: 92px; grid-template-columns: none; grid-auto-flow: column; }
+  .tech-community-feed__grid { grid-auto-columns: 210px; grid-template-columns: none; grid-auto-flow: column; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .tech-community-post { scroll-snap-align: start; }
+}
+
+@media (max-width: 1040px) {
+  .tech-editorial__grid { grid-template-columns: minmax(0, 1fr); }
+  .tech-editorial__aside { display: grid; grid-template-columns: 1fr 1fr; }
+  .tech-community-card { min-height: 285px; }
+  .tech-popular-topics { display: flex; flex-direction: column; justify-content: center; }
+  .tech-community-deals { grid-template-columns: minmax(0, 1fr); }
+  .tech-deals__list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tech-deals__list > a { grid-template-columns: 64px minmax(0, 1fr); }
+}
+
+@media (max-width: 760px) {
+  .tech-editorial { padding-right: 16px; padding-left: 16px; }
+  .tech-story-grid { grid-template-columns: minmax(0, 1fr); }
+  .tech-featured-story__body { grid-template-columns: minmax(0, 1fr); }
+  .tech-featured-story__copy { padding: 5px 3px 3px; }
+  .tech-featured-story__copy h2 { font-size: 29px; }
+  .tech-top-stories__list { display: grid; grid-template-columns: 1fr 1fr; }
+  .tech-top-stories__list { grid-template-rows: none; }
+  .tech-top-stories__list > a { grid-template-columns: 82px minmax(0, 1fr); }
+  .tech-top-stories__image { width: 82px; height: 82px; }
+  .tech-shop__rail { grid-auto-columns: minmax(165px, 44vw); }
+  .tech-shop__arrow { display: none; }
+  .tech-editorial__aside { grid-template-columns: minmax(0, 1fr); }
+  .tech-community-feed,
+  .tech-deals { padding: 15px; }
+  .tech-deals__list { grid-template-columns: minmax(0, 1fr); }
+  .tech-deals__list > a { grid-template-columns: 72px minmax(0, 1fr); }
+  .tech-brands { padding: 0; }
+  .tech-brands__group { gap: 40px; padding-right: 40px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tech-brands__viewport {
+    overflow-x: auto;
+    mask-image: none;
+  }
+
+  .tech-brands__track {
+    animation: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .tech-topics__rail { grid-auto-columns: 76px; gap: 14px; }
+  .tech-featured-story { padding: 11px; }
+  .tech-featured-story__gallery { gap: 5px; }
+  .tech-top-stories__list { grid-template-columns: minmax(0, 1fr); }
+  .tech-top-stories__list > a { grid-template-columns: 92px minmax(0, 1fr); }
+  .tech-top-stories__image { width: 92px; height: 92px; }
+  .tech-shop { margin-right: -2px; margin-left: -2px; padding-right: 9px; padding-left: 9px; }
+  .tech-shop__rail { grid-auto-columns: minmax(158px, 63vw); }
+  .tech-community-feed__grid { grid-auto-columns: min(76vw, 240px); }
+  .tech-community-deals__heading > a { font-size: 9px; }
+}
+
+/* Asiance Dating */
+.dating-page {
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  overflow-x: clip;
+  background: var(--paper);
+}
+
+.dating-hero {
+  position: relative;
+  width: 100%;
+  height: clamp(326px, 35vw, 560px);
+  min-height: 326px;
+  overflow: hidden;
+  isolation: isolate;
+  background: #fbf8f2;
+}
+
+.dating-hero__image,
+.dating-hero__scrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.dating-hero__image {
+  z-index: -2;
+  object-fit: cover;
+  object-position: center 46%;
+}
+
+.dating-hero__scrim {
+  z-index: -1;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.93) 0%,
+      rgba(255, 255, 255, 0.84) 17%,
+      rgba(255, 255, 255, 0.5) 28%,
+      rgba(255, 255, 255, 0.08) 42%,
+      rgba(255, 255, 255, 0) 68%,
+      rgba(255, 255, 255, 0.18) 100%
+    ),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(252, 249, 244, 0.09));
+  pointer-events: none;
+}
+
+.dating-hero__layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 31%) minmax(0, 47%) minmax(0, 22%);
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  padding: 30px clamp(26px, 4vw, 64px) 42px clamp(34px, 6.7vw, 108px);
+}
+
+.dating-hero__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  max-width: 340px;
+  color: #241b2b;
+}
+
+.dating-hero__eyebrow {
+  color: var(--brand-deep);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.dating-hero h1 {
+  display: grid;
+  gap: 1px;
+  margin: 10px 0 0;
+  color: #211a24;
+  font-family: var(--serif);
+  font-size: clamp(37px, 3.55vw, 56px);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 1.02;
+}
+
+.dating-hero h1 span {
+  display: block;
+}
+
+.dating-hero__content > p {
+  max-width: 310px;
+  margin: 12px 0 0;
+  color: #3f3741;
+  font-size: clamp(11px, 0.9vw, 14px);
+  line-height: 1.45;
+}
+
+.dating-hero__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 38px;
+  margin-top: 17px;
+  padding: 0 16px;
+  border: 1px solid var(--brand-deep);
+  border-radius: 4px;
+  background: var(--brand-deep);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+.dating-hero__button:hover,
+.dating-hero__button:focus-visible {
+  background: var(--brand);
+  transform: translateY(-1px);
+}
+
+.dating-trending {
+  justify-self: end;
+  width: min(100%, 242px);
+  padding: 20px 20px 16px;
+  border: 1px solid rgba(85, 50, 94, 0.08);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 14px 38px rgba(37, 19, 43, 0.12);
+  color: #271d30;
+  backdrop-filter: blur(10px);
+}
+
+.dating-trending h2 {
+  margin: 0 0 7px;
+  color: var(--brand-deep);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.dating-trending ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dating-trending li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 8px;
+  padding: 11px 0;
+}
+
+.dating-trending li:not(:last-child) {
+  border-bottom: 1px solid #eee8ef;
+}
+
+.dating-trending li > span {
+  color: var(--brand-deep);
+  font-family: var(--serif);
+  font-size: 19px;
+  line-height: 1;
+}
+
+.dating-trending li > a {
+  display: grid;
+  gap: 4px;
+  color: inherit;
+}
+
+.dating-trending li strong {
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.dating-trending li a > span {
+  color: #6d6470;
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.dating-trending li a:hover strong,
+.dating-trending li a:focus-visible strong {
+  color: var(--brand-deep);
+}
+
+.dating-trending__all {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  color: var(--brand-deep);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.dating-topic-strip {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  width: calc(100% - 48px);
+  max-width: none;
+  min-height: 124px;
+  margin: -20px auto 24px;
+  padding: 26px 13px;
+  border: 1px solid #eee7ef;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 12px 30px rgba(42, 23, 48, 0.1);
+}
+
+.dating-topic {
+  display: grid;
+  grid-template-columns: 31px minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  padding: 8px 10px;
+  color: #302738;
+}
+
+.dating-topic:not(:last-child) {
+  border-right: 1px solid #eee8ef;
+}
+
+.dating-topic__icon {
+  display: inline-grid;
+  place-items: center;
+  color: #8251a2;
+}
+
+.dating-topic__copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.dating-topic__copy strong {
+  color: #28202c;
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.dating-topic__copy > span {
+  color: #5f5763;
+  font-size: 8px;
+  line-height: 1.35;
+}
+
+.dating-topic__copy em {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 2px;
+  color: var(--brand-deep);
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.dating-topic:hover .dating-topic__copy strong,
+.dating-topic:focus-visible .dating-topic__copy strong {
+  color: var(--brand-deep);
+}
+
+@media (max-width: 1100px) {
+  .dating-hero__layout {
+    grid-template-columns: minmax(0, 34%) minmax(0, 43%) minmax(176px, 23%);
+    padding-right: clamp(18px, 2.5vw, 28px);
+    padding-left: clamp(28px, 6.8vw, 60px);
+  }
+
+  .dating-hero h1 {
+    font-size: clamp(31px, 3.6vw, 40px);
+  }
+
+  .dating-hero__eyebrow {
+    font-size: 10px;
+  }
+
+  .dating-hero h1 {
+    margin-top: 12px;
+  }
+
+  .dating-hero__content > p {
+    margin-top: 12px;
+    font-size: clamp(11px, 1.1vw, 14px);
+    line-height: 1.45;
+  }
+
+  .dating-hero__button {
+    min-height: 34px;
+    margin-top: 16px;
+    padding: 0 15px;
+    font-size: 10px;
+  }
+
+  .dating-topic-strip {
+    width: calc(100% - 48px);
+    padding-right: 6px;
+    padding-left: 6px;
+  }
+
+  .dating-topic {
+    grid-template-columns: 26px minmax(0, 1fr);
+    gap: 6px;
+    padding-right: 6px;
+    padding-left: 6px;
+  }
+
+  .dating-topic__icon svg {
+    width: 25px;
+    height: 25px;
+  }
+}
+
+@media (max-width: 820px) {
+  .dating-hero {
+    height: auto;
+    min-height: 710px;
+  }
+
+  .dating-hero__image {
+    object-position: 58% center;
+  }
+
+  .dating-hero__scrim {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.92) 30%, rgba(255, 255, 255, 0.12) 63%, rgba(58, 18, 68, 0.58) 100%);
+  }
+
+  .dating-hero__layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    align-content: start;
+    gap: 20px;
+    height: auto;
+    min-height: 710px;
+    padding: 34px 22px 126px;
+  }
+
+  .dating-hero__content {
+    align-items: center;
+    width: 100%;
+    max-width: 540px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .dating-hero h1 {
+    font-size: clamp(38px, 8.5vw, 54px);
+  }
+
+  .dating-hero__content > p {
+    max-width: 390px;
+    font-size: 14px;
+  }
+
+  .dating-hero__layout > div[aria-hidden='true'] {
+    display: none;
+  }
+
+  .dating-trending {
+    align-self: end;
+    justify-self: center;
+    width: min(100%, 520px);
+    padding: 14px 16px 12px;
+  }
+
+  .dating-trending li {
+    padding: 8px 0;
+  }
+
+  .dating-trending li > a {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+  }
+
+  .dating-trending li a > span {
+    max-width: 185px;
+  }
+
+  .dating-topic-strip {
+    display: flex;
+    gap: 0;
+    width: calc(100% - 24px);
+    min-height: 104px;
+    margin-top: -20px;
+    padding: 20px 8px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+  }
+
+  .dating-topic-strip::-webkit-scrollbar {
+    display: none;
+  }
+
+  .dating-topic {
+    flex: 0 0 158px;
+    padding: 5px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dating-hero {
+    min-height: 680px;
+  }
+
+  .dating-hero__layout {
+    min-height: 680px;
+    padding: 28px 16px 112px;
+  }
+
+  .dating-hero__eyebrow {
+    font-size: 10px;
+  }
+
+  .dating-hero h1 {
+    font-size: 37px;
+  }
+
+  .dating-hero__content > p {
+    font-size: 13px;
+  }
+
+  .dating-trending li > a {
+    grid-template-columns: 1fr;
+  }
+
+  .dating-trending li a > span {
+    max-width: none;
+  }
+
+  .dating-topic {
+    flex-basis: 148px;
+  }
+}
+/* Asiance Weddings magazine */
+.wedding-magazine {
+  --wedding-ink: #231c27;
+  --wedding-purple: #5e2080;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(250px, 18vw, 302px);
+  gap: clamp(20px, 2vw, 34px);
+  width: 100%;
+  max-width: 1900px;
+  margin: 0 auto;
+  padding: 18px clamp(20px, 3.1vw, 58px) clamp(38px, 4vw, 68px);
+  background: #fff;
+  color: var(--wedding-ink);
+  font-family: var(--sans);
+}
+
+.wedding-magazine a { color: inherit; }
+
+.wedding-magazine__main {
+  display: grid;
+  align-content: start;
+  gap: 15px;
+  min-width: 0;
+}
+
+.wedding-magazine__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.wedding-magazine__heading h2,
+.wedding-magazine__label,
+.wedding-magazine__timeline > h2,
+.wedding-magazine__popular > h2,
+.wedding-magazine__vendors > h2 {
+  margin: 0;
+  color: var(--wedding-purple);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.wedding-magazine__heading > a,
+.wedding-magazine__text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--wedding-purple);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.wedding-magazine__heading svg,
+.wedding-magazine__text-link svg { width: 12px; height: 12px; }
+
+.wedding-magazine__topic-rail {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: clamp(12px, 1.7vw, 30px);
+  margin-top: 12px;
+}
+
+.wedding-magazine__topic-rail > a {
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  min-width: 0;
+  text-align: center;
+}
+
+.wedding-magazine__topic-rail > a > span {
+  width: min(100%, 105px);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #f1ebef;
+}
+
+.wedding-magazine__topic-rail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+.wedding-magazine__topic-rail strong {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.wedding-magazine__topic-rail a:hover img,
+.wedding-magazine__topic-rail a:focus-visible img { transform: scale(1.06); }
+
+.wedding-magazine__feature-row {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(205px, 0.82fr);
+  gap: 14px;
+  min-width: 0;
+}
+
+.wedding-magazine__featured,
+.wedding-magazine__timeline,
+.wedding-magazine__trending,
+.wedding-magazine__shop,
+.wedding-magazine__community,
+.wedding-magazine__popular,
+.wedding-magazine__vendors {
+  min-width: 0;
+  border: 1px solid #ece6ed;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.wedding-magazine__featured { padding: 15px; }
+
+.wedding-magazine__featured-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(170px, 0.9fr);
+  gap: clamp(18px, 2vw, 30px);
+  margin-top: 10px;
+}
+
+.wedding-magazine__featured-image {
+  display: block;
+  min-height: 238px;
+  aspect-ratio: 1.48 / 1;
+  overflow: hidden;
+  border-radius: 3px;
+}
+
+.wedding-magazine__featured-image img {
+  width: 100%;
+  height: 100%;
+  min-height: 238px;
+  object-fit: cover;
+}
+
+.wedding-magazine__featured-copy {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.wedding-magazine__featured-copy > span {
+  color: var(--wedding-purple);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.wedding-magazine__featured-copy h2 {
+  margin: 7px 0 0;
+  font-family: var(--serif);
+  font-size: clamp(24px, 2vw, 36px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+}
+
+.wedding-magazine__featured-copy p {
+  margin: 11px 0 0;
+  color: #4e4650;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.wedding-magazine__featured-copy > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 13px;
+  color: var(--wedding-purple);
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.wedding-magazine__featured-copy > a svg { width: 12px; height: 12px; }
+
+.wedding-magazine__gallery {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 5px;
+  margin-top: 6px;
+}
+
+.wedding-magazine__gallery button {
+  min-width: 0;
+  height: clamp(74px, 6vw, 104px);
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: 3px;
+  background: #f4eff3;
+  cursor: pointer;
+}
+
+.wedding-magazine__gallery button.is-active { border-color: var(--wedding-purple); }
+.wedding-magazine__gallery img { width: 100%; height: 100%; object-fit: cover; }
+
+.wedding-magazine__timeline { padding: 13px 14px 11px; }
+.wedding-magazine__timeline > div { display: grid; margin-top: 10px; }
+
+.wedding-magazine__timeline > div > a {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  align-items: center;
+  gap: 9px;
+  min-height: 64px;
+  padding: 7px 0;
+}
+
+.wedding-magazine__timeline > div > a:not(:last-child) { border-bottom: 1px solid #eee9ee; }
+.wedding-magazine__timeline img { width: 54px; height: 52px; border-radius: 3px; object-fit: cover; }
+.wedding-magazine__timeline span { display: grid; gap: 4px; }
+.wedding-magazine__timeline strong { font-size: 11px; line-height: 1.2; }
+.wedding-magazine__timeline small { color: #655d67; font-size: 10px; }
+.wedding-magazine__timeline > .wedding-magazine__text-link { margin-top: 10px; }
+
+.wedding-magazine__trending,
+.wedding-magazine__shop { padding: 15px 13px 12px; }
+
+.wedding-magazine__rail-wrap { position: relative; margin-top: 10px; }
+
+.wedding-magazine__rail-wrap > button {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid #ddd2e0;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--wedding-purple);
+  box-shadow: 0 3px 12px rgba(48, 24, 55, 0.12);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.wedding-magazine__rail-wrap > button:first-child { left: -13px; }
+.wedding-magazine__rail-wrap > button:last-child { right: -13px; }
+.wedding-magazine__rail-wrap > button svg { width: 14px; height: 14px; }
+
+.wedding-magazine__article-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 40px) / 5);
+  gap: 10px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.wedding-magazine__article-rail::-webkit-scrollbar { display: none; }
+.wedding-magazine__article-rail article { min-width: 0; }
+.wedding-magazine__article-rail article > a { display: block; aspect-ratio: 1.34 / 1; overflow: hidden; border-radius: 4px; }
+.wedding-magazine__article-rail img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.25s ease; }
+.wedding-magazine__article-rail article:hover img { transform: scale(1.05); }
+.wedding-magazine__article-rail small { display: block; margin-top: 9px; color: #87549f; font-size: 9px; font-weight: 800; text-transform: uppercase; }
+.wedding-magazine__article-rail h3 { margin: 5px 0 0; font-family: var(--serif); font-size: 15px; font-weight: 400; line-height: 1.18; }
+
+.wedding-magazine__product-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 10px;
+}
+
+.wedding-magazine__product-grid article {
+  position: relative;
+  min-width: 0;
+  padding: 7px 7px 9px;
+  border: 1px solid #eee8ee;
+  border-radius: 4px;
+}
+
+.wedding-magazine__product-image { display: block; aspect-ratio: 1 / 1; overflow: hidden; border-radius: 4px; background: #f7f1ef; }
+.wedding-magazine__product-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.25s ease; }
+.wedding-magazine__product-grid article:hover .wedding-magazine__product-image img { transform: scale(1.04); }
+.wedding-magazine__product-grid article > button { position: absolute; top: 11px; right: 11px; display: grid; place-items: center; width: 19px; height: 19px; padding: 0; border: 0; border-radius: 50%; background: #fff; color: #9c69ae; cursor: pointer; }
+.wedding-magazine__product-grid article > button svg { width: 12px; height: 12px; }
+.wedding-magazine__product-grid h3 { margin: 8px 0 0; font-family: var(--serif); font-size: 12px; font-weight: 400; line-height: 1.18; }
+.wedding-magazine__product-grid p { margin: 4px 0 0; font-size: 11px; font-weight: 700; }
+
+.wedding-magazine__sidebar { display: grid; align-content: start; gap: 12px; min-width: 0; }
+
+.wedding-magazine__community {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 28px 20px 22px;
+  background: linear-gradient(145deg, #faf6fc, #efe4f2);
+  color: var(--wedding-purple);
+  text-align: center;
+}
+
+.wedding-magazine__community > svg { width: 48px; height: 48px; stroke-width: 1.4; }
+.wedding-magazine__community h2 { margin: 14px 0 0; font-size: clamp(17px, 1.35vw, 22px); font-weight: 600; line-height: 1.25; text-transform: uppercase; }
+.wedding-magazine__community p { max-width: 210px; margin: 17px 0 0; color: #574c5c; font-size: 12px; line-height: 1.55; }
+.wedding-magazine__community > a { width: min(100%, 180px); margin-top: 19px; padding: 12px 14px; border-radius: 2px; background: var(--wedding-purple); color: #fff; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+.wedding-magazine__community small { margin-top: 20px; color: #716776; font-size: 10px; }
+.wedding-magazine__community small a { color: var(--wedding-purple); text-decoration: underline; }
+
+.wedding-magazine__popular { padding: 17px 17px 14px; }
+.wedding-magazine__popular > div { display: grid; margin: 10px 0 12px; }
+.wedding-magazine__popular > div > a { display: grid; grid-template-columns: 18px minmax(0, 1fr) 14px; align-items: center; gap: 9px; min-height: 36px; color: #3d3440; font-size: 11px; }
+.wedding-magazine__popular > div > a svg { width: 13px; height: 13px; color: #8e50aa; }
+.wedding-magazine__popular > div > a svg:last-child { justify-self: end; }
+
+.wedding-magazine__vendors { position: relative; min-height: 265px; overflow: hidden; padding: 17px; }
+.wedding-magazine__vendors p { position: relative; z-index: 1; max-width: 155px; margin: 12px 0 0; font-size: 11px; line-height: 1.45; }
+.wedding-magazine__vendors > a { position: relative; z-index: 2; display: inline-flex; align-items: center; gap: 5px; margin-top: 14px; padding: 10px 13px; border-radius: 2px; background: var(--wedding-purple); color: #fff; font-size: 10px; font-weight: 800; text-transform: uppercase; }
+.wedding-magazine__vendors > a svg { width: 11px; height: 11px; }
+.wedding-magazine__vendors img { position: absolute; right: 0; bottom: 0; left: 0; width: 100%; height: 175px; object-fit: cover; object-position: center; }
+
+@media (max-width: 1080px) {
+  .wedding-magazine { grid-template-columns: minmax(0, 1fr); }
+  .wedding-magazine__sidebar { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .wedding-magazine__community, .wedding-magazine__popular, .wedding-magazine__vendors { min-height: 280px; }
+}
+
+@media (max-width: 820px) {
+  .wedding-magazine { padding-right: 14px; padding-left: 14px; }
+  .wedding-magazine__topic-rail { display: flex; overflow-x: auto; scrollbar-width: none; }
+  .wedding-magazine__topic-rail::-webkit-scrollbar { display: none; }
+  .wedding-magazine__topic-rail > a { flex: 0 0 86px; }
+  .wedding-magazine__feature-row { grid-template-columns: minmax(0, 1fr); }
+  .wedding-magazine__timeline > div { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 16px; }
+  .wedding-magazine__timeline > div > a:nth-child(3) { border-bottom: 0; }
+  .wedding-magazine__product-grid { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .wedding-magazine__product-grid::-webkit-scrollbar { display: none; }
+  .wedding-magazine__product-grid article { flex: 0 0 160px; scroll-snap-align: start; }
+  .wedding-magazine__article-rail { grid-auto-columns: minmax(180px, 42vw); }
+  .wedding-magazine__sidebar { grid-template-columns: minmax(0, 1fr); }
+  .wedding-magazine__community, .wedding-magazine__popular { min-height: 0; }
+}
+
+@media (max-width: 560px) {
+  .wedding-magazine__heading { align-items: flex-start; }
+  .wedding-magazine__heading > a { text-align: right; }
+  .wedding-magazine__featured-body { grid-template-columns: minmax(0, 1fr); }
+  .wedding-magazine__featured-image, .wedding-magazine__featured-image img { min-height: 220px; }
+  .wedding-magazine__featured-copy { padding: 8px 3px; }
+  .wedding-magazine__gallery { grid-template-columns: repeat(5, 78px); overflow-x: auto; scrollbar-width: none; }
+  .wedding-magazine__timeline > div { grid-template-columns: minmax(0, 1fr); }
+  .wedding-magazine__timeline > div > a:nth-child(3) { border-bottom: 1px solid #eee9ee; }
+  .wedding-magazine__article-rail { grid-auto-columns: min(64vw, 200px); }
+}
+/* Asiance Weddings community */
+.wedding-community-showcase {
+  grid-column: 1 / -1;
+  min-width: 0;
+  width: 100%;
+  max-width: none;
+  margin: 0 auto;
+  padding: 10px 0 4px;
+  border-top: 1px solid #ece6ed;
+}
+
+.wedding-community-showcase__heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 9px;
+}
+
+.wedding-community-showcase__heading h2,
+.wedding-inspiration-topics > h2 {
+  margin: 0;
+  color: #5e2080;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.wedding-community-showcase__heading h2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.wedding-community-showcase__heading h2 svg { width: 11px; height: 11px; }
+
+.wedding-community-showcase__heading > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #5e2080;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.wedding-community-showcase__heading > a svg { width: 13px; height: 13px; }
+
+.wedding-community-showcase__grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) minmax(190px, 1.15fr);
+  gap: 14px;
+  min-width: 0;
+}
+
+.wedding-community-showcase__grid > article {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #ebe5eb;
+  border-radius: 5px;
+  background: #fff;
+}
+
+.wedding-community-showcase__image {
+  display: block;
+  aspect-ratio: 1.6 / 1;
+  overflow: hidden;
+  background: #f4eef2;
+}
+
+.wedding-community-showcase__image img,
+.wedding-community-showcase__feature img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+.wedding-community-showcase__grid > article > small {
+  display: block;
+  margin: 10px 12px 0;
+  color: #8d4ba5;
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.wedding-community-showcase__grid > article h3 {
+  min-height: 38px;
+  margin: 6px 12px 0;
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+.wedding-community-showcase__meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 12px;
+}
+
+.wedding-community-showcase__meta > span {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #eadfeb;
+  color: #5e2080;
+  font-family: var(--serif);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.wedding-community-showcase__meta > strong {
+  min-width: 0;
+  overflow: hidden;
+  color: #59505c;
+  font-family: var(--sans);
+  font-size: 9px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wedding-community-showcase__meta > em {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: auto;
+  color: #8c61a0;
+  font-family: var(--sans);
+  font-size: 9px;
+  font-style: normal;
+}
+
+.wedding-community-showcase__meta svg { width: 12px; height: 12px; }
+
+.wedding-community-showcase__feature {
+  min-width: 0;
+  aspect-ratio: 1.18 / 1;
+  overflow: hidden;
+  border-radius: 5px;
+  background: #f3edf1;
+}
+
+.wedding-community-showcase__feature:hover img,
+.wedding-community-showcase__grid > article:hover .wedding-community-showcase__image img { transform: scale(1.035); }
+
+.wedding-inspiration-topics { margin-top: 11px; }
+
+.wedding-inspiration-topics > div {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: clamp(18px, 2.2vw, 38px);
+  margin-top: 9px;
+}
+
+.wedding-inspiration-topics > div > a {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  min-width: 0;
+  text-align: center;
+}
+
+.wedding-inspiration-topics > div > a > span {
+  width: min(100%, 96px);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #f2ecef;
+}
+
+.wedding-inspiration-topics img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+
+.wedding-inspiration-topics strong {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.wedding-inspiration-topics a:hover img,
+.wedding-inspiration-topics a:focus-visible img { transform: scale(1.05); }
+
+@media (max-width: 1180px) {
+  .wedding-community-showcase__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .wedding-community-showcase__feature { aspect-ratio: 1.48 / 1; }
+}
+
+@media (max-width: 820px) {
+  .wedding-community-showcase__grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .wedding-community-showcase__grid::-webkit-scrollbar,
+  .wedding-inspiration-topics > div::-webkit-scrollbar { display: none; }
+
+  .wedding-community-showcase__grid > article,
+  .wedding-community-showcase__feature {
+    flex: 0 0 min(70vw, 250px);
+    scroll-snap-align: start;
+  }
+
+  .wedding-inspiration-topics > div {
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .wedding-inspiration-topics > div > a { flex: 0 0 98px; }
+}
+
+@media (max-width: 480px) {
+  .wedding-community-showcase__heading h2,
+  .wedding-inspiration-topics > h2 { font-size: 13px; }
+
+  .wedding-community-showcase__grid > article,
+  .wedding-community-showcase__feature { flex-basis: min(78vw, 260px); }
 }

@@ -234,8 +234,8 @@ export function getProductCategories() {
 }
 
 export async function getProduct(slug: string) {
-  const fallback = products.find((product) => product.slug === slug) ?? products[0];
-  return fetchJson<Product>(`/shop/products/${slug}`, fallback);
+  const fallback = products.find((product) => product.slug === slug) ?? null;
+  return fetchJson<Product | null>(`/shop/products/${slug}`, fallback);
 }
 
 export function getArticles(category?: string) {
