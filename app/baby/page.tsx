@@ -3,9 +3,10 @@ import Link from 'next/link';
 import type { LucideIcon } from 'lucide-react';
 import { ArrowRight, Baby, Blocks, Camera, Heart, Milk, Plane } from 'lucide-react';
 import { BabyEditorialSection } from '@/components/BabyEditorialSection';
+import { FeaturedArticlesSection } from '@/components/FeaturedArticlesSection';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
-import { getArticles } from '@/lib/api';
+import { getArticleCarousel, getArticles } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
 
@@ -84,7 +85,10 @@ function BabyHeroCategoryStrip() {
 }
 
 export default async function BabyPage() {
-  const babyArticles = await getArticles('Asiance Baby');
+  const [babyArticles, featuredCarousel] = await Promise.all([
+    getArticles('Asiance Baby'),
+    getArticleCarousel('baby'),
+  ]);
 
   return (
     <main className="page-shell baby-page">
@@ -103,6 +107,15 @@ export default async function BabyPage() {
         </div>
         <BabyHeroCategoryStrip />
       </section>
+
+      <FeaturedArticlesSection
+        articles={featuredCarousel.articles}
+        title="Featured Baby Articles"
+        href="/blog?category=baby"
+        autoRotate={featuredCarousel.autoRotate}
+        rotationIntervalMs={featuredCarousel.rotationIntervalMs}
+        sectionKey="baby"
+      />
 
       <BabyEditorialSection articles={babyArticles} />
 

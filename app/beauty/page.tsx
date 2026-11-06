@@ -5,7 +5,8 @@ import { ArrowRight, Flower2, Gift, Paintbrush, Scissors, Sparkles } from 'lucid
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { BeautyEditorialSection } from '@/components/BeautyEditorialSection';
-import { getActivity, getArticles, getProducts } from '@/lib/api';
+import { FeaturedArticlesSection } from '@/components/FeaturedArticlesSection';
+import { getActivity, getArticleCarousel, getArticles, getProducts } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
 
@@ -62,8 +63,9 @@ const beautyCategories: BeautyCategory[] = [
 ];
 
 export default async function BeautyPage() {
-  const [articles, products, beautyProducts, activity] = await Promise.all([
+  const [articles, featuredCarousel, products, beautyProducts, activity] = await Promise.all([
     getArticles('Fashion and Beauty'),
+    getArticleCarousel('beauty'),
     getProducts({ category: 'fashion' }),
     getProducts({ category: 'beauty' }),
     getActivity(),
@@ -121,6 +123,15 @@ export default async function BeautyPage() {
           </Link>
         ))}
       </nav>
+
+      <FeaturedArticlesSection
+        articles={featuredCarousel.articles}
+        title="Featured Beauty Articles"
+        href="/blog?category=Fashion%20and%20Beauty"
+        autoRotate={featuredCarousel.autoRotate}
+        rotationIntervalMs={featuredCarousel.rotationIntervalMs}
+        sectionKey="beauty"
+      />
 
       <BeautyEditorialSection articles={articles} products={products} beautyProducts={beautyProducts} activity={activity} />
 

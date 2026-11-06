@@ -4,7 +4,8 @@ import { ArrowRight } from 'lucide-react';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { FashionEditorialSections } from '@/components/FashionEditorialSections';
-import { getArticles, getMembers, getProducts } from '@/lib/api';
+import { FeaturedArticlesSection } from '@/components/FeaturedArticlesSection';
+import { getArticleCarousel, getArticles, getMembers, getProducts } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,8 +33,9 @@ const fashionFeatureLinks = [
 ];
 
 export default async function FashionPage() {
-  const [articles, products, members] = await Promise.all([
+  const [articles, featuredCarousel, products, members] = await Promise.all([
     getArticles('Fashion'),
+    getArticleCarousel('fashion'),
     getProducts({ category: 'fashion' }),
     getMembers({ cache: 'no-store' }),
   ]);
@@ -97,6 +99,15 @@ export default async function FashionPage() {
           ))}
         </nav>
       </section>
+
+      <FeaturedArticlesSection
+        articles={featuredCarousel.articles}
+        title="Featured Fashion Articles"
+        href="/blog?category=fashion"
+        autoRotate={featuredCarousel.autoRotate}
+        rotationIntervalMs={featuredCarousel.rotationIntervalMs}
+        sectionKey="fashion"
+      />
 
       <FashionEditorialSections articles={articles} products={products} members={members} />
 

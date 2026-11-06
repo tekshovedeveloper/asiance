@@ -107,6 +107,37 @@ export type ArticleCategory = {
   sortOrder?: number;
 };
 
+export type ArticleCarousel = {
+  section: string;
+  articleIds: string[];
+  articles: Article[];
+  autoRotate: boolean;
+  rotationIntervalMs: number;
+};
+
+export type GlobalSearchSectionKey = 'articles' | 'members' | 'news' | 'groups' | 'products';
+
+export type GlobalSearchItem = {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  image: string;
+  href: string;
+};
+
+export type GlobalSearchSection = {
+  key: GlobalSearchSectionKey;
+  label: string;
+  items: GlobalSearchItem[];
+};
+
+export type GlobalSearchResponse = {
+  query: string;
+  total: number;
+  sections: GlobalSearchSection[];
+};
+
 export type HomeSlideArticle = Pick<Article, 'title' | 'slug' | 'excerpt' | 'category' | 'status' | 'publishedAt'> & {
   _id: string;
 };

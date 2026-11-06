@@ -5,7 +5,8 @@ import { ArrowRight, ClipboardCheck, Heart, Store, Users } from 'lucide-react';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { WeddingEditorialSection } from '@/components/WeddingEditorialSection';
-import { getArticles } from '@/lib/api';
+import { FeaturedArticlesSection } from '@/components/FeaturedArticlesSection';
+import { getArticleCarousel, getArticles } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
 
@@ -90,7 +91,10 @@ function WeddingBenefits() {
 }
 
 export default async function WeddingPage() {
-  const weddingArticles = await getArticles('Weddings');
+  const [weddingArticles, featuredCarousel] = await Promise.all([
+    getArticles('Weddings'),
+    getArticleCarousel('wedding'),
+  ]);
 
   return (
     <main className="page-shell wedding-page">
@@ -109,6 +113,15 @@ export default async function WeddingPage() {
           <WeddingBenefits />
         </div>
       </section>
+
+      <FeaturedArticlesSection
+        articles={featuredCarousel.articles}
+        title="Featured Wedding Articles"
+        href="/blog?category=Weddings"
+        autoRotate={featuredCarousel.autoRotate}
+        rotationIntervalMs={featuredCarousel.rotationIntervalMs}
+        sectionKey="wedding"
+      />
 
       <WeddingEditorialSection articles={weddingArticles} />
 

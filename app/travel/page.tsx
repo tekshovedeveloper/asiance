@@ -15,7 +15,8 @@ import {
 import { SiteHeader } from '@/components/SiteHeader';
 import { SiteFooter } from '@/components/SiteFooter';
 import { TravelEditorialSection } from '@/components/TravelEditorialSection';
-import { getArticles } from '@/lib/api';
+import { FeaturedArticlesSection } from '@/components/FeaturedArticlesSection';
+import { getArticleCarousel, getArticles } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
 
@@ -51,7 +52,10 @@ const travelTickerItems = [
 ];
 
 export default async function TravelPage() {
-  const travelArticles = await getArticles('Travel');
+  const [travelArticles, featuredCarousel] = await Promise.all([
+    getArticles('Travel'),
+    getArticleCarousel('travel'),
+  ]);
   const featuredArticle = travelArticles.find((article) => article.featured) ?? travelArticles[0];
   const remainingArticles = travelArticles.filter((article) => article.slug !== featuredArticle?.slug);
   const editorsPicks = remainingArticles.slice(0, 3);
@@ -116,6 +120,15 @@ export default async function TravelPage() {
           ))}
         </div>
       </section>
+
+      <FeaturedArticlesSection
+        articles={featuredCarousel.articles}
+        title="Featured Travel Articles"
+        href="/blog?category=Travel"
+        autoRotate={featuredCarousel.autoRotate}
+        rotationIntervalMs={featuredCarousel.rotationIntervalMs}
+        sectionKey="travel"
+      />
 
       <TravelEditorialSection
         featuredArticle={featuredArticle}

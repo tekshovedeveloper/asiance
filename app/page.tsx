@@ -10,7 +10,7 @@ import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import {
   getActivity,
-  getArticles,
+  getArticleCarousel,
   getGroups,
   getHomeSlides,
   getMembers,
@@ -22,9 +22,9 @@ import {
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  const [products, articles, news, newsCategories, groups, activity, members, homeSlides] = await Promise.all([
+  const [products, articleCarousel, news, newsCategories, groups, activity, members, homeSlides] = await Promise.all([
     getProducts({ sort: 'latest' }),
-    getArticles(),
+    getArticleCarousel('home'),
     getNews({ limit: 12 }),
     getNewsCategories(),
     getGroups(),
@@ -40,7 +40,7 @@ export default async function HomePage() {
 
       {newsCategories.length ? <CommunityCategoryStrip categories={newsCategories} /> : null}
 
-      <HomePersonalizedSections products={products} articles={articles} groups={groups}>
+      <HomePersonalizedSections products={products} articleCarousel={articleCarousel} groups={groups}>
         <ShopCategorySection />
       </HomePersonalizedSections>
 

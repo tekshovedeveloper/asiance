@@ -1921,6 +1921,22 @@
   font-weight: 600;
 }
 
+.articleCancelEdit {
+  min-height: 36px;
+  padding: 0 13px;
+  border: 1px solid rgba(90, 31, 104, 0.25);
+  border-radius: 999px;
+  background: #fff;
+  color: #5a1f68;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+}
+
 .articleSubcopy {
   display: block;
   margin-top: 4px;
@@ -2069,6 +2085,11 @@
   line-height: 1.5;
 }
 
+.articlePublishActions {
+  display: grid;
+  gap: 8px;
+}
+
 .articlePublishBox button,
 .articleImageBox button {
   min-height: 40px;
@@ -2092,6 +2113,17 @@
 .articleImageBox button:hover:not(:disabled) {
   background: #5a1f68;
   border-color: #5a1f68;
+}
+
+.articlePublishBox .articleDraftButton {
+  background: #fff;
+  color: #5a1f68;
+}
+
+.articlePublishBox .articleDraftButton:hover:not(:disabled) {
+  background: #f4eef6;
+  border-color: #5a1f68;
+  color: #5a1f68;
 }
 
 .articlePublishBox button:disabled,
@@ -2208,8 +2240,63 @@
 
 .articleListActions {
   display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
   justify-content: flex-end;
-  min-width: 110px;
+  min-width: 220px;
+}
+
+.articleActionButton,
+.articleStatusBadge {
+  min-height: 34px;
+  padding: 0 11px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.articleActionButton {
+  border: 1px solid rgba(90, 31, 104, 0.28);
+  background: #fff;
+  color: #5a1f68;
+  cursor: pointer;
+}
+
+.articleActionButton:hover:not(:disabled) {
+  border-color: #7a2c8a;
+  background: #f4eef6;
+}
+
+.articleActionButton:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.articleStatusBadge {
+  border: 1px solid rgba(122, 44, 138, 0.12);
+  background: #f4eef6;
+  color: #7a2c8a;
+}
+
+.articleDeleteButton {
+  border-color: rgba(185, 28, 28, 0.18);
+  color: #b91c1c;
+}
+
+.articleDeleteButton:hover:not(:disabled) {
+  border-color: rgba(185, 28, 28, 0.35);
+  background: rgba(185, 28, 28, 0.05);
 }
 
 .articleEmptyAction {

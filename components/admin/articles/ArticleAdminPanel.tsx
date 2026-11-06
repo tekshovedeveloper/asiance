@@ -2,12 +2,18 @@
 
 import { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react';
 import { Plus, Save, Search, X } from 'lucide-react';
+import { ArticleCarouselAdmin } from '@/components/admin/articles/ArticleCarouselAdmin';
 import { NewsEditor } from '@/components/NewsEditor';
 import { API_URL } from '@/lib/api';
 import { articleCategories as fallbackArticleCategories, articles as fallbackArticles } from '@/lib/mock-data';
 import type { Article, ArticleCategory } from '@/lib/types';
 
-export type ArticleAdminView = 'articles-list' | 'articles-pending' | 'articles-add' | 'article-categories';
+export type ArticleAdminView =
+  | 'articles-list'
+  | 'articles-pending'
+  | 'articles-add'
+  | 'article-categories'
+  | 'article-carousels';
 
 type ArticleFormState = {
   title: string;
@@ -612,6 +618,10 @@ export function ArticleAdminPanel({
         </form>
       </section>
     );
+  }
+
+  if (view === 'article-carousels') {
+    return <ArticleCarouselAdmin token={token} />;
   }
 
   if (view === 'article-categories') {

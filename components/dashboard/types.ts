@@ -1,7 +1,7 @@
 // components/dashboard/types.ts
 export type DashboardTab = "activity" | "profile" | "friends" | "groups" | "forums" | "files" | "orders";
 export type OrderStatusFilter = "all" | "processing" | "shipped" | "completed" | "cancelled" | "refunded" | "failed";
-export type ArticleDashboardView = "add" | "published" | "pending";
+export type ArticleDashboardView = "add" | "published" | "pending" | "draft";
 export type DashboardSidebarView = "privacy";
 export type ProfileVisibility = "public" | "members" | "private";
 

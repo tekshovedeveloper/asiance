@@ -4,18 +4,17 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { FeaturedArticlesSection } from '@/components/FeaturedArticlesSection';
 import { FeaturedCirclesSection } from '@/components/FeaturedCirclesSection';
 import { ShopLatestSection } from '@/components/ShopLatestSection';
-import { getArticles, getGroups, getMe, getProducts } from '@/lib/api';
+import { getGroups, getMe, getProducts } from '@/lib/api';
 import {
-  filterArticlesByProfileCategories,
   filterGroupsByProfileSlugs,
   filterProductsByProfileCategories,
 } from '@/lib/profile-personalization';
 import type { DashboardUser } from '@/components/dashboard/types';
-import type { Article, Group, Product } from '@/lib/types';
+import type { ArticleCarousel, Group, Product } from '@/lib/types';
 
 type HomePersonalizedSectionsProps = {
   products: Product[];
-  articles: Article[];
+  articleCarousel: ArticleCarousel;
   groups: Group[];
   children?: ReactNode;
 };
@@ -26,13 +25,12 @@ function hasSelections(values?: string[] | null) {
 
 export function HomePersonalizedSections({
   products: initialProducts,
-  articles: initialArticles,
+  articleCarousel,
   groups: initialGroups,
   children,
 }: HomePersonalizedSectionsProps) {
   const [profile, setProfile] = useState<DashboardUser | null>(null);
   const [products, setProducts] = useState(initialProducts);
-  const [articles, setArticles] = useState(initialArticles);
   const [groups, setGroups] = useState(initialGroups);
 
   useEffect(() => {
@@ -44,12 +42,11 @@ export function HomePersonalizedSections({
       return;
     }
 
-    Promise.all([getMe(), getProducts({ sort: 'latest' }), getArticles(), getGroups()])
-      .then(([me, nextProducts, nextArticles, nextGroups]) => {
+    Promise.all([getMe(), getProducts({ sort: 'latest' }), getGroups()])
+      .then(([me, nextProducts, nextGroups]) => {
         if (!mounted) return;
         setProfile(me);
         setProducts(nextProducts);
-        setArticles(nextArticles);
         setGroups(nextGroups);
       })
       .catch(() => {
@@ -65,17 +62,12 @@ export function HomePersonalizedSections({
     () => filterProductsByProfileCategories(products, profile?.productCategoryInterests),
     [products, profile?.productCategoryInterests],
   );
-  const personalizedArticles = useMemo(
-    () => filterArticlesByProfileCategories(articles, profile?.blogCategoryInterests),
-    [articles, profile?.blogCategoryInterests],
-  );
   const personalizedGroups = useMemo(
     () => filterGroupsByProfileSlugs(groups, profile?.communityCircleSlugs),
     [groups, profile?.communityCircleSlugs],
   );
 
   const hasProductPersonalization = hasSelections(profile?.productCategoryInterests);
-  const hasArticlePersonalization = hasSelections(profile?.blogCategoryInterests);
   const hasGroupPersonalization = hasSelections(profile?.communityCircleSlugs);
 
   return (
@@ -86,8 +78,10 @@ export function HomePersonalizedSections({
       />
 
       <FeaturedArticlesSection
-        articles={personalizedArticles}
-        title={hasArticlePersonalization ? 'Articles picked for you' : undefined}
+        articles={articleCarousel.articles}
+        autoRotate={articleCarousel.autoRotate}
+        rotationIntervalMs={articleCarousel.rotationIntervalMs}
+        sectionKey="home"
       />
 
       {children}

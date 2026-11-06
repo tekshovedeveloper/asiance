@@ -233,7 +233,6 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               <Link className="blog-back-link" href={`/blog?category=${encodeURIComponent(article.category)}`}>
                 Back to {article.category}
               </Link>
-              <span className="eyebrow">{article.category}</span>
               <h1 className="article-title">{article.title}</h1>
               {article.excerpt ? <p className="page-copy-article">{article.excerpt}</p> : null}
               <div className="blog-detail-meta">

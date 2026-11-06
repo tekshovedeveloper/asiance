@@ -1027,7 +1027,10 @@ setStatus('Admin connected.');
     }
   }
   const isNewsView = activeView.startsWith('news');
-  const isArticleView = activeView === 'article-categories' || activeView.startsWith('articles');
+  const isArticleView =
+    activeView === 'article-categories' ||
+    activeView === 'article-carousels' ||
+    activeView.startsWith('articles');
   const isGroupView = activeView === 'circles' || activeView === 'group-types' || activeView === 'groups-list';
   const isNewsOpen = openAdminMenus.news;
   const isArticleOpen = openAdminMenus.articles;
@@ -1149,6 +1152,9 @@ setStatus('Admin connected.');
               </button>
               <button onClick={() => setActiveView('article-categories')} type="button">
                 Article Categories
+              </button>
+              <button onClick={() => setActiveView('article-carousels')} type="button">
+                Featured Carousels
               </button>
             </div>
           ) : null}

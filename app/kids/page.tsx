@@ -14,6 +14,10 @@ import {
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { KidsEditorialSection } from '@/components/KidsEditorialSection';
+import { FeaturedArticlesSection } from '@/components/FeaturedArticlesSection';
+import { getArticleCarousel } from '@/lib/api';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Asiance Kids | Asiance',
@@ -76,7 +80,9 @@ function KidsCategoryGrid() {
   );
 }
 
-export default function KidsPage() {
+export default async function KidsPage() {
+  const featuredCarousel = await getArticleCarousel('kids');
+
   return (
     <main className="page-shell kids-page">
       <SiteHeader active="Asiance Kids" />
@@ -93,6 +99,15 @@ export default function KidsPage() {
         </div>
         <KidsCategoryGrid />
       </section>
+
+      <FeaturedArticlesSection
+        articles={featuredCarousel.articles}
+        title="Featured Kids Articles"
+        href="/blog?category=family"
+        autoRotate={featuredCarousel.autoRotate}
+        rotationIntervalMs={featuredCarousel.rotationIntervalMs}
+        sectionKey="kids"
+      />
 
       <KidsEditorialSection />
 

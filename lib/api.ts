@@ -13,12 +13,14 @@ import {
 import type {
   Activity,
   Article,
+  ArticleCarousel,
   ArticleCategory,
   FileAsset,
   ForumThread,
   Group,
   GroupMember,
   GroupType,
+  GlobalSearchResponse,
   HomeSlide,
   Member,
   NewsCategory,
@@ -250,6 +252,42 @@ export function getArticles(category?: string) {
   return fetchJson<Article[]>(`/articles${query}`, fallback);
 }
 
+export function getArticleCarousel(section: string) {
+  return fetchJson<ArticleCarousel>(
+    `/articles/carousels/${encodeURIComponent(section)}`,
+    {
+      section,
+      articleIds: [],
+      articles: [],
+      autoRotate: true,
+      rotationIntervalMs: 6000,
+    },
+  );
+}
+
+export function getGlobalSearch(query: string, signal?: AbortSignal) {
+  const normalizedQuery = query.trim();
+  const empty: GlobalSearchResponse = {
+    query: normalizedQuery,
+    total: 0,
+    sections: [
+      { key: 'articles', label: 'Articles', items: [] },
+      { key: 'members', label: 'Members', items: [] },
+      { key: 'news', label: 'Community news', items: [] },
+      { key: 'groups', label: 'Groups', items: [] },
+      { key: 'products', label: 'Products', items: [] },
+    ],
+  };
+
+  if (normalizedQuery.length < 2) return Promise.resolve(empty);
+
+  return fetchJson<GlobalSearchResponse>(
+    `/search?q=${encodeURIComponent(normalizedQuery)}&limit=5`,
+    empty,
+    { signal },
+  );
+}
+
 export type ArticleSubmitPayload = {
   title: string;
   category: string;
@@ -258,6 +296,7 @@ export type ArticleSubmitPayload = {
   image?: string;
   tags?: string[];
   featured?: boolean;
+  status?: 'draft' | 'pending';
 };
 
 export function getMyArticles(status?: Article['status']) {
@@ -269,6 +308,19 @@ export async function submitArticle(payload: ArticleSubmitPayload) {
   return requestJson<Article>('/articles/submit', {
     method: 'POST',
     body: JSON.stringify(payload),
+  });
+}
+
+export async function updateMyArticle(slug: string, payload: ArticleSubmitPayload) {
+  return requestJson<Article>(`/articles/me/${encodeURIComponent(slug)}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function deleteMyArticle(slug: string) {
+  return requestJson<{ deleted: true }>(`/articles/me/${encodeURIComponent(slug)}`, {
+    method: 'DELETE',
   });
 }
 

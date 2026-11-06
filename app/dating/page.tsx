@@ -13,7 +13,8 @@ import {
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { WeddingMagazineSection } from '@/components/WeddingMagazineSection';
-import { getActivity, getArticles, getProducts } from '@/lib/api';
+import { FeaturedArticlesSection } from '@/components/FeaturedArticlesSection';
+import { getActivity, getArticleCarousel, getArticles, getProducts } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
 
@@ -77,8 +78,9 @@ function DatingTopicStrip() {
 }
 
 export default async function DatingPage() {
-  const [articles, products, activity] = await Promise.all([
+  const [articles, featuredCarousel, products, activity] = await Promise.all([
     getArticles('Weddings'),
+    getArticleCarousel('dating'),
     getProducts({ category: 'wedding' }),
     getActivity(),
   ]);
@@ -114,6 +116,14 @@ export default async function DatingPage() {
       </section>
 
       <DatingTopicStrip />
+      <FeaturedArticlesSection
+        articles={featuredCarousel.articles}
+        title="Featured Dating Articles"
+        href="/blog?category=Weddings"
+        autoRotate={featuredCarousel.autoRotate}
+        rotationIntervalMs={featuredCarousel.rotationIntervalMs}
+        sectionKey="dating"
+      />
       <WeddingMagazineSection articles={articles} products={products} activity={activity} />
       <SiteFooter />
     </main>

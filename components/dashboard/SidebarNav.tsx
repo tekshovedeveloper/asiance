@@ -168,6 +168,7 @@ const nav: NavItem[] = [
       { label: "Add Article", articleView: "add" },
       { label: "Published Articles", articleView: "published" },
       { label: "Pending Articles", articleView: "pending" },
+      { label: "Draft Articles", articleView: "draft" },
     ],
   },
   {

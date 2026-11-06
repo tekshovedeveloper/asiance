@@ -14,7 +14,8 @@ import {
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { TechEditorialSection } from '@/components/TechEditorialSection';
-import { getActivity, getArticles, getProducts } from '@/lib/api';
+import { FeaturedArticlesSection } from '@/components/FeaturedArticlesSection';
+import { getActivity, getArticleCarousel, getArticles, getProducts } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
 
@@ -103,8 +104,9 @@ function TechCategoryStrip() {
 }
 
 export default async function TechPage() {
-  const [articles, products, activity] = await Promise.all([
+  const [articles, featuredCarousel, products, activity] = await Promise.all([
     getArticles('Technology'),
+    getArticleCarousel('tech'),
     getProducts({ category: 'technology' }),
     getActivity(),
   ]);
@@ -158,6 +160,15 @@ export default async function TechPage() {
       </section>
 
       <TechCategoryStrip />
+
+      <FeaturedArticlesSection
+        articles={featuredCarousel.articles}
+        title="Featured Tech Articles"
+        href="/blog?category=technology"
+        autoRotate={featuredCarousel.autoRotate}
+        rotationIntervalMs={featuredCarousel.rotationIntervalMs}
+        sectionKey="tech"
+      />
 
       <TechEditorialSection articles={articles} products={products} activity={activity} />
 

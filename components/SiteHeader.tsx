@@ -17,6 +17,7 @@ import type { DashboardUser } from '@/components/dashboard/types';
 import { useSocketContext } from '@/components/SocketProvider';
 import { useCart } from '@/components/cart/CartContext';
 import { showAppToast } from '@/lib/app-toast';
+import { GlobalSearch } from '@/components/GlobalSearch';
 
 type MobileMenuTab = 'navigation' | 'notifications' | 'messages';
 
@@ -289,6 +290,8 @@ export function SiteHeader({ active }: { active?: string }) {
         </nav>
 
         <div className="nav-actions">
+          <GlobalSearch />
+
           <button
             type="button"
             className="mobile-menu-trigger"

@@ -5,7 +5,8 @@ import { Heart } from 'lucide-react';
 import { SiteFooter } from '@/components/SiteFooter';
 import { SiteHeader } from '@/components/SiteHeader';
 import { WomenEditorialSection } from '@/components/WomenEditorialSection';
-import { getActivity, getArticles } from '@/lib/api';
+import { FeaturedArticlesSection } from '@/components/FeaturedArticlesSection';
+import { getActivity, getArticleCarousel, getArticles } from '@/lib/api';
 
 export const dynamic = 'force-dynamic';
 
@@ -79,7 +80,11 @@ function WomenMemberCard() {
 }
 
 export default async function WomenPage() {
-  const [articles, activity] = await Promise.all([getArticles(), getActivity()]);
+  const [articles, featuredCarousel, activity] = await Promise.all([
+    getArticles(),
+    getArticleCarousel('lifestyle'),
+    getActivity(),
+  ]);
 
   return (
     <main className="page-shell women-page">
@@ -97,6 +102,15 @@ export default async function WomenPage() {
           <WomenMemberCard />
         </div>
       </section>
+
+      <FeaturedArticlesSection
+        articles={featuredCarousel.articles}
+        title="Featured Lifestyle Articles"
+        href="/blog?category=Lifestyle"
+        autoRotate={featuredCarousel.autoRotate}
+        rotationIntervalMs={featuredCarousel.rotationIntervalMs}
+        sectionKey="lifestyle"
+      />
 
       <WomenEditorialSection articles={articles} activity={activity} />
 
